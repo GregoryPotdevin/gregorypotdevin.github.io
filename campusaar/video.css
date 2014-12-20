@@ -36,9 +36,6 @@
   border-bottom: 1px solid #ddd;
   padding: 10px;
 }
-.sequence-list {
-  padding: 0px;
-}
 .sequence-item.list-group-item {
   padding: 6px;
 }
