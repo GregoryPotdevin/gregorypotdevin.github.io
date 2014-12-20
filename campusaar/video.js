@@ -1,9 +1,15 @@
-
+// url hash plugin : http://benalman.com/projects/jquery-bbq-plugin/
 
 function formatTime(seconds) {
   var min = Math.floor(seconds / 60);
   var sec = seconds % 60;
   return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
+}
+
+function videoSetTime(start){
+  var video = $('#video-frame');
+  video[0].currentTime = start;
+  video[0].play();
 }
 
 function loadSequences(sequences) {
@@ -14,21 +20,20 @@ function loadSequences(sequences) {
 
   $.each(sequences, function (idx, seq) {
     var seq_id = "seq-" + idx;
+    // var url = $.param.fragment( "#", {start: seq.start} );
     var sequence = $('\
       <a href="#" id="' + seq_id + '" class="list-group-item sequence-item">\
-        <h4>' + seq.text + '</h4>\
-        <p>' + formatTime(seq.start) + ' - ' + formatTime(seq.end) + '</p>\
+        <h4 class="list-group-item-heading">' + seq.text + '</h4>\
+        <p class="list-group-item-text">' + formatTime(seq.start) + ' - ' + formatTime(seq.end) + '</p>\
       </a>');
-    //urlHash = $.param({ start: seq.start });
-    //sequence.fragment( urlHash, 2 );
+    urlHash = $.param({ start: seq.start });
+    sequence.fragment( urlHash, 2 );
     list.append(sequence);
     sequence.click(function () {
-      var video = $('#video-frame');
-      video[0].currentTime = seq.start;
-      video[0].play();
-        //var href = sequence.attr( "href" );
-        //$.bbq.pushState({ url: href });
-      });
+      videoSetTime(seq.start);
+        // var href = sequence.attr( "href" );
+        // $.bbq.pushState({ url: href });
+    });
     $("#header ul").append('<li ><a href="/user/messages"><span class="tab">Message Center</span></a></li>');
     pop.footnote({
       start: seq.start,
@@ -84,6 +89,9 @@ function loadSequences(sequences) {
     });
   });
 
-
   pop.play();
+  var params = $.deparam.fragment();
+  if ("start" in params){
+    videoSetTime(params.start)
+  }
 }
