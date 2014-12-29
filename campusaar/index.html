@@ -6,24 +6,55 @@
 
 	<title>CampusAAR video demo</title>
 
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://popcornjs.org/code/dist/popcorn-complete.min.js"></script>
-	<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script>
+	<!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+	<!-- <script type="text/javascript" src="http://popcornjs.org/code/dist/popcorn-complete.min.js"></script> -->
+	<!-- <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script> -->
+	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script> -->
+	<script type="text/javascript" src="libs/jquery.min.js"></script>
+	<script type="text/javascript" src="libs/popcorn-complete.min.js"></script>
+	<script type="text/javascript" src="libs/bootstrap.min.js"></script>
+	<script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
 	<script type="text/javascript" src="video.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="video.css">
 
 	<script type="text/javascript">//<![CDATA[ 
 		$(window).load(function(){
-			$.getJSON("http://www.mocky.io/v2/5492e82d827817e408aa8fd2", function (data) {
-				loadSequences(data.sequences);
-			});
+			// $.getJSON("http://www.mocky.io/v2/5492e82d827817e408aa8fd2", function (data) {
+			// 	loadSequences(data.sequences);
+			// });
+			loadSequences([
+		    {
+		      "start": 0,
+		      "end": 3,
+		      "text": "The current model of higher education is broken"
+		    },
+		    {
+		      "start": 3,
+		      "end": 7,
+		      "text": "We are not getting the skills we need..."
+		    },
+		    {
+		      "start": 35,
+		      "end": 180,
+		      "text": "From 35s to 3 minutes..."
+		    },
+		    {
+		      "start": 180,
+		      "end": 360,
+		      "text": "From 3 minutes to the end..."
+		    },
+		    {
+		      "start": 7,
+		      "end": 30,
+		      "text": "The model that we have today doesn't scale !!"
+		    }
+		  ]);
 		});//]]>  
 
 	</script>
-
 
 </head>
 <body>
@@ -79,7 +110,16 @@
 					<h3 class="panel-title">Video Title</h3>
 				</div>
 				<div class="panel-body video-container">
-					<video id="video-frame" class="video" src="http://upload.wikimedia.org/wikipedia/commons/a/ac/P2puvid.ogv" controls=""></video>
+					<!-- <video id="video-frame" class="video" src="http://upload.wikimedia.org/wikipedia/commons/a/ac/P2puvid.ogv" controls=""></video> -->
+					<video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video>
+				<!-- </div> -->
+				<!-- <div class="panel-footer video-container">					 -->
+					<div id="video-timeline" class="timeline">
+						<div id="video-timeline-items">
+
+						</div>
+						<span id="video-timeline-marker" class="timeline-marker" />
+					</div>
 				</div>
 			</div>
 			<div class="panel panel-info">

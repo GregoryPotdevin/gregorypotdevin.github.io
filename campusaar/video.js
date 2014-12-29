@@ -13,11 +13,40 @@ function videoSetTime(start){
 }
 
 function loadSequences(sequences) {
+  sequences = sequences.slice(0);
+  sequences.sort(function(s1, s2) {
+      return s1.start - s2.start;
+  });
+
+  var video = $("#video-frame");
   var pop = Popcorn("#video-frame");
 
+  var timeline = $("#video-timeline-items");
   var list = $("#sequences");
   var info = $("#info");
 
+  // Create your plugin
+  Popcorn.plugin( "sequences", {
+    _setup: function( options ) {
+      // var target = Popcorn.dom.find( options.target );
+
+      // options._list_container = document.createElement( "div" );
+      // options._list_container.style.display = "none";
+      // options._list_container.innerHTML  = options.text;
+
+      // target.appendChild( options._container );
+    },
+
+    start: function(event, options) {
+      console.log(options);
+    },
+    end:   function() {
+
+    }
+  });
+  
+  var videoDuration = 370;
+  
   $.each(sequences, function (idx, seq) {
     var seq_id = "seq-" + idx;
     // var url = $.param.fragment( "#", {start: seq.start} );
@@ -35,10 +64,10 @@ function loadSequences(sequences) {
         // $.bbq.pushState({ url: href });
     });
     $("#header ul").append('<li ><a href="/user/messages"><span class="tab">Message Center</span></a></li>');
-    pop.footnote({
+    pop.sequences({
       start: seq.start,
       end: seq.end,
-      text: '',
+      data: seq,
       target: seq_id,
       effect: "applyclass",
       applyclass: "active"
@@ -87,7 +116,38 @@ function loadSequences(sequences) {
       effect: "applyclass",
       applyclass: "selected"
     });
+
+    var timeline_id = "tiemline-" + idx;
+    var duration = seq.end - seq.start;
+    var start = seq.start*100/videoDuration;
+    var width = duration*100/videoDuration;
+    var timeline_entry = $('\
+      <span id="' + timeline_id + '" class="timeline-item" style="position: absolute; top: 0; left: ' + start + '%; width: ' + width + '%;" \
+      data-toggle="tooltip" data-placement="bottom" title="' + seq.text + '"/>\
+        ');
+    timeline_entry.click(function () {
+      videoSetTime(seq.start);
+    });
+    timeline_entry.tooltip();
+    timeline.append(timeline_entry);
+    pop.footnote({
+      start: seq.start,
+      end: seq.end,
+      text: '',
+      target: timeline_id,
+      effect: "applyclass",
+      applyclass: "selected"
+    });
   });
+
+  var marker = $("#video-timeline-marker");
+  video[0].addEventListener( "timeupdate", function( e ) {
+      marker.css('left', (video[0].currentTime*100/videoDuration) + '%');
+  }, false );
+
+  // $(function () {
+  //   $('[data-toggle="tooltip"]').tooltip()
+  // })
 
   pop.play();
   var params = $.deparam.fragment();

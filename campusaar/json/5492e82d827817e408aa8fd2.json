@@ -1,0 +1,30 @@
+{
+  "video_url": "http://upload.wikimedia.org/wikipedia/commons/a/ac/P2puvid.ogv",
+  "sequences": [
+    {
+      "start": 0,
+      "end": 3,
+      "text": "The current model of higher education is broken"
+    },
+    {
+      "start": 3,
+      "end": 7,
+      "text": "We are not getting the skills we need..."
+    },
+    {
+      "start": 7,
+      "end": 30,
+      "text": "The model that we have today doesn't scale !!"
+    },
+    {
+      "start": 35,
+      "end": 180,
+      "text": "From 35s to 3 minutes..."
+    },
+    {
+      "start": 180,
+      "end": 360,
+      "text": "From 3 minutes to the end..."
+    }
+  ]
+}
