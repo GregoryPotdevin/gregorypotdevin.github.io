@@ -35,6 +35,12 @@ var dataType = {
     'data-type': 'typeaheadjs', 
     'icon': 'glyphicon-search',
     'validator': function(v){return '';}
+  }, 
+  'genre': {
+    'name': 'genre', 
+    'data-type': 'select2', 
+    'icon': 'glyphicon-search',
+    'validator': function(v){return '';}
   }
 }
 
@@ -71,7 +77,9 @@ function mkCol(id, label, content, type){
   <tr>\
     <td width="15%">' + label + '</td>\
     <td width="85%">\
-      <p id="' + id+'-'+label+'" style="float: left;" data-type="' + type['data-type'] + '">' + content + '</p>\
+      <p id="' + id+'-'+label+'" style="float: left;" \
+      data-type="' + type['data-type'] + '" \
+      data-title="' + label + '">' + content + '</p>\
   ';
   if(type.name != 'id'){
     str += '<span id="' + id+'-'+label+'-btn" class="edit edit-btn glyphicon ' + type.icon + '" aria-hidden="true"></span>';
@@ -85,7 +93,7 @@ function mkCol(id, label, content, type){
 function mkEditable(id, label, type){
   var p_id = '#'+id+'-'+label;
   var edit_id = '#'+id+'-'+label+'-btn';
-  if ((type.name == "text") || (type.name == "number") || (type.name == "country")){
+  if ((type.name == "text") || (type.name == "number") || (type.name == "country") || (type.name == "genre")){
     if (type.name == "country"){
       $(p_id).editable({
         'validate': function(v){return '';},
@@ -94,6 +102,17 @@ function mkEditable(id, label, type){
         'mode': 'inline',
         'typeahead': {
             local: countries
+        }
+      });
+    } else if (type.name == "genre"){
+      $(p_id).editable({
+        'validate': function(v){return '';},
+        'disabled': true,
+        'unsavedclass': null,
+        'mode': 'popup',
+        'source': genres.map(function(v){return {id: v, text: v};}),
+        'select2': {
+           multiple: true
         }
       });
     } else {
@@ -116,7 +135,6 @@ function mkEditable(id, label, type){
       $(edit_id).hide();
     });
     $(p_id).parent().on('click', '.editable-cancel, .editable-submit', function(){
-      console.log("pop");
       $(edit_id).show();
     });
   } else if (type.name == "timecode"){
@@ -204,6 +222,7 @@ function loadSequences(sequences) {
               + mkCol(seq_id, 'Id', seq_id, dataType.id)
               + mkCol(seq_id, 'Description', seq.text, dataType.text)
               + mkCol(seq_id, 'AgeMin', '', dataType.number)
+              + mkCol(seq_id, 'Genres', '', dataType.genre)
               + mkCol(seq_id, 'Pays', '', dataType.country) + '\
               </tbody>\
             </table>\
@@ -233,6 +252,7 @@ function loadSequences(sequences) {
     mkEditable(seq_id, 'Description', dataType.text);
     mkEditable(seq_id, 'Pays', dataType.country);
     mkEditable(seq_id, 'AgeMin', dataType.number);
+    mkEditable(seq_id, 'Genres', dataType.genre);
     mkEditable(seq_id, 'Start', dataType.timecode);
     mkEditable(seq_id, 'End', dataType.timecode);
 
@@ -245,7 +265,7 @@ function loadSequences(sequences) {
       applyclass: "selected"
     });
 
-    var timeline_id = "tiemline-" + idx;
+    var timeline_id = "timeline-" + idx;
     var duration = seq.end - seq.start;
     var start = seq.start*100/videoDuration;
     var width = duration*100/videoDuration;

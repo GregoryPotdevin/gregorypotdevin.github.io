@@ -107,6 +107,9 @@
   width: 400px;
 }
 
+.select2-container.select2-container-multi{
+  width: 400px;  
+}
 /*.editable-container {
   width: 100%;
 }*/
