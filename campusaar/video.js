@@ -1,6 +1,16 @@
 // url hash plugin : http://benalman.com/projects/jquery-bbq-plugin/
 
+$.fn.editable.defaults.mode = 'inline';
+var dataType = {
+  "id": {"name": "id"},
+  "text": {"name": "text", "icon": "glyphicon-pencil"},
+  "timecode": {"name": "timecode", "icon": "glyphicon-resize-vertical"}, 
+}
+
+var isEditable = false;
+
 function formatTime(seconds) {
+  seconds = Math.floor(seconds);
   var min = Math.floor(seconds / 60);
   var sec = seconds % 60;
   return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
@@ -10,6 +20,70 @@ function videoSetTime(start){
   var video = $('#video-frame');
   video[0].currentTime = start;
   video[0].play();
+}
+
+
+/*function mkCol_old(id, label, content, type){
+  return '\
+  <div class="form-group">\
+    <label class="col-sm-2 control-label">' + label + ': </label>\
+    <div class="col-sm-10"> \
+      <p id="' + id+'-'+label+'" class="form-control-static">' + content + '\
+      <span id="' + id+'-'+label+'-btn" class="edit glyphicon ' + type.icon + '" aria-hidden="true"></span>\
+      </p>\
+    </div>\
+  </div>';
+}*/
+
+function mkCol(id, label, content, type){
+  var str = '\
+  <tr>\
+    <td width="25%">' + label + '</td>\
+    <td width="75%">\
+      <p id="' + id+'-'+label+'" style="float: left;">' + content + '</p>\
+  ';
+  if(type.name != 'id'){
+    str += '<span id="' + id+'-'+label+'-btn" class="edit edit-btn glyphicon ' + type.icon + '" aria-hidden="true"></span>';
+  }
+  str += '\
+    </td>\
+  </tr>';
+  return str;
+}
+
+function mkEditable(id, label, type){
+  var p_id = '#'+id+'-'+label;
+  var edit_id = '#'+id+'-'+label+'-btn';
+  if (type.name == "text"){
+    $(p_id).editable({
+      'validate': function(v){return '';},
+      'disabled': true,
+      'unsavedclass': null
+    });
+  /*  $(p_id).editable({
+      type: 'text',
+      url: '/post',    
+      pk: 1,    
+      placement: 'top',
+      title: 'Enter ' + id    
+    });*/
+    $(edit_id).click(function(e){    
+      e.stopPropagation();
+      $(p_id).editable('toggle');
+      $(edit_id).hide();
+    });
+    $(p_id).parent().on('click', '.editable-cancel, .editable-submit', function(){
+      console.log("pop");
+      $(edit_id).show();
+    });
+  } else if (type.name == "timecode"){
+    $(edit_id).click(function(e){    
+      e.stopPropagation();
+      var video = $('#video-frame');
+      $(p_id).text(formatTime(video[0].currentTime));
+    });
+  }
+  $(edit_id).hide();
 }
 
 function loadSequences(sequences) {
@@ -72,8 +146,8 @@ function loadSequences(sequences) {
       effect: "applyclass",
       applyclass: "active"
     });
-
     var info_id = "info-" + idx;
+
     var info_entry = $('\
       <div id="' + info_id + '" class="info-item" role="tabpanel">\
         <ul id="tabs-' + info_id + '" class="nav nav-tabs" role="tablist">\
@@ -82,32 +156,39 @@ function loadSequences(sequences) {
         </ul>\
         <div class="tab-content">\
           <div role="tabpanel" class="tab-pane active" id="' + info_id + '-info">\
-            <form class="form-horizontal form-compact" role="form">\
-              <div class="form-group">\
-                <label class="col-sm-2 control-label">Id: </label>\
-                <div class="col-sm-10"> <p class="form-control-static">' + seq_id + '</p>  </div>\
-              </div>\
-              <div class="form-group">\
-                <label class="col-sm-2 control-label">Description: </label>\
-                <div class="col-sm-10"> <p class="form-control-static">' + seq.text + '</p>  </div>\
-              </div>\
-            </form>\
+            <table class="table table-bordered table-striped table-info" style="clear: both">\
+              <tbody>'
+              + mkCol(seq_id, 'Id', seq_id, dataType.id)
+              + mkCol(seq_id, 'Description', seq.text, dataType.text) + '\
+              </tbody>\
+            </table>\
           </div>\
           <div role="tabpanel" class="tab-pane" id="' + info_id + '-time">\
-            <form class="form-horizontal form-compact" role="form">\
-              <div class="form-group">\
-                <label class="col-sm-2 control-label">Start: </label>\
-                <div class="col-sm-10"> <p class="form-control-static">' + formatTime(seq.start) + '</p></div>\
-              </div>\
-              <div class="form-group">\
-                <label class="col-sm-2 control-label">End: </label>\
-                <div class="col-sm-10"> <p class="form-control-static">' + formatTime(seq.end) + '</p></div>\
-              </div>\
-            </form>\
+            <table class="table table-bordered table-striped table-info" style="clear: both">\
+              <tbody>'
+              + mkCol(seq_id, 'Start', formatTime(seq.start), dataType.timecode)
+              + mkCol(seq_id, 'End', formatTime(seq.end), dataType.timecode) + '\
+              </tbody>\
+            </table>\
           </div>\
         </div>\
         ');
+        /*        <form class="form-horizontal form-compact" role="form">'
+              + mkCol(seq_id, 'Id', seq_id, dataType.text)
+              + mkCol(seq_id, 'Description', seq.text, dataType.text) + '\
+            </form>\*/
+
+      /*          <form class="form-horizontal form-compact" role="form">'
+              + mkCol(seq_id, 'Start', formatTime(seq.start), dataType.timecode)
+              + mkCol(seq_id, 'End', formatTime(seq.end), dataType.timecode) + '\
+            </form>\*/
     info.append(info_entry);
+
+    //mkEditable(seq_id, 'Id', dataType.id);
+    mkEditable(seq_id, 'Description', dataType.text);
+    mkEditable(seq_id, 'Start', dataType.timecode);
+    mkEditable(seq_id, 'End', dataType.timecode);
+
     pop.footnote({
       start: seq.start,
       end: seq.end,
@@ -155,3 +236,16 @@ function loadSequences(sequences) {
     videoSetTime(params.start)
   }
 }
+$(document).ready(function(){
+  console.log($("#document-edit"));
+  $("#document-edit").click(function(e){
+    isEditable = !isEditable;
+    console.log("Toggle editable: " + isEditable);
+    $(".editable").editable('option', 'disabled', !isEditable);
+    if (isEditable) {
+      $(".edit-btn").show();
+    } else {
+      $(".edit-btn").hide();
+    }
+  });
+});

@@ -14,11 +14,16 @@
 	<script type="text/javascript" src="libs/popcorn-complete.min.js"></script>
 	<script type="text/javascript" src="libs/bootstrap.min.js"></script>
 	<script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
+	<script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
+
 	<script type="text/javascript" src="video.js"></script>
 
 	<!-- <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/css/bootstrap-editable.css">
+
 	<link rel="stylesheet" type="text/css" href="video.css">
+
 
 	<script type="text/javascript">//<![CDATA[ 
 		$(window).load(function(){
@@ -131,8 +136,11 @@
 		</div>
 		<div class="col-md-7">
 			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<h3 class="panel-title">Sequence metadata</h3>
+				<div class="panel-heading clearfix">
+					<h3 class="panel-title pull-left">Sequence metadata</h3>
+					<div class="btn-group pull-right">
+						<span id="document-edit" class="edit glyphicon glyphicon-pencil" aria-hidden="true"></span>
+					</div>
 				</div>
 				<div id="info" class="panel-body"></div>
 			</div>

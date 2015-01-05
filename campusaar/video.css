@@ -84,3 +84,17 @@
 .sequence-item.list-group-item {
   padding: 6px;
 }
+.edit
+{
+    cursor: pointer;
+    float: right;
+}
+
+.table-info tbody>tr>td {
+  padding: 4px;
+}
+
+.table-info tbody>tr>td>p {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
