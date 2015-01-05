@@ -98,3 +98,44 @@
   margin-top: 2px;
   margin-bottom: 2px;
 }
+
+.editableform .form-control {
+  width: 400px;
+}
+
+.editableform .form-control,.tt-hint {
+  width: 400px;
+}
+
+/*.editable-container {
+  width: 100%;
+}*/
+
+/* Make inline editables take the full width of their parents */
+/*.editable-container.editable-inline,
+.editable-container.editable-inline .control-group.form-group,
+.editable-container.editable-inline .control-group.form-group .editable-input,
+.editable-container.editable-inline .control-group.form-group .editable-input textarea,
+.editable-container.editable-inline .control-group.form-group .editable-input select,
+.editable-container.editable-inline .control-group.form-group .editable-input input:not([type=radio]):not([type=checkbox]):not([type=submit])
+{
+    width: 100%;
+}*/
+
+/*.editable-container.editable-inline .control-group.form-group .editable-buttons {
+  float: right;
+}*/
+/*.editable-wrap{
+  display:inline-block;
+  white-space:nowrap;
+  margin:0;
+  width:100%;
+}
+.editable-wrap .editable-controls,.editable-wrap .editable-error{
+  margin-bottom:0;
+  width:100%;
+}*/
+
+
+
+

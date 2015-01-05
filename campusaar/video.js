@@ -1,10 +1,41 @@
 // url hash plugin : http://benalman.com/projects/jquery-bbq-plugin/
 
 $.fn.editable.defaults.mode = 'inline';
+var isNumeric = function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 var dataType = {
-  "id": {"name": "id"},
-  "text": {"name": "text", "icon": "glyphicon-pencil"},
-  "timecode": {"name": "timecode", "icon": "glyphicon-resize-vertical"}, 
+  'id': {
+    'name': 'id', 
+    'data-type': 'text'
+  },
+  'text': {
+    'name': 'text', 
+    'data-type': 'text', 
+    'icon': 'glyphicon-pencil',
+    'validator': function(v){return '';}
+  },
+  'number': {
+    'name': 'number', 
+    'data-type': 'text', 
+    'icon': 'glyphicon-pencil',
+    'validator': function(v){
+      return ((v == '') || isNumeric(v)) ? '' : 'Veuillez entrer un nombre valide';
+    }
+  },
+  'timecode': {
+    'name': 'timecode', 
+    'data-type': 'text', 
+    'icon': 'glyphicon-resize-vertical',
+    'validator': function(v){return '';}
+  }, 
+  'country': {
+    'name': 'country', 
+    'data-type': 'typeaheadjs', 
+    'icon': 'glyphicon-search',
+    'validator': function(v){return '';}
+  }
 }
 
 var isEditable = false;
@@ -38,9 +69,9 @@ function videoSetTime(start){
 function mkCol(id, label, content, type){
   var str = '\
   <tr>\
-    <td width="25%">' + label + '</td>\
-    <td width="75%">\
-      <p id="' + id+'-'+label+'" style="float: left;">' + content + '</p>\
+    <td width="15%">' + label + '</td>\
+    <td width="85%">\
+      <p id="' + id+'-'+label+'" style="float: left;" data-type="' + type['data-type'] + '">' + content + '</p>\
   ';
   if(type.name != 'id'){
     str += '<span id="' + id+'-'+label+'-btn" class="edit edit-btn glyphicon ' + type.icon + '" aria-hidden="true"></span>';
@@ -54,12 +85,24 @@ function mkCol(id, label, content, type){
 function mkEditable(id, label, type){
   var p_id = '#'+id+'-'+label;
   var edit_id = '#'+id+'-'+label+'-btn';
-  if (type.name == "text"){
-    $(p_id).editable({
-      'validate': function(v){return '';},
-      'disabled': true,
-      'unsavedclass': null
-    });
+  if ((type.name == "text") || (type.name == "number") || (type.name == "country")){
+    if (type.name == "country"){
+      $(p_id).editable({
+        'validate': function(v){return '';},
+        'disabled': true,
+        'unsavedclass': null,
+        'mode': 'inline',
+        'typeahead': {
+            local: countries
+        }
+      });
+    } else {
+      $(p_id).editable({
+        'validate': type.validator,
+        'disabled': true,
+        'unsavedclass': null
+      });
+    }
   /*  $(p_id).editable({
       type: 'text',
       url: '/post',    
@@ -159,7 +202,9 @@ function loadSequences(sequences) {
             <table class="table table-bordered table-striped table-info" style="clear: both">\
               <tbody>'
               + mkCol(seq_id, 'Id', seq_id, dataType.id)
-              + mkCol(seq_id, 'Description', seq.text, dataType.text) + '\
+              + mkCol(seq_id, 'Description', seq.text, dataType.text)
+              + mkCol(seq_id, 'AgeMin', '', dataType.number)
+              + mkCol(seq_id, 'Pays', '', dataType.country) + '\
               </tbody>\
             </table>\
           </div>\
@@ -186,6 +231,8 @@ function loadSequences(sequences) {
 
     //mkEditable(seq_id, 'Id', dataType.id);
     mkEditable(seq_id, 'Description', dataType.text);
+    mkEditable(seq_id, 'Pays', dataType.country);
+    mkEditable(seq_id, 'AgeMin', dataType.number);
     mkEditable(seq_id, 'Start', dataType.timecode);
     mkEditable(seq_id, 'End', dataType.timecode);
 
@@ -237,7 +284,6 @@ function loadSequences(sequences) {
   }
 }
 $(document).ready(function(){
-  console.log($("#document-edit"));
   $("#document-edit").click(function(e){
     isEditable = !isEditable;
     console.log("Toggle editable: " + isEditable);
