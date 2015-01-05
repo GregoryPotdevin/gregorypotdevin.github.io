@@ -32,7 +32,7 @@ var dataType = {
   }, 
   'country': {
     'name': 'country', 
-    'data-type': 'typeaheadjs', 
+    'data-type': 'select2', 
     'icon': 'glyphicon-search',
     'validator': function(v){return '';}
   }, 
@@ -95,13 +95,23 @@ function mkEditable(id, label, type){
   var edit_id = '#'+id+'-'+label+'-btn';
   if ((type.name == "text") || (type.name == "number") || (type.name == "country") || (type.name == "genre")){
     if (type.name == "country"){
+      // $(p_id).editable({
+      //   'validate': function(v){return '';},
+      //   'disabled': true,
+      //   'unsavedclass': null,
+      //   'mode': 'inline',
+      //   'typeahead': {
+      //       local: countries
+      //   }
+      // });
       $(p_id).editable({
         'validate': function(v){return '';},
         'disabled': true,
         'unsavedclass': null,
-        'mode': 'inline',
-        'typeahead': {
-            local: countries
+        'mode': 'popup',
+        'source': countries.map(function(v){return {id: v, text: v};}),
+        'select2': {
+           multiple: false
         }
       });
     } else if (type.name == "genre"){
