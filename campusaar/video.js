@@ -203,10 +203,16 @@ function loadSequences(sequences) {
   });
   
   var videoDuration = 370;
+  var nextId = 1;
+  var videoStartTime = 0;
+  var params = $.deparam.fragment();
+  if ("start" in params){
+    videoStartTime = parseInt(params.start);
+  }
   
   $.each(sequences, function (idx, seq) {
-    var seq_id = "seq-" + idx;
-    seq.id = idx; // TODO : fix and remove
+    nextId = Math.max(idx, nextId);
+    var seq_id = "seq-" + seq.id;
     // var url = $.param.fragment( "#", {start: seq.start} );
     var sequence = $('\
       <a href="#" id="' + seq_id + '" class="list-group-item sequence-item">\
@@ -217,15 +223,8 @@ function loadSequences(sequences) {
     sequence.fragment( urlHash, 2 );
     list.append(sequence);
     $("#header ul").append('<li ><a href="/user/messages"><span class="tab">Message Center</span></a></li>');
-    pop.sequences(seq_id, {
-      start: seq.start,
-      end: seq.end,
-      data: seq,
-      target: seq_id,
-      effect: "applyclass",
-      applyclass: "active"
-    });
-    var info_id = "info-" + idx;
+
+    var info_id = "info-" + seq.id;
 
     var fieldsByTab = {};
     model.tabs.forEach(function(tab){
@@ -275,7 +274,7 @@ function loadSequences(sequences) {
     }
 
 
-    if (idx == 0){
+    if ((seq.start <= videoStartTime) && (seq.end > videoStartTime)) {
       info_entry.addClass("selected");
     }
 
@@ -299,14 +298,26 @@ function loadSequences(sequences) {
         ');
     timeline_entry.tooltip();
     timeline.append(timeline_entry);
-    pop.footnote("timeline-" + seq_id, {
-      start: seq.start,
-      end: seq.end,
-      text: '',
-      target: timeline_id,
-      effect: "applyclass",
-      applyclass: "selected"
-    });
+
+    var refreshPopcorn = function(seq_id, seq){
+      pop.sequences(seq_id, {
+        start: seq.start,
+        end: seq.end,
+        data: seq,
+        target: seq_id,
+        effect: "applyclass",
+        applyclass: "active"
+      });
+      pop.footnote("timeline-" + seq_id, {
+        start: seq.start,
+        end: seq.end,
+        text: '',
+        target: timeline_id,
+        effect: "applyclass",
+        applyclass: "selected"
+      });
+    }
+    refreshPopcorn(seq_id, seq);
 
     sequence.click(selectSelected);
     timeline_entry.click(selectSelected);
@@ -323,14 +334,7 @@ function loadSequences(sequences) {
       var start = seq.start*100/videoDuration;
       var width = duration*100/videoDuration;
       timeline_entry.css("left", start + '%').css("width", width + '%');
-      pop.sequences(seq_id, {
-        start: seq.start,
-        end: seq.end
-      });
-      pop.footnote("timeline-" + seq_id, {
-        start: seq.start,
-        end: seq.end
-      });
+      refreshPopcorn(seq_id, seq);
     }
 
     model.fields.forEach(function(field){
