@@ -6,10 +6,22 @@
 
 	<title>CampusAAR video demo</title>
 
-	<!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
-	<!-- <script type="text/javascript" src="http://popcornjs.org/code/dist/popcorn-complete.min.js"></script> -->
-	<!-- <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script> -->
-	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script> -->
+  <!-- <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="libs/select2/select2.css">
+  <link rel="stylesheet" type="text/css" href="libs/select2/select2-bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="">
+  <link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/css/bootstrap-editable.css">
+
+
+  <!-- <link rel="stylesheet" type="text/css" href="libs/font-awesome.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap3-wysihtml5.min.css"></link>
+
+  <!-- <link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/inputs-ext/typeaheadjs/lib/typeahead.js-bootstrap.css"> -->
+  <link rel="stylesheet" type="text/css" href="video.css">
+
+  <script type="text/javascript" src="libs/wysihtml5/wysihtml5x-toolbar.min.js"></script>
+  
   <script type="text/javascript" src="libs/jquery.min.js"></script>
   <script type="text/javascript" src="libs/jquery-migrate-1.2.1.js"></script>
 	<script type="text/javascript" src="libs/popcorn-complete.min.js"></script>
@@ -17,19 +29,16 @@
   <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
   <script type="text/javascript" src="libs/select2/select2.js"></script>  
   <script type="text/javascript" src="libs/select2/select2_locale_fr.js"></script>  
+
+  <script type="text/javascript" src="libs/wysihtml5/handlebars.runtime.min.js"></script>
+  <script type="text/javascript" src="libs/wysihtml5/bootstrap3-wysihtml5.min.js"></script>
+
 	<script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
-  <!-- <script type="text/javascript" src="libs/bootstrap3-editable/inputs-ext/typeaheadjs/lib/typeahead.js"></script>-->
-  <!-- <script type="text/javascript" src="libs/bootstrap3-editable/inputs-ext/typeaheadjs/typeaheadjs.js"></script>-->
+  <script type="text/javascript" src="libs/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js"></script>
+
   <script type="text/javascript" src="libs/data.js"></script>
 	<script type="text/javascript" src="video.js"></script>
 
-	<!-- <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"> -->
-	<link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="libs/select2/select2.css"></link>
-  <link rel="stylesheet" type="text/css" href="libs/select2/select2-bootstrap.css"></link>
-  <link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/css/bootstrap-editable.css">
-  <!-- <link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/inputs-ext/typeaheadjs/lib/typeahead.js-bootstrap.css"> -->
-	<link rel="stylesheet" type="text/css" href="video.css">
 
 
 	<script type="text/javascript">//<![CDATA[ 
@@ -42,27 +51,27 @@
 		    {
 		      "start": 0,
 		      "end": 3,
-		      "text": "The current model of higher education is broken"
+		      "title": "The current model of higher education is broken"
 		    },
 		    {
 		      "start": 3,
 		      "end": 7,
-		      "text": "We are not getting the skills we need..."
+		      "title": "We are not getting the skills we need..."
 		    },
 		    {
 		      "start": 35,
 		      "end": 180,
-		      "text": "From 35s to 3 minutes..."
+		      "title": "From 35s to 3 minutes..."
 		    },
 		    {
 		      "start": 180,
 		      "end": 360,
-		      "text": "From 3 minutes to the end..."
+		      "title": "From 3 minutes to the end..."
 		    },
 		    {
 		      "start": 7,
 		      "end": 30,
-		      "text": "The model that we have today doesn't scale !!"
+		      "title": "The model that we have today doesn't scale !!"
 		    }
 		  ]);
 		});//]]>  
@@ -117,7 +126,7 @@
   </div><!-- /.container-fluid -->
 </nav>
 	<div class="fluid-container">
-		<div class="col-md-5">
+		<div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Video Title</h3>
@@ -142,7 +151,7 @@
 				<div id="sequences" class="list-group"></div>
 			</div>
 		</div>
-		<div class="col-md-7">
+		<div class="col-md-8">
 			<div class="panel panel-primary">
 				<div class="panel-heading clearfix">
 					<h3 class="panel-title pull-left">Sequence metadata</h3>

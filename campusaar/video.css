@@ -25,23 +25,32 @@
   position: relative; 
   width: 100%; 
   height: 32px; 
-  background: #DDD;
+  background: #333;
   margin-bottom: 4px;
-  border: 1px solid #DDD;
+  border: 1px solid #333;
 }
 
 .timeline-item {
   height: 100%;
   cursor: pointer;
-  background: #fff;
   display: block;
-  border-right: 1px solid #DDD;
+  border-right: 1px solid #CCC;
 }
-.timeline-item:hover { 
-  background-color: #f5f5f5;
+
+.timeline .timeline-item:nth-of-type(even){
+  background: #eee;
 }
-.timeline-item.selected { 
-  background-color: #428bca;
+
+.timeline .timeline-item:nth-of-type(odd){
+  background: #ddd;
+}
+
+.timeline .timeline-item:hover{
+  background: #c4e3f3;
+}
+
+.timeline .timeline-item.selected { 
+  background: #428bca;
 }
 
 .timeline .tooltip.bottom .tooltip-arrow {
