@@ -131,16 +131,14 @@
   </div><!-- /.container-fluid -->
 </nav>
 	<div class="fluid-container">
-		<div class="col-md-4">
+		<div id="affix-container" class="col-md-4" >
+    <div id="sidebar-video" data-spy="affix" data-offset-top="60">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h3 class="panel-title">Video Title</h3>
+					<h3 class="panel-title">Video</h3>
 				</div>
 				<div class="panel-body video-container">
-					<!-- <video id="video-frame" class="video" src="http://upload.wikimedia.org/wikipedia/commons/a/ac/P2puvid.ogv" controls=""></video> -->
 					<video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video>
-				<!-- </div> -->
-				<!-- <div class="panel-footer video-container">					 -->
 					<div id="video-timeline" class="timeline">
 						<div id="video-timeline-items">
 
@@ -149,14 +147,15 @@
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-info">
-				<div class="panel-heading">
-					<h3 class="panel-title">Sequences</h3>
-				</div>
-				<div id="sequences" class="list-group"></div>
-			</div>
-		</div>
+    </div>
+    </div>
 		<div class="col-md-8">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">Sequences</h3>
+        </div>
+        <div id="sequences" class="list-group"></div>
+      </div>
 			<div class="panel panel-primary">
 				<div class="panel-heading clearfix">
 					<h3 class="panel-title pull-left">Sequence metadata</h3>

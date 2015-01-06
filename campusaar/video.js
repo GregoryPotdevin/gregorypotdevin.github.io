@@ -203,15 +203,8 @@ function loadSequences(sequences) {
   });
   
   var videoDuration = 370;
-  var nextId = 1;
-  var videoStartTime = 0;
-  var params = $.deparam.fragment();
-  if ("start" in params){
-    videoStartTime = parseInt(params.start);
-  }
-  
-  $.each(sequences, function (idx, seq) {
-    nextId = Math.max(idx, nextId);
+
+  var addFiche = function(seq){
     var seq_id = "seq-" + seq.id;
     // var url = $.param.fragment( "#", {start: seq.start} );
     var sequence = $('\
@@ -273,11 +266,6 @@ function loadSequences(sequences) {
       $.bbq.pushState({start: seq.start});
     }
 
-
-    if ((seq.start <= videoStartTime) && (seq.end > videoStartTime)) {
-      info_entry.addClass("selected");
-    }
-
     // pop.footnote({
     //   start: seq.start,
     //   end: seq.end,
@@ -287,7 +275,7 @@ function loadSequences(sequences) {
     //   applyclass: "selected"
     // });
 
-    var timeline_id = "timeline-" + idx;
+    var timeline_id = "timeline-" + seq.id;
     var duration = seq.end - seq.start;
     var start = seq.start*100/videoDuration;
     var width = duration*100/videoDuration;
@@ -346,7 +334,22 @@ function loadSequences(sequences) {
         mkEditable(seq_id, field, seq);
       }
     });
+  }
+  
 
+  var nextId = 1;
+  var videoStartTime = 0;
+  var params = $.deparam.fragment();
+  if ("start" in params){
+    videoStartTime = parseInt(params.start);
+  }
+
+  $.each(sequences, function (idx, seq) {
+    nextId = Math.max(idx, nextId);
+    addFiche(seq);
+    if ((seq.start <= videoStartTime) && (seq.end > videoStartTime)) {
+      $("#info-" + seq.id).addClass("selected");
+    }
   });
 
   var marker = $("#video-timeline-marker");
@@ -375,4 +378,12 @@ $(document).ready(function(){
       $(".edit-btn").hide();
     }
   });
+    $('#sidebar-video').width($('#affix-container').width());
 });
+
+$(window).resize(function () {
+    $('#sidebar-video').width($('#affix-container').width());
+});
+
+
+

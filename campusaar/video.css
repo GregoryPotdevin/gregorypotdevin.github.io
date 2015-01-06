@@ -122,6 +122,24 @@
 .select2-container{
   width: 400px;  
 }
+
+.affix-top,.affix{
+  position: static;
+}
+
+@media (min-width: 992px) {
+
+  #sidebar-video.affix-top {
+  position: static;
+  }
+  
+  #sidebar-video.affix {
+  position: fixed;
+  top: 20px;
+  }
+
+}
+
 /*.editable-container {
   width: 100%;
 }*/
