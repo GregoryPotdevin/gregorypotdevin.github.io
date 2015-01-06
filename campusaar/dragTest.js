@@ -1,3 +1,14 @@
+// <div style="display: block; padding: 40px;">
+//     <p style="position: absolute; top: 0; left: 40px; width: 60px;"></p>
+// </div>
+
+
+// p { background: lime; height: 200px; width: 300px; }
+// p.resizable { background: cyan; position: relative; }
+// p .resizer { width: 10px; height: 100%; background: blue; position:absolute; right: -10px; cursor: e-resize; }
+// p .resizer_left { width: 10px; height: 100%; background: blue; position:absolute; left: -10px; cursor: w-resize;  }
+
+
 var p = document.querySelector('p');
 
 p.addEventListener('click', function init() {
