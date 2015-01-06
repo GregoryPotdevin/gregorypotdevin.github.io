@@ -1,18 +1,3 @@
-
-// <div style="display: block; padding: 40px;">
-//     <p style="position: absolute; top: 0; left: 40px; width: 60px;"></p>
-// </div>
-
-
-// p { background: lime; height: 200px; width: 300px; }
-// p.resizable { background: cyan; position: relative; }
-// p .resizer { width: 10px; height: 100%; background: blue; position:absolute; right: 0; cursor: e-resize; }
-// p .resizer_left { width: 10px; height: 100%; background: blue; position:absolute; left: 0; cursor: w-resize;  }
-
-
-
-
-
 var p = document.querySelector('p');
 
 p.addEventListener('click', function init() {
@@ -41,7 +26,9 @@ function initDragLeft(e) {
     doDrag = function(e) {
        var width =  (startWidth + startX - e.clientX);
        console.log('width: ' + width);
-       p.style.left = right - width + 'px';
+        var left = right - width
+       p.style.left = left + 'px';
+       p.style.width = right - left + 'px';
     };
    document.documentElement.addEventListener('mousemove', doDrag, false);
    document.documentElement.addEventListener('mouseup', stopDrag, false);
