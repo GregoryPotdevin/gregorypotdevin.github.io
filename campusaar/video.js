@@ -179,6 +179,39 @@ var timecodeString = function(seq){
 var videoDuration = 370;
 var nextId = 1;
 
+
+var sortItems = function(parent, children){
+  console.log("sort " + children + " in " + parent);
+  var parent = $(parent);
+  var items = parent.children(children);
+  items.sort(function(a,b){
+    var an = $(a).data('seq').start;//getAttribute('data-order');
+    var bn = $(b).data('seq').start;//getAttribute('data-order');
+    console.log(an + ' vs ' + bn);
+    if(an > bn)  return 1;
+    if(an < bn)  return -1;
+    return 0;
+  });
+  items.detach().appendTo(parent);
+/*  console.log('parent: ' + parent);
+  console.log('items: ' + items);
+
+  items.sort(function(a,b){
+  var an = a.data('seq').start;//getAttribute('data-order');
+  var bn = b.data('seq').start;//getAttribute('data-order');
+  if(an > bn)  return 1;
+  if(an < bn)  return -1;
+  return 0;
+  });
+
+  items.detach().appendTo(parent);*/
+}
+
+var onOrderChanged = function(){
+  sortItems('#video-timeline-items', 'span.timeline-item');
+  sortItems('#sequences', 'a.sequence-item');
+}
+
 var addFiche = function(seq){
   var video = $("#video-frame");
   var pop = Popcorn("#video-frame");
@@ -197,6 +230,7 @@ var addFiche = function(seq){
     </a>');
   urlHash = $.param({ start: seq.start });
   sequence.fragment( urlHash, 2 );
+  sequence.data("seq", seq);
   list.append(sequence);
   $("#header ul").append('<li ><a href="/user/messages"><span class="tab">Message Center</span></a></li>');
 
@@ -267,6 +301,7 @@ var addFiche = function(seq){
       style="position: absolute; top: 0; left: ' + start + '%; width: ' + width + '%;" \
     data-toggle="tooltip" data-placement="bottom" title="' + seq.title + '"/>\
       ');
+  timeline_entry.data("seq", seq);
   timeline_entry.tooltip();
   timeline.append(timeline_entry);
 
@@ -306,6 +341,7 @@ var addFiche = function(seq){
     var width = duration*100/videoDuration;
     timeline_entry.css("left", start + '%').css("width", width + '%');
     refreshPopcorn(seq_id, seq);
+    onOrderChanged();
   }
 
   model.fields.forEach(function(field){
@@ -318,6 +354,7 @@ var addFiche = function(seq){
     }
   });
 }
+
 
 var newDocument = function(){
   nextId++;
@@ -332,7 +369,7 @@ var newDocument = function(){
   setTimeout(function () {
    $("#seq-" + seq.id + "-title-btn").trigger("click");
   }, 200);
-  
+  onOrderChanged();
 }
 
 
