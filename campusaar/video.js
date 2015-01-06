@@ -127,7 +127,7 @@ function mkEditable(id, field, seq, callback){
         'disabled': true,
         'unsavedclass': null,
         'mode': 'popup',
-        'onblur': 'ignore',
+        'onblur': 'submit',
         'source': dataLists[field.list_type].map(function(v){return {id: v, text: v};}),
         'select2': {
            multiple: field.multi_value
@@ -143,7 +143,7 @@ function mkEditable(id, field, seq, callback){
           return type.validator(v);
         },
         'disabled': true,
-        'onblur': 'ignore',
+        'onblur': 'submit',
         'unsavedclass': null,
         'success': success
       });
