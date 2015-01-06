@@ -34,7 +34,7 @@
   height: 100%;
   cursor: pointer;
   display: block;
-  border-right: 1px solid #CCC;
+  border-right: 1px solid #aaa;
 }
 
 .timeline .timeline-item:nth-of-type(even){
@@ -42,7 +42,7 @@
 }
 
 .timeline .timeline-item:nth-of-type(odd){
-  background: #ddd;
+  background: #ccc;
 }
 
 .timeline .timeline-item:hover{
