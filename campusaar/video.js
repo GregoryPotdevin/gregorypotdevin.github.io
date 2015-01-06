@@ -57,12 +57,13 @@ var dataType = {
   'list': {
     'name': 'list', 
     'data-type': 'select2', 
-    'icon': 'glyphicon-search',
+    'icon': 'glyphicon-pencil',
     'display':   function(v){return v;},
     'extract':   function(v){return v;},
     'validator': function(v){return '';}
   }
 }
+// glyphicon-searc
 
 var isEditable = false;
 
@@ -158,13 +159,12 @@ function mkEditable(id, field, seq, callback){
       console.log("click");
       e.stopPropagation();
       $(p_id).editable('toggle');
-      $(edit_id).hide();
+      // $(edit_id).hide();
       var parent = $(p_id).parent();
       parent.find(".editable-submit").click(function(){
         $(edit_id).show();
       });
       parent.find(".editable-cancel").click(function(){
-        console.log("click");
         $(edit_id).show();
       });
     });
