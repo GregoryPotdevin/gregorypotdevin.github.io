@@ -6,13 +6,15 @@ var model = {
       'label': 'Id', 
       'tab': 'info',
       'type': 'number', 
-      'editable': false
+      'editable': false,
+      'required': true
     },
     {
       'id': 'title', 
       'label': 'Titre',
       'tab': 'info',
-      'type': 'text'
+      'type': 'text',
+      'required': true
     },
     {
       'id': 'description', 

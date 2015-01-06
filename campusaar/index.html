@@ -69,7 +69,7 @@
 		    {
           "id": 4,
 		      "start": 180,
-		      "end": 360,
+		      "end": 210,
 		      "title": "From 3 minutes to the end..."
 		    },
 		    {
@@ -149,18 +149,23 @@
 			</div>
     </div>
     </div>
-		<div class="col-md-8">
+		<div class="col-md-8" style="margin-bottom:50px;">
       <div class="panel panel-info">
-        <div class="panel-heading">
-          <h3 class="panel-title">Sequences</h3>
+        <div class="panel-heading collapsable">
+          <h3 class="panel-title">
+          	<a data-toggle="collapse" data-target="#sequences" href="#sequences">
+          		Sequences
+        		</a>
+        	</h3>
         </div>
-        <div id="sequences" class="list-group"></div>
+        <div id="sequences" class="list-group collapse in"></div>
       </div>
 			<div class="panel panel-primary">
 				<div class="panel-heading clearfix">
 					<h3 class="panel-title pull-left">Sequence metadata</h3>
 					<div class="btn-group pull-right">
-						<span id="document-edit" class="edit glyphicon glyphicon-pencil" aria-hidden="true"></span>
+						<span id="document-new"  class="header-button glyphicon glyphicon-plus" aria-hidden="true"></span>
+						<span id="document-edit" class="header-button glyphicon glyphicon-pencil" aria-hidden="true"></span>
 					</div>
 				</div>
 				<div id="info" class="panel-body"></div>

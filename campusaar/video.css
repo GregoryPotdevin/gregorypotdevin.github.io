@@ -93,10 +93,14 @@
 .sequence-item.list-group-item {
   padding: 6px;
 }
-.edit
-{
+.header-button {
     cursor: pointer;
-    float: right;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.edit-btn {
+    cursor: pointer;
 }
 
 .table-info tbody>tr>td {
@@ -170,5 +174,11 @@
 }*/
 
 
-
-
+.panel-heading.collapsable a:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";    
+    float: right; 
+}
+.panel-heading.collapsable a.collapsed:after {
+    content: "\e080";
+}
