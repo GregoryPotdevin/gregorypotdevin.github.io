@@ -5,11 +5,15 @@ var isNumeric = function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function formatTime(seconds) {
+var formatTime = function(seconds) {
   seconds = Math.floor(seconds);
   var min = Math.floor(seconds / 60);
   var sec = seconds % 60;
   return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
+}
+var timecodeString = function(seq){
+  console.log(seq);
+  return formatTime(seq.start) + ' - ' + formatTime(seq.end);
 }
 
 var seqColors = [
@@ -22,7 +26,7 @@ var seqColors = [
 var dataType = {
   'text': {
     'name': 'text', 
-    'data-type': 'text', 
+    'data_type': 'text', 
     'icon': 'glyphicon-pencil',
     'display':   function(v){return v;},
     'extract':   function(v){return v;},
@@ -30,7 +34,7 @@ var dataType = {
   },
   'html': {
     'name': 'html', 
-    'data-type': 'text', 
+    'data_type': 'text', 
     'icon': 'glyphicon-pencil',
     'display':   function(v){return v;},
     'extract':   function(v){return v;},
@@ -38,7 +42,7 @@ var dataType = {
   },
   'number': {
     'name': 'number', 
-    'data-type': 'text', 
+    'data_type': 'text', 
     'icon': 'glyphicon-pencil',
     'display':   function(v){return v;},
     'extract':   function(v){return v;},
@@ -48,7 +52,7 @@ var dataType = {
   },
   'timecode': {
     'name': 'timecode', 
-    // 'data-type': 'text', 
+    // 'data_type': 'text', 
     'icon': 'glyphicon-resize-vertical',
     'display':   function(v){return formatTime(v);},
     'extract':   function(v){return parseInt(v.substring(0, 2))*60 + parseInt(v.substring(3, 5));},
@@ -56,14 +60,46 @@ var dataType = {
   }, 
   'list': {
     'name': 'list', 
-    'data-type': 'select2', 
+    'data_type': 'select2', 
     'icon': 'glyphicon-pencil',
     'display':   function(v){return v;},
     'extract':   function(v){return v;},
     'validator': function(v){return '';}
   }
 }
-// glyphicon-searc
+// glyphicon-search
+
+
+var templates = function(){
+  var sequence, sequence_info, sequence_info_field;
+
+  Handlebars.registerHelper('timecode', function(seq) {
+    return formatTime(seq);
+  });
+  Handlebars.registerHelper('entry', function(obj, key) {
+    return obj[key];
+  });
+  Handlebars.registerHelper('debug', function(obj) {
+    return console.log(obj);
+  });
+  Handlebars.registerHelper('renderField', function(field, seq){
+    var res = sequence_info_field({
+      'seq': seq, 
+      'field': field, 
+      'type': field.dtype
+    });
+    return new Handlebars.SafeString(res);
+  });
+
+  sequence = Handlebars.compile($("#sequence-item-template").html());
+  sequence_info_field = Handlebars.compile($("#sequence-info-field-template").html());
+  sequence_info = Handlebars.compile($("#sequence-info-template").html());
+  
+  return {
+    sequence: sequence,
+    sequence_info: sequence_info
+  }
+}();
 
 var isEditable = false;
 
@@ -74,28 +110,6 @@ function videoSetTime(start){
   video[0].play();
 }
 
-function mkCol(id, field, seq){
-  var label = field.label;
-  var type = dataType[field.type];
-  var content = seq.hasOwnProperty(field.id) ? type.display(seq[field.id]) : "";
-
-  var str = '\
-  <tr>\
-    <td width="15%">' + label + '</td>\
-    <td width="85%">\
-      <p id="' + id+'-'+field.id+'" style="float: left;" \
-      data-type="' + type['data-type'] + '" \
-      data-title="' + label + '">' + content + '</p>\
-  ';
-  if(!field.hasOwnProperty('editable') || field.editable){
-    str += '<span id="' + id+'-'+field.id+'-btn" class="edit edit-btn glyphicon ' + type.icon + ' pull-right" aria-hidden="true"></span>';
-  }
-  str += '\
-    </td>\
-  </tr>';
-  return str;
-}
-
 function mkEditable(id, field, seq, callback){
   if (field.hasOwnProperty('editable') && !field.editable){
     return;
@@ -103,7 +117,7 @@ function mkEditable(id, field, seq, callback){
   var type = dataType[field.type];
   var p_id = '#'+id+'-'+field.id;
   var edit_id = '#'+id+'-'+field.id+'-btn';
-  var data_type = type['data-type'];
+  var data_type = type['data_type'];
   var success = function(response, newValue){
     seq[field.id] = type.extract(newValue);
     if (callback) callback(id, field, seq);
@@ -171,9 +185,6 @@ function mkEditable(id, field, seq, callback){
   }
   $(edit_id).hide();
 }
-var timecodeString = function(seq){
-  return formatTime(seq.start) + ' - ' + formatTime(seq.end);
-}
 
 
 var videoDuration = 370;
@@ -223,11 +234,7 @@ var addFiche = function(seq){
   var seq_id = "seq-" + seq.id;
   console.log(seq_id);
   // var url = $.param.fragment( "#", {start: seq.start} );
-  var sequence = $('\
-    <a href="#" id="' + seq_id + '" class="list-group-item sequence-item">\
-      <h5 class="list-group-item-heading">' + seq.title + '</h5>\
-      <p class="list-group-item-text">' + timecodeString(seq) + '</p>\
-    </a>');
+  var sequence = $(templates.sequence(seq));
   urlHash = $.param({ start: seq.start });
   sequence.fragment( urlHash, 2 );
   sequence.data("seq", seq);
@@ -242,6 +249,11 @@ var addFiche = function(seq){
   });
   model.fields.forEach(function(field){
     fieldsByTab[field.tab].push(field);
+    if (!field.hasOwnProperty('editable')){
+      field.editable = true;
+      console.log('patch');
+    }
+    field.dtype = dataType[field.type];
   });
 
   var info_entry_str = '\
@@ -258,17 +270,15 @@ var addFiche = function(seq){
   info_entry_str += '</ul>\
       <div class="tab-content">';
   model.tabs.forEach(function(tab, idx){
-    info_entry_str += '\
-    <div role="tabpanel" class="tab-pane ' + (idx == 0 ? 'active' : '') + '" id="' + info_id + '-' + tab.id + '">\
-      <table class="table table-bordered table-striped table-info" style="clear: both">\
-        <tbody>';
-    fieldsByTab[tab.id].forEach(function(field){
-      info_entry_str += mkCol(seq_id, field, seq);
+    info_entry_str += templates.sequence_info({
+      'tab': tab,
+      'isActive': idx == 0,
+      'fields': fieldsByTab[tab.id], 
+      'seq': seq, 
+      // 'type': dataType[field.type],
+      // 'editable': field.editable
     });
-    info_entry_str += '\
-        </tbody>\
-      </table>\
-    </div>';
+      // info_entry_str += mkCol(seq_id, field, seq);
   });
   info_entry_str += '</div>';
 
@@ -441,6 +451,8 @@ var setEditable = function(editable){
       $(".edit-btn").hide();
     }
 }
+
+
 
 $(document).ready(function(){
   $("#document-edit").click(function(e){

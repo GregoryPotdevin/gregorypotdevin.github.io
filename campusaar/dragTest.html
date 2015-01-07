@@ -20,11 +20,12 @@
       }
 
       .resizer.handle {
-        width: 32px; 
+        width: 24px; 
         height: 100%;
         background-image:url(handle.png);
         background-position: center; 
         background-repeat:no-repeat;
+        background-size: 100%;
         position:absolute; 
         cursor: ew-resize; 
         margin-top:auto;
@@ -43,8 +44,8 @@
   </head>
   <body>
     <div style="display: block; padding: 40px;">
-      <div id="p1" class="baseDiv" style="position: absolute; top: 0; left: 10%; width: 20%; height: 100px;"></div>
-      <div id="p2" class="baseDiv" style="position: absolute; top: 50px; left: 5%; width: 20%; height: 100px;"></div>
+      <div id="p1" class="baseDiv" style="position: absolute; top: 0; left: 10%; width: 20%; height: 60px;"></div>
+      <div id="p2" class="baseDiv" style="position: absolute; top: 60px; left: 5%; width: 20%; height: 60px;"></div>
     </div>
   </body>
   <script>
@@ -53,14 +54,13 @@
 
   ArmaTools.Resizer = function()
   {
-
-    var constrain = function(p, min, max){
-      var left = parseInt(document.defaultView.getComputedStyle(p).left);
-      var width = parseInt(document.defaultView.getComputedStyle(p).width, 10);
-      if (left < min){
-        p.style.left = min;
-      } else if (left + width > max){
-        p.style.left = max - width;
+    var clamp = function(v, min, max){
+      if (v < min){
+        return min;
+      } else if (v > max){
+        return max;
+      } else {
+        return v;
       }
     }
 
@@ -77,12 +77,11 @@
         e.stopPropagation();
         var startX = e.clientX;
         var left = parseInt(document.defaultView.getComputedStyle(elem).left);
-        var width = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
+        var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
         setupDrag(function(e) {
-          var newLeft =  (left + e.clientX - startX);
+          var newLeft = clamp((left + e.clientX - startX), min, left+startWidth);
           elem.style.left = newLeft;
-          elem.style.width = width + left - newLeft;
-          constrain(p, min, max);
+          elem.style.width = startWidth + left - newLeft;
         });
       };
     }
@@ -94,10 +93,7 @@
         var left = parseInt(document.defaultView.getComputedStyle(elem).left);
         var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
         setupDrag(function(e) {
-          var width = (startWidth + e.clientX - startX);
-          if (left + width > max){
-            width = max-left;
-          }
+          var width = clamp((startWidth + e.clientX - startX), 0, max-left);
           elem.style.width = width + 'px';
         });
       };
@@ -108,8 +104,9 @@
         e.stopPropagation();
         var startX = e.clientX;
         var left = parseInt(document.defaultView.getComputedStyle(elem).left);
+        var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
         setupDrag(function(e) {
-          var newLeft = (left + e.clientX - startX);
+          var newLeft = clamp((left + e.clientX - startX), min, max-startWidth);
           elem.style.left = newLeft;
           constrain(elem, min, max);
         });
@@ -178,14 +175,14 @@ function initialize(p){
     var r = Resizer.makeResizable(p, 10, 500);
     p.removeEventListener('click', init, false);
 
-    p.addEventListener('click', function reset(e){
-      e.stopPropagation();
-      console.log("stop");
-      p.removeEventListener('click', reset, false);
-      m.end();
-      r.end();
-      initialize(p);
-    })
+    // p.addEventListener('click', function reset(e){
+    //   e.stopPropagation();
+    //   console.log("stop");
+    //   p.removeEventListener('click', reset, false);
+    //   m.end();
+    //   r.end();
+    //   initialize(p);
+    // });
   }, false);
 }
 

@@ -15,12 +15,15 @@
 
 
   <!-- <link rel="stylesheet" type="text/css" href="libs/font-awesome.min.css"> -->
-  <link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap3-wysihtml5.min.css"></link>
+  <!--<link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap3-wysihtml5.min.css"></link>-->
 
   <!-- <link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/inputs-ext/typeaheadjs/lib/typeahead.js-bootstrap.css"> -->
   <link rel="stylesheet" type="text/css" href="video.css">
 
-  <script type="text/javascript" src="libs/wysihtml5/wysihtml5x-toolbar.min.js"></script>
+
+  <script type="text/javascript" src="libs/handlebars.min.js"></script>
+
+  <!--<script type="text/javascript" src="libs/wysihtml5/wysihtml5x-toolbar.min.js"></script>-->
 
   <script type="text/javascript" src="libs/jquery.min.js"></script>
   <script type="text/javascript" src="libs/jquery-migrate-1.2.1.js"></script>
@@ -29,16 +32,50 @@
   <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
   <script type="text/javascript" src="libs/select2/select2.js"></script>  
   <script type="text/javascript" src="libs/select2/select2_locale_fr.js"></script>  
-
-  <script type="text/javascript" src="libs/wysihtml5/handlebars.runtime.min.js"></script>
-  <script type="text/javascript" src="libs/wysihtml5/bootstrap3-wysihtml5.min.js"></script>
+  <!--<script type="text/javascript" src="libs/wysihtml5/bootstrap3-wysihtml5.min.js"></script>-->
 
 	<script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
-  <script type="text/javascript" src="libs/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js"></script>
+  <!--<script type="text/javascript" src="libs/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js"></script>-->
 
   <script type="text/javascript" src="libs/data.js"></script>
-	<script type="text/javascript" src="video.js"></script>
 
+  <script id="sequence-item-template" type="text/x-handlebars-template">
+    <a href="#" id="seq-{{id}}" class="list-group-item sequence-item">
+      <h5 class="list-group-item-heading">{{title}}</h5>
+      <p class="list-group-item-text">{{timecode start}} - {{timecode end}}</p>
+    </a>
+  </script>
+
+  <script id="sequence-info-template" type="text/x-handlebars-template">
+    <div role="tabpanel" class="tab-pane {{#if isActive}}active{{/if}}" id="info-{{seq.id}}-{{tab.id}}">
+      <table class="table table-bordered table-striped table-info" style="clear: both">
+        <tbody>
+        {{#each fields}}
+          {{renderField this ../seq}}
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </script>
+
+  <script id="sequence-info-field-template" type="text/x-handlebars-template">
+    {{debug 'start'}}
+    <tr>
+      <td width="15%">{{field.label}}</td>
+      <td width="85%">
+        <p id="seq-{{seq.id}}-{{field.id}}" style="float: left;" data-type="{{type.data_type}}" data-title={{field.label}}>
+          {{entry seq field.id}}
+        </p>
+        {{#if field.editable}}
+          <span id="seq-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+            class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+        {{/if}}
+      </td>
+    </tr>
+    {{debug 'end'}}
+  </script>
+
+	<script type="text/javascript" src="video.js"></script>
 
 
 	<script type="text/javascript">//<![CDATA[ 
