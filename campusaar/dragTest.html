@@ -2,17 +2,21 @@
 <html>
   <head>
     <style type="text/css">
-      p { 
+      .baseDiv { 
         background: lime; 
       }
       .resizable { 
         background: cyan; 
         position: relative; 
+        border: 1px;
+        border-color: black; 
+        z-index: 1;
       }
       
       .movable { 
         position: relative; 
         cursor: all-scroll; 
+        z-index: 1;
       }
 
       .resizer.handle {
@@ -39,7 +43,8 @@
   </head>
   <body>
     <div style="display: block; padding: 40px;">
-      <p style="position: absolute; top: 0; left: 10%; width: 20%; height: 200px;"></p>
+      <div id="p1" class="baseDiv" style="position: absolute; top: 0; left: 10%; width: 20%; height: 100px;"></div>
+      <div id="p2" class="baseDiv" style="position: absolute; top: 50px; left: 5%; width: 20%; height: 100px;"></div>
     </div>
   </body>
   <script>
@@ -113,52 +118,88 @@
 
     var makeMovable = function(elem, min, max){
       elem.className = elem.className + ' movable';
-      elem.addEventListener('mousedown', initMove(elem, min, max), false);
+      var listener = initMove(elem, min, max);
+      elem.addEventListener('mousedown', listener, false);
       return {
+        elem: elem,
+        end: function(){
+          elem.removeEventListener('mousedown', listener);
+          elem.classList.remove('movable');
+        }
       };
     }
 
     var makeResizable = function(elem, min, max){
-      elem.className = elem.className + ' resizable';
+      elem.classList.add('resizable');
+
+      var noClick = function(e){e.stopPropagation();};
 
       var handleLeft = document.createElement('div');
       handleLeft.className = 'resizer handle handle_left';
       elem.appendChild(handleLeft);
       handleLeft.addEventListener('mousedown', initDragLeft(elem, min, max), false);
+      handleLeft.addEventListener('click', noClick, false);
       
       var handleRight = document.createElement('div');
       handleRight.className = 'resizer handle handle_right';
       elem.appendChild(handleRight);
       handleRight.addEventListener('mousedown', initDragRight(elem, min, max), false);
+      handleRight.addEventListener('click', noClick, false);
 
       return {
+        elem: elem,
         handleLeft: handleLeft,
-        handleRight: handleRight
+        handleRight: handleRight,
+        end: function(){
+          // TODO : Delete everything...
+          elem.classList.remove('resizable');
+          elem.removeChild(handleLeft);
+          elem.removeChild(handleRight);
+        }
       };
     }
 
-    var end = function(obj){
-      // TODO : Delete everything...
-    }
 
     var oPublic =
     {
       makeResizable: makeResizable,
       makeMovable: makeMovable,
-      end: end
     };
     return oPublic;
   }();
 
 var Resizer = ArmaTools.Resizer;
 
-var p = document.querySelector('p');
 
-p.addEventListener('click', function init() {
-  Resizer.makeMovable(p, 10, 500);
-  Resizer.makeResizable(p, 10, 500);
-  p.removeEventListener('click', init, false);
-}, false);
+function initialize(p){
+  p.addEventListener('click', function init(e) {
+    // e.stopPropagation();
+    var m = Resizer.makeMovable(p, 10, 500);
+    var r = Resizer.makeResizable(p, 10, 500);
+    p.removeEventListener('click', init, false);
+
+    p.addEventListener('click', function reset(e){
+      e.stopPropagation();
+      console.log("stop");
+      p.removeEventListener('click', reset, false);
+      m.end();
+      r.end();
+      initialize(p);
+    })
+  }, false);
+}
+
+
+initialize(document.querySelector('#p1'));
+initialize(document.querySelector('#p2'));
+
+// var p2 = document.querySelector('div');
+
+// p2.addEventListener('click', function init() {
+//   Resizer.makeMovable(p2, 10, 500);
+//   Resizer.makeResizable(p2, 10, 500);
+//   p2.removeEventListener('click', init, false);
+// }, false);
 
   </script>
 </html>
