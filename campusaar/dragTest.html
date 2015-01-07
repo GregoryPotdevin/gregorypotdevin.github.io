@@ -1,0 +1,167 @@
+
+<html>
+  <head>
+    <style type="text/css">
+      p { 
+        background: lime; 
+      }
+      .resizable { 
+        background: cyan; 
+        position: relative; 
+      }
+      
+      .movable { 
+        position: relative; 
+        cursor: all-scroll; 
+      }
+
+      .resizer.handle {
+        width: 32px; 
+        height: 100%;
+        background-image:url(handle.png);
+        background-position: center; 
+        background-repeat:no-repeat;
+        position:absolute; 
+        cursor: ew-resize; 
+        margin-top:auto;
+        margin-bottom:auto;
+      }
+      .resizer.handle_right { 
+        right: 0px;
+        transform: translate(50%, 0);
+      }
+      .resizer.handle_left { 
+        left: 0px;
+        transform: translate(-50%, 0);
+      }
+    </style>
+    <script type="text/javascript" src="libs/jquery.min.js"></script>
+  </head>
+  <body>
+    <div style="display: block; padding: 40px;">
+      <p style="position: absolute; top: 0; left: 10%; width: 20%; height: 200px;"></p>
+    </div>
+  </body>
+  <script>
+
+  var ArmaTools = ArmaTools || {};
+
+  ArmaTools.Resizer = function()
+  {
+
+    var constrain = function(p, min, max){
+      var left = parseInt(document.defaultView.getComputedStyle(p).left);
+      var width = parseInt(document.defaultView.getComputedStyle(p).width, 10);
+      if (left < min){
+        p.style.left = min;
+      } else if (left + width > max){
+        p.style.left = max - width;
+      }
+    }
+
+    var setupDrag = function(dragFn){
+      document.documentElement.addEventListener('mousemove', dragFn, false);
+      document.documentElement.addEventListener('mouseup', function stopDrag(){
+        document.documentElement.removeEventListener('mousemove', dragFn, false);
+        document.documentElement.removeEventListener('mouseup', stopDrag, false);
+      }, false);
+    }
+
+    var initDragLeft = function(elem, min, max) {
+      return function(e) {   
+        e.stopPropagation();
+        var startX = e.clientX;
+        var left = parseInt(document.defaultView.getComputedStyle(elem).left);
+        var width = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
+        setupDrag(function(e) {
+          var newLeft =  (left + e.clientX - startX);
+          elem.style.left = newLeft;
+          elem.style.width = width + left - newLeft;
+          constrain(p, min, max);
+        });
+      };
+    }
+
+    var initDragRight = function(elem, min, max) {
+      return function(e) {   
+        e.stopPropagation();
+        var startX = e.clientX;
+        var left = parseInt(document.defaultView.getComputedStyle(elem).left);
+        var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
+        setupDrag(function(e) {
+          var width = (startWidth + e.clientX - startX);
+          if (left + width > max){
+            width = max-left;
+          }
+          elem.style.width = width + 'px';
+        });
+      };
+    }
+
+    var initMove = function(elem, min, max) {
+      return function(e) { 
+        e.stopPropagation();
+        var startX = e.clientX;
+        var left = parseInt(document.defaultView.getComputedStyle(elem).left);
+        setupDrag(function(e) {
+          var newLeft = (left + e.clientX - startX);
+          elem.style.left = newLeft;
+          constrain(elem, min, max);
+        });
+      };
+    }
+
+    var makeMovable = function(elem, min, max){
+      elem.className = elem.className + ' movable';
+      elem.addEventListener('mousedown', initMove(elem, min, max), false);
+      return {
+      };
+    }
+
+    var makeResizable = function(elem, min, max){
+      elem.className = elem.className + ' resizable';
+
+      var handleLeft = document.createElement('div');
+      handleLeft.className = 'resizer handle handle_left';
+      elem.appendChild(handleLeft);
+      handleLeft.addEventListener('mousedown', initDragLeft(elem, min, max), false);
+      
+      var handleRight = document.createElement('div');
+      handleRight.className = 'resizer handle handle_right';
+      elem.appendChild(handleRight);
+      handleRight.addEventListener('mousedown', initDragRight(elem, min, max), false);
+
+      return {
+        handleLeft: handleLeft,
+        handleRight: handleRight
+      };
+    }
+
+    var end = function(obj){
+      // TODO : Delete everything...
+    }
+
+    var oPublic =
+    {
+      makeResizable: makeResizable,
+      makeMovable: makeMovable,
+      end: end
+    };
+    return oPublic;
+  }();
+
+var Resizer = ArmaTools.Resizer;
+
+var p = document.querySelector('p');
+
+p.addEventListener('click', function init() {
+  Resizer.makeMovable(p, 10, 500);
+  Resizer.makeResizable(p, 10, 500);
+  p.removeEventListener('click', init, false);
+}, false);
+
+  </script>
+</html>
+
+
+
