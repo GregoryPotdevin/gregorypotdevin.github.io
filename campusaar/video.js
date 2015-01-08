@@ -16,6 +16,14 @@ var timecodeString = function(seq){
   return formatTime(seq.start) + ' - ' + formatTime(seq.end);
 }
 
+var forwardHover = function(source, dest){
+  source.hover(function(){
+    dest.addClass('hover');
+  }, function(){
+    dest.removeClass('hover');
+  });
+}
+
 var seqColors = [
   "#e6550d",
   "#fd8d3c",
@@ -224,7 +232,7 @@ var onOrderChanged = function(){
   sortItems('#sequences', 'a.sequence-item');
 }
 
-var addFiche = function(seq){
+var addDocument = function(seq){
   var video = $("#video-frame");
   var pop = Popcorn("#video-frame");
 
@@ -314,6 +322,10 @@ var addFiche = function(seq){
       ');
   timeline_entry.data("seq", seq);
   timeline_entry.tooltip();
+
+  forwardHover(timeline_entry, sequence);
+  forwardHover(sequence, timeline_entry);
+
   timeline.append(timeline_entry);
 
   var refreshPopcorn = function(seq_id, seq){
@@ -372,7 +384,7 @@ var newDocument = function(){
   var video = $("#video-frame");
   var start = Math.round(video[0].currentTime);
   var seq = {'id': nextId, 'start': start, 'end': start+60}
-  addFiche(seq);
+  addDocument(seq);
   $(".info-item").removeClass("selected");
   $("#info-" + seq.id).addClass("selected");
 
@@ -421,7 +433,7 @@ function loadSequences(sequences) {
 
   $.each(sequences, function (idx, seq) {
     nextId = Math.max(seq.id, nextId);
-    addFiche(seq);
+    addDocument(seq);
     if ((seq.start <= videoStartTime) && (seq.end > videoStartTime)) {
       $("#info-" + seq.id).addClass("selected");
     }

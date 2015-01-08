@@ -45,8 +45,9 @@
   background: #ddd;
 }
 
-.timeline .timeline-item:hover{
+.timeline .timeline-item:hover, .timeline .timeline-item.hover:not(.selected){
   background: #c4e3f3;
+  background-image: linear-gradient(rgb(217, 237, 247) 0px, rgb(196, 227, 243) 100%);
 }
 
 .timeline .timeline-item.selected { 
@@ -74,29 +75,31 @@
   background-color: #d9534f;
 }
 
-.form-compact .form-control {
-  padding: 1px 2px;
-  height: 24px;
-}
-.form-compact label {
-  margin-bottom: 1px;
-}
-.form-compact .form-group {
-  margin-bottom:0px;
-}
 .tab-content {
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   padding: 10px;
 }
+
 .sequence-item.list-group-item {
   padding: 6px;
 }
-.edit
-{
+
+.sequence-item.list-group-item:hover:not(.active),.sequence-item.list-group-item.hover:not(.active) {
+  padding: 6px;
+  background: #c4e3f3;
+  background-image: linear-gradient(rgb(217, 237, 247) 0px, rgb(196, 227, 243) 100%);
+}
+
+.header-button {
     cursor: pointer;
-    float: right;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.edit-btn {
+    cursor: pointer;
 }
 
 .table-info tbody>tr>td {
