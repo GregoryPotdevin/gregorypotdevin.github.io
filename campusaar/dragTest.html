@@ -54,6 +54,12 @@
 
   ArmaTools.Resizer = function()
   {
+    // options: {
+    //   min: left bound
+    //   max: right bound
+    //   usePercentage: percentage instead of pixels
+    // }
+
     var clamp = function(v, min, max){
       if (v < min){
         return min;
@@ -61,6 +67,12 @@
         return max;
       } else {
         return v;
+      }
+    }
+
+    var expandOptions = function(options){
+      if (!('usePercentage' in options)){
+        options.usePercentage = false;
       }
     }
 
@@ -72,50 +84,52 @@
       }, false);
     }
 
-    var initDragLeft = function(elem, min, max) {
+    var initDragLeft = function(elem, options) {
+      console.log(options);
       return function(e) {   
         e.stopPropagation();
         var startX = e.clientX;
         var left = parseInt(document.defaultView.getComputedStyle(elem).left);
         var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
         setupDrag(function(e) {
-          var newLeft = clamp((left + e.clientX - startX), min, left+startWidth);
+          var newLeft = clamp((left + e.clientX - startX), options.min, left+startWidth);
           elem.style.left = newLeft;
           elem.style.width = startWidth + left - newLeft;
         });
       };
     }
 
-    var initDragRight = function(elem, min, max) {
+    var initDragRight = function(elem, options) {
       return function(e) {   
         e.stopPropagation();
         var startX = e.clientX;
         var left = parseInt(document.defaultView.getComputedStyle(elem).left);
         var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
+        var parentWidth = parseInt(document.defaultView.getComputedStyle(elem.getParent()).width, 10);
         setupDrag(function(e) {
-          var width = clamp((startWidth + e.clientX - startX), 0, max-left);
+          var width = clamp((startWidth + e.clientX - startX), 0, options.max-left);
           elem.style.width = width + 'px';
         });
       };
     }
 
-    var initMove = function(elem, min, max) {
+    var initMove = function(elem, options) {
       return function(e) { 
         e.stopPropagation();
         var startX = e.clientX;
         var left = parseInt(document.defaultView.getComputedStyle(elem).left);
         var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
         setupDrag(function(e) {
-          var newLeft = clamp((left + e.clientX - startX), min, max-startWidth);
+          var newLeft = clamp((left + e.clientX - startX), options.min, options.max-startWidth);
           elem.style.left = newLeft;
-          constrain(elem, min, max);
         });
       };
     }
 
-    var makeMovable = function(elem, min, max){
+    var makeMovable = function(elem, options){
+      expandOptions(options);
       elem.className = elem.className + ' movable';
-      var listener = initMove(elem, min, max);
+      var listener = initMove(elem, options);
       elem.addEventListener('mousedown', listener, false);
       return {
         elem: elem,
@@ -126,7 +140,8 @@
       };
     }
 
-    var makeResizable = function(elem, min, max){
+    var makeResizable = function(elem, options){
+      expandOptions(options);
       elem.classList.add('resizable');
 
       var noClick = function(e){e.stopPropagation();};
@@ -134,13 +149,13 @@
       var handleLeft = document.createElement('div');
       handleLeft.className = 'resizer handle handle_left';
       elem.appendChild(handleLeft);
-      handleLeft.addEventListener('mousedown', initDragLeft(elem, min, max), false);
+      handleLeft.addEventListener('mousedown', initDragLeft(elem, options), false);
       handleLeft.addEventListener('click', noClick, false);
       
       var handleRight = document.createElement('div');
       handleRight.className = 'resizer handle handle_right';
       elem.appendChild(handleRight);
-      handleRight.addEventListener('mousedown', initDragRight(elem, min, max), false);
+      handleRight.addEventListener('mousedown', initDragRight(elem, options), false);
       handleRight.addEventListener('click', noClick, false);
 
       return {
@@ -171,8 +186,13 @@ var Resizer = ArmaTools.Resizer;
 function initialize(p){
   p.addEventListener('click', function init(e) {
     // e.stopPropagation();
-    var m = Resizer.makeMovable(p, 10, 500);
-    var r = Resizer.makeResizable(p, 10, 500);
+    var options = {
+      min: 10,
+      max: 80,
+      usePercentage: true,
+    }
+    var m = Resizer.makeMovable(p, options);
+    var r = Resizer.makeResizable(p, options);
     p.removeEventListener('click', init, false);
 
     // p.addEventListener('click', function reset(e){
