@@ -59,12 +59,11 @@
   </script>
 
   <script id="sequence-info-field-template" type="text/x-handlebars-template">
-    {{debug 'start'}}
     <tr>
       <td width="15%">{{field.label}}</td>
       <td width="85%">
         <p id="seq-{{seq.id}}-{{field.id}}" style="float: left;" data-type="{{type.data_type}}" data-title={{field.label}}>
-          {{entry seq field.id}}
+          {{content seq field}}
         </p>
         {{#if field.editable}}
           <span id="seq-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
@@ -72,7 +71,6 @@
         {{/if}}
       </td>
     </tr>
-    {{debug 'end'}}
   </script>
 
 	<script type="text/javascript" src="video.js"></script>

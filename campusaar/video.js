@@ -76,12 +76,13 @@ var templates = function(){
   Handlebars.registerHelper('timecode', function(seq) {
     return formatTime(seq);
   });
-  Handlebars.registerHelper('entry', function(obj, key) {
-    return obj[key];
+  Handlebars.registerHelper('content', function(seq, field) {
+    return dataType[field.type].display(seq[field.id]);
   });
   Handlebars.registerHelper('debug', function(obj) {
     return console.log(obj);
   });
+  Handlebars.registerPartial('field', $("#sequence-info-field-template").html());
   Handlebars.registerHelper('renderField', function(field, seq){
     var res = sequence_info_field({
       'seq': seq, 
