@@ -1,6 +1,7 @@
 
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="libs/resizer/css/resizer.css">
     <style type="text/css">
       .baseDiv { 
         background: lime; 
@@ -19,176 +20,27 @@
         z-index: 1;
       }
 
-      .resizer.handle {
-        width: 24px; 
-        height: 100%;
-        background-image:url(handle.png);
-        background-position: center; 
-        background-repeat:no-repeat;
-        background-size: 100%;
-        position:absolute; 
-        cursor: ew-resize; 
-        margin-top:auto;
-        margin-bottom:auto;
-      }
-      .resizer.handle_right { 
-        right: 0px;
-        transform: translate(50%, 0);
-      }
-      .resizer.handle_left { 
-        left: 0px;
-        transform: translate(-50%, 0);
-      }
     </style>
     <script type="text/javascript" src="libs/jquery.min.js"></script>
+    <script type="text/javascript" src="libs/resizer/js/resizer.js"></script>
   </head>
   <body>
-    <div style="display: block; padding: 40px;">
-      <div id="p1" class="baseDiv" style="position: absolute; top: 0; left: 10%; width: 20%; height: 60px;"></div>
-      <div id="p2" class="baseDiv" style="position: absolute; top: 60px; left: 5%; width: 20%; height: 60px;"></div>
+    <div style="padding: 40px; display: block;">
+      <div style="position: relative; display: block; height: 100%">
+        <div id="p1" class="baseDiv" style="position: absolute; top: 0; left: 0px; width: 20%; height: 60px;"></div>
+        <div id="p2" class="baseDiv" style="position: absolute; top: 60px; left: 5%; width: 20%; height: 60px;"></div>
+      </div>
     </div>
   </body>
   <script>
 
-  var ArmaTools = ArmaTools || {};
-
-  ArmaTools.Resizer = function()
-  {
-    // options: {
-    //   min: left bound
-    //   max: right bound
-    //   usePercentage: percentage instead of pixels
-    // }
-
-    var clamp = function(v, min, max){
-      if (v < min){
-        return min;
-      } else if (v > max){
-        return max;
-      } else {
-        return v;
-      }
-    }
-
-    var expandOptions = function(options){
-      if (!('usePercentage' in options)){
-        options.usePercentage = false;
-      }
-    }
-
-    var setupDrag = function(dragFn){
-      document.documentElement.addEventListener('mousemove', dragFn, false);
-      document.documentElement.addEventListener('mouseup', function stopDrag(){
-        document.documentElement.removeEventListener('mousemove', dragFn, false);
-        document.documentElement.removeEventListener('mouseup', stopDrag, false);
-      }, false);
-    }
-
-    var initDragLeft = function(elem, options) {
-      console.log(options);
-      return function(e) {   
-        e.stopPropagation();
-        var startX = e.clientX;
-        var left = parseInt(document.defaultView.getComputedStyle(elem).left);
-        var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
-        setupDrag(function(e) {
-          var newLeft = clamp((left + e.clientX - startX), options.min, left+startWidth);
-          elem.style.left = newLeft;
-          elem.style.width = startWidth + left - newLeft;
-        });
-      };
-    }
-
-    var initDragRight = function(elem, options) {
-      return function(e) {   
-        e.stopPropagation();
-        var startX = e.clientX;
-        var left = parseInt(document.defaultView.getComputedStyle(elem).left);
-        var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
-        var parentWidth = parseInt(document.defaultView.getComputedStyle(elem.getParent()).width, 10);
-        setupDrag(function(e) {
-          var width = clamp((startWidth + e.clientX - startX), 0, options.max-left);
-          elem.style.width = width + 'px';
-        });
-      };
-    }
-
-    var initMove = function(elem, options) {
-      return function(e) { 
-        e.stopPropagation();
-        var startX = e.clientX;
-        var left = parseInt(document.defaultView.getComputedStyle(elem).left);
-        var startWidth = parseInt(document.defaultView.getComputedStyle(elem).width, 10);
-        setupDrag(function(e) {
-          var newLeft = clamp((left + e.clientX - startX), options.min, options.max-startWidth);
-          elem.style.left = newLeft;
-        });
-      };
-    }
-
-    var makeMovable = function(elem, options){
-      expandOptions(options);
-      elem.className = elem.className + ' movable';
-      var listener = initMove(elem, options);
-      elem.addEventListener('mousedown', listener, false);
-      return {
-        elem: elem,
-        end: function(){
-          elem.removeEventListener('mousedown', listener);
-          elem.classList.remove('movable');
-        }
-      };
-    }
-
-    var makeResizable = function(elem, options){
-      expandOptions(options);
-      elem.classList.add('resizable');
-
-      var noClick = function(e){e.stopPropagation();};
-
-      var handleLeft = document.createElement('div');
-      handleLeft.className = 'resizer handle handle_left';
-      elem.appendChild(handleLeft);
-      handleLeft.addEventListener('mousedown', initDragLeft(elem, options), false);
-      handleLeft.addEventListener('click', noClick, false);
-      
-      var handleRight = document.createElement('div');
-      handleRight.className = 'resizer handle handle_right';
-      elem.appendChild(handleRight);
-      handleRight.addEventListener('mousedown', initDragRight(elem, options), false);
-      handleRight.addEventListener('click', noClick, false);
-
-      return {
-        elem: elem,
-        handleLeft: handleLeft,
-        handleRight: handleRight,
-        end: function(){
-          // TODO : Delete everything...
-          elem.classList.remove('resizable');
-          elem.removeChild(handleLeft);
-          elem.removeChild(handleRight);
-        }
-      };
-    }
-
-
-    var oPublic =
-    {
-      makeResizable: makeResizable,
-      makeMovable: makeMovable,
-    };
-    return oPublic;
-  }();
-
 var Resizer = ArmaTools.Resizer;
-
 
 function initialize(p){
   p.addEventListener('click', function init(e) {
     // e.stopPropagation();
     var options = {
-      min: 10,
-      max: 80,
+
       usePercentage: true,
     }
     var m = Resizer.makeMovable(p, options);
@@ -205,7 +57,6 @@ function initialize(p){
     // });
   }, false);
 }
-
 
 initialize(document.querySelector('#p1'));
 initialize(document.querySelector('#p2'));

@@ -1,0 +1,21 @@
+
+.resizer.handle {
+  width: 24px; 
+  height: 100%;
+  background-image:url(../img/resizer_handle.png);
+  background-position: center; 
+  background-repeat:no-repeat;
+  background-size: 100%;
+  position:absolute; 
+  cursor: ew-resize; 
+  margin-top:auto;
+  margin-bottom:auto;
+}
+.resizer.handle_right { 
+  right: 0px;
+  transform: translate(50%, 0);
+}
+.resizer.handle_left { 
+  left: 0px;
+  transform: translate(-50%, 0);
+}
