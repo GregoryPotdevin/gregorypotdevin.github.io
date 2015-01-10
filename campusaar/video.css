@@ -73,6 +73,7 @@
   width: 2px;
   height: 100%;
   background-color: #d9534f;
+  z-index: 2;
 }
 
 .tab-content {
@@ -150,6 +151,29 @@
   top: 20px;
   }
 
+}
+
+.nounderline, .nounderline:hover, .nounderline:focus{
+  text-decoration: none;
+}
+
+.document-heading a {
+  color: #337ab7 !important;
+}
+
+.document-heading.collapsable a:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";    
+    float: right; 
+}
+.document-heading.collapsable a.collapsed:after {
+    text-decoration: none;
+    content: "\e080";
+}
+
+
+.resizable { 
+  z-index: 1;
 }
 
 /*.editable-container {

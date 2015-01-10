@@ -11,6 +11,7 @@ var model = {
     },
     {
       'id': 'title', 
+      'header': 'Metadata',
       'label': 'Titre',
       'tab': 'info',
       'type': 'text',
@@ -21,6 +22,24 @@ var model = {
       'label': 'Description',
       'tab': 'info',
       'type': 'html'
+    },
+    {
+      'id': 'location', 
+      'label': 'Lieu',
+      'tab': 'info',
+      'type': 'text'
+    },
+    {
+      'id': 'author', 
+      'label': 'Auteur',
+      'tab': 'info',
+      'type': 'text'
+    },
+    {
+      'id': 'publisher', 
+      'label': 'Editeur',
+      'tab': 'info',
+      'type': 'text'
     },
     {
       'id': 'min_age', 
@@ -37,6 +56,21 @@ var model = {
       'multi_value': true
     },
     {
+      'id': 'production_year', 
+      'label': 'Année de production',
+      'tab': 'info',
+      'type': 'number'
+    },
+    {
+      'id': 'continent', 
+      'header': 'Geography',
+      'label': 'Continent',
+      'tab': 'info',
+      'type': 'list', 
+      'list_type': 'continent',
+      'multi_value': false
+    },
+    {
       'id': 'country', 
       'label': 'Pays',
       'tab': 'info',
@@ -45,7 +79,21 @@ var model = {
       'multi_value': false
     },
     {
+      'id': 'city', 
+      'label': 'Ville',
+      'tab': 'info',
+      'type': 'text',
+    },
+    {
+      'id': 'comment', 
+      'header': 'Autres',
+      'label': 'Commentaire',
+      'tab': 'info',
+      'type': 'html',
+    },
+    {
       'id': 'start', 
+      'header': 'Timecodes',
       'label': 'Début',
       'tab': 'time',
       'type': 'timecode'
@@ -65,6 +113,16 @@ var model = {
 
 
 var dataLists = {
+  'continent': [
+    'Asie',
+    'Afrique',
+    'Amérique du Nord',
+    'Amérique du Sud',
+    'Antarctique',
+    'Europe',
+    'Océanie'
+  ],
+
   'country': [
     "Afghanistan",
     "Afrique du Sud",

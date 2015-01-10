@@ -206,18 +206,19 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
             //validation: if validate returns string or truthy value - means error
             //if returns object like {newValue: '...'} => submitted value is reassigned to it
             var error = this.validate(newValue);
+            console.log("error ", error);
             if ($.type(error) === 'object' && error.newValue !== undefined) {
                 newValue = error.newValue;
                 this.input.value2input(newValue);
                 if(typeof error.msg === 'string') {
                     this.error(error.msg);
                     this.showForm();
-                    return;
+                    return false;
                 }
             } else if (error) {
                 this.error(error);
                 this.showForm();
-                return;
+                return false;
             } 
             
             //if value not changed --> trigger 'nochange' event and return
@@ -230,7 +231,7 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
                 @param {Object} event event object
                 **/                    
                 this.$div.triggerHandler('nochange');            
-                return;
+                return true;
             } 
 
             //convert value for submitting to server
@@ -298,6 +299,7 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
                 this.error(msg);
                 this.showForm();
             }, this));
+            return true;
         },
 
         save: function(submitValue) {
@@ -2041,6 +2043,7 @@ Makes editable any HTML element on the page. Applied as jQuery method.
             @returns {Object} jQuery object
             **/
             case 'submit':  //collects value, validate and submit to server for creating new record
+                console.log('submit: ', this);
                 var config = arguments[1] || {},
                 $elems = this,
                 errors = this.editable('validate');

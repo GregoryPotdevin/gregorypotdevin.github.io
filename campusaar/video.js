@@ -1,5 +1,11 @@
 // url hash plugin : http://benalman.com/projects/jquery-bbq-plugin/
 
+var Resizer = ArmaTools.Resizer;
+
+var currentDoc = {};
+var noop = function(){};
+var endMovable = noop;
+
 $.fn.editable.defaults.mode = 'inline';
 var isNumeric = function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -12,7 +18,6 @@ var formatTime = function(seconds) {
   return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
 }
 var timecodeString = function(seq){
-  console.log(seq);
   return formatTime(seq.start) + ' - ' + formatTime(seq.end);
 }
 
@@ -99,6 +104,19 @@ var templates = function(){
     });
     return new Handlebars.SafeString(res);
   });
+  // Handlebars.registerHelper('renderFields', function(fields, seq){
+  //   var inDiv = false;
+  //   var res = "";
+  //   fields.forEach(function(field){
+
+  //   var res += sequence_info_field({
+  //     'seq': seq, 
+  //     'field': field, 
+  //     'type': field.dtype
+  //   });
+  //   });
+  //   return new Handlebars.SafeString(res);
+  // });
 
   sequence = Handlebars.compile($("#sequence-item-template").html());
   sequence_info_field = Handlebars.compile($("#sequence-info-field-template").html());
@@ -128,6 +146,7 @@ function mkEditable(id, field, seq, callback){
   var edit_id = '#'+id+'-'+field.id+'-btn';
   var data_type = type['data_type'];
   var success = function(response, newValue){
+    console.log("success");
     seq[field.id] = type.extract(newValue);
     if (callback) callback(id, field, seq);
   }
@@ -160,6 +179,7 @@ function mkEditable(id, field, seq, callback){
     } else {
       $(p_id).editable({
         'validate': function(v) {
+          console.log("validate " + v);
           if (field.required && (!v || !v.length)){
             return 'Ce champ est obligatoire';
           }
@@ -201,13 +221,13 @@ var nextId = 1;
 
 
 var sortItems = function(parent, children){
-  console.log("sort " + children + " in " + parent);
+  // console.log("sort " + children + " in " + parent);
   var parent = $(parent);
   var items = parent.children(children);
   items.sort(function(a,b){
     var an = $(a).data('seq').start;//getAttribute('data-order');
     var bn = $(b).data('seq').start;//getAttribute('data-order');
-    console.log(an + ' vs ' + bn);
+    // console.log(an + ' vs ' + bn);
     if(an > bn)  return 1;
     if(an < bn)  return -1;
     return 0;
@@ -230,6 +250,56 @@ var sortItems = function(parent, children){
 var onOrderChanged = function(){
   sortItems('#video-timeline-items', 'span.timeline-item');
   sortItems('#sequences', 'a.sequence-item');
+}
+
+
+var showDocument = function(seq){
+  currentDoc = seq;
+  $(".info-item").removeClass("selected");
+  $("#info-" + seq.id).addClass("selected");
+  if (isEditable){
+    endMovable();
+    startMovable();
+  }
+}
+
+
+var initPopcorn = function(seq){
+  var pop = Popcorn("#video-frame");
+  var seq_id = "seq-" + seq.id;
+  var timeline_id = "timeline-" + seq.id;
+  pop.sequences(seq_id, {
+    start: seq.start,
+    end: seq.end,
+    data: seq,
+    target: seq_id,
+    effect: "applyclass",
+    applyclass: "active"
+  });
+  pop.footnote("timeline-" + seq_id, {
+    start: seq.start,
+    end: seq.end,
+    text: '',
+    target: timeline_id,
+    effect: "applyclass",
+    applyclass: "selected"
+  });
+}
+
+var refreshPopcorn = function(seq){
+  initPopcorn(seq);
+  // var pop = Popcorn("#video-frame");
+  // var seq_id = "seq-" + seq.id;
+  // var timeline_id = "timeline-" + seq.id;
+  // console.log("refresh " + seq_id + " from " + seq.start + " to " + seq.end);
+  // pop.sequences(seq_id, {
+  //   start: seq.start,
+  //   end: seq.end
+  // });
+  // pop.footnote("timeline-" + seq_id, {
+  //   start: seq.start,
+  //   end: seq.end
+  // });
 }
 
 var addDocument = function(seq){
@@ -260,7 +330,7 @@ var addDocument = function(seq){
     fieldsByTab[field.tab].push(field);
     if (!field.hasOwnProperty('editable')){
       field.editable = true;
-      console.log('patch');
+      // console.log('patch');
     }
     field.dtype = dataType[field.type];
   });
@@ -295,13 +365,6 @@ var addDocument = function(seq){
 
   info.append(info_entry);
 
-  var selectSelected = function(){
-    videoSetTime(seq.start);
-    $(".info-item").removeClass("selected");
-    info_entry.addClass("selected");
-    $.bbq.pushState({start: seq.start});
-  }
-
   // pop.footnote({
   //   start: seq.start,
   //   end: seq.end,
@@ -328,28 +391,16 @@ var addDocument = function(seq){
 
   timeline.append(timeline_entry);
 
-  var refreshPopcorn = function(seq_id, seq){
-    pop.sequences(seq_id, {
-      start: seq.start,
-      end: seq.end,
-      data: seq,
-      target: seq_id,
-      effect: "applyclass",
-      applyclass: "active"
-    });
-    pop.footnote("timeline-" + seq_id, {
-      start: seq.start,
-      end: seq.end,
-      text: '',
-      target: timeline_id,
-      effect: "applyclass",
-      applyclass: "selected"
-    });
-  }
-  refreshPopcorn(seq_id, seq);
+  initPopcorn(seq);
 
-  sequence.click(selectSelected);
-  timeline_entry.click(selectSelected);
+  var onClick = function(){
+    videoSetTime(seq.start);
+    showDocument(seq);
+    $.bbq.pushState({start: seq.start});
+  }
+
+  sequence.click(onClick);
+  timeline_entry.click(onClick);
 
   var updateTitle = function(id, field, seq){
     sequence.find("h5").text(seq.title);
@@ -363,7 +414,7 @@ var addDocument = function(seq){
     var start = seq.start*100/videoDuration;
     var width = duration*100/videoDuration;
     timeline_entry.css("left", start + '%').css("width", width + '%');
-    refreshPopcorn(seq_id, seq);
+    refreshPopcorn(seq);
     onOrderChanged();
   }
 
@@ -385,8 +436,7 @@ var newDocument = function(){
   var start = Math.round(video[0].currentTime);
   var seq = {'id': nextId, 'start': start, 'end': start+60}
   addDocument(seq);
-  $(".info-item").removeClass("selected");
-  $("#info-" + seq.id).addClass("selected");
+  showDocument(seq);
 
   // Edit title by default
   setTimeout(function () {
@@ -408,6 +458,7 @@ function loadSequences(sequences) {
   // Create your plugin
   Popcorn.plugin( "sequences", {
     _setup: function( options ) {
+      // console.log("Popcorn.sequence setup");
       // var target = Popcorn.dom.find( options.target );
 
       // options._list_container = document.createElement( "div" );
@@ -418,10 +469,10 @@ function loadSequences(sequences) {
     },
 
     start: function(event, options) {
-      console.log(options);
+      // console.log("Start " + options);
     },
-    end:   function() {
-
+    end:   function(event, options) {
+      // console.log("End " + options);
     }
   });
 
@@ -435,7 +486,7 @@ function loadSequences(sequences) {
     nextId = Math.max(seq.id, nextId);
     addDocument(seq);
     if ((seq.start <= videoStartTime) && (seq.end > videoStartTime)) {
-      $("#info-" + seq.id).addClass("selected");
+      showDocument(seq);
     }
   });
 
@@ -455,12 +506,93 @@ function loadSequences(sequences) {
   }
 }
 
+
+var onChangeTime = function(seq, start, end){
+  seq.start =start;
+  seq.end = end;
+  $("#seq-" + seq.id).find("p").text(timecodeString(seq));
+  $("#info-" + seq.id + "-start").text(formatTime(seq.start));
+  $("#info-" + seq.id + "-end").text(formatTime(seq.end));
+  // refreshPopcorn(seq);
+
+  // var duration = seq.end - seq.start;
+  // var start = seq.start*100/videoDuration;
+  // var width = duration*100/videoDuration;
+  // timeline_entry.css("left", start + '%').css("width", width + '%');
+  onOrderChanged();
+}
+
+var startMovable = function(){
+  var seq = currentDoc;
+  var elem = $('#timeline-' + seq.id).get()[0];
+  console.log(elem);
+  var update = function(elem){
+    var start = parseFloat(elem.style.left) / 100.0;
+    var length = parseFloat(elem.style.width) / 100.0;
+    onChangeTime(seq, Math.round(start*videoDuration), Math.round((start+length)*videoDuration));
+  }
+  movableInfo = Resizer.makeMovableAndResizable(elem, {
+    usePercentage: true,
+    onMoved: update,
+    onResized: update,
+    onFinished: function(elem){
+      update(elem);
+    }
+  });
+  endMovable = function(){
+    movableInfo.end();
+  }
+}
+
+var nextField = function(el, usePrev){
+  if(usePrev) {                                              // when shift + tab
+    return el.parents().prevAll(":has(.editable:visible):first") // find the parent of the editable before this one in the markup
+                      .find(".editable:last");           // grab the editable and display it
+  } else {                                                      // when just tab
+    return el.parents().nextAll(":has(.editable:visible):first") // find the parent of the editable after this one in the markup
+        .find(".editable:first");          // grab the editable and display it
+  }
+}
+
 var setEditable = function(editable){
     isEditable = editable;
-    $(".editable").editable('option', 'disabled', !isEditable);
+
+    var editables = $(".editable").editable('option', 'disabled', !isEditable);
     if (isEditable) {
+      $("#document-save").show();
+      $("#document-edit").hide();
+      $("#document-new").hide();
+
+      startMovable();
+      // Make timeline item resizable
       $(".edit-btn").show();
+      editables.on('shown', function(e, editable) {
+        if(editable) { // if you're not using popovers, this check is unnecessary
+          editable.input.$input.on('keydown', function(e) {
+            if(e.which == 9) {                                              // when tab key is pressed
+              e.preventDefault();
+              console.log('this', this);
+              var next = nextField($(this), e.shiftKey);
+              var form = $(this).closest("td").find("form");
+              form.submit();
+              if (form.has("div.has-error").length > 0){
+                console.log("Found error, cancel !");
+              } else {
+                next.editable('show');
+              }
+            }
+          });
+        }
+      });
+
     } else {
+      $("#document-save").hide();
+      $("#document-edit").show();
+      $("#document-new").show();
+
+      // Make timeline item resizable
+      endMovable();
+      endMovable = noop;
       $(".edit-btn").hide();
     }
 }
@@ -468,9 +600,9 @@ var setEditable = function(editable){
 
 
 $(document).ready(function(){
-  $("#document-edit").click(function(e){
-    setEditable(!isEditable);
-  });
+  setEditable(false);
+  $("#document-edit").click(function(e){ setEditable(true); });
+  $("#document-save").click(function(e){ setEditable(false); });
   $("#document-new").click(function(e){
     newDocument();
     setEditable(true);

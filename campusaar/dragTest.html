@@ -40,11 +40,14 @@ function initialize(p){
   p.addEventListener('click', function init(e) {
     // e.stopPropagation();
     var options = {
-
       usePercentage: true,
+      onMove: function(){
+
+      }
     }
-    var m = Resizer.makeMovable(p, options);
-    var r = Resizer.makeResizable(p, options);
+    // var m = Resizer.makeMovable(p, options);
+    // var r = Resizer.makeResizable(p, options);
+    Resizer.makeMovableAndResizable(p, options);
     p.removeEventListener('click', init, false);
 
     // p.addEventListener('click', function reset(e){

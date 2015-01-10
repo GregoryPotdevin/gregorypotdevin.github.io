@@ -6,6 +6,9 @@ ArmaTools.Resizer = function()
   //   min: left bound
   //   max: right bound
   //   usePercentage: percentage instead of pixels
+  //   onMoved
+  //   onResized
+  //   onFinished
   // }
 
   var clamp = function(v, min, max){
@@ -18,6 +21,8 @@ ArmaTools.Resizer = function()
     }
   }
 
+  var noClick = function(e){e.stopPropagation();};
+
   var clone = function(obj) {
     if (null == obj || "object" != typeof obj) return obj;
     var copy = obj.constructor();
@@ -28,11 +33,10 @@ ArmaTools.Resizer = function()
   }
 
   var expandOptions = function(options){
-    var options = clone(options);
+    var options = clone(options) || {};
     if (!('usePercentage' in options)){
       options.usePercentage = false;
     }
-
     return options;
   }
 
@@ -52,7 +56,6 @@ ArmaTools.Resizer = function()
       var parentOuterWidth = outerWidth(elem.parentNode);
       // console.log("parentWidth: " + parentWidth);
       // console.log("parentOuterWidth: " + parentOuterWidth);
-
       options.cMin = options.min ? (options.usePercentage ? (options.min*parentWidth/100) : options.min) : 0;
       options.cMax = options.max ? (options.usePercentage ? (options.max*parentWidth/100) : options.max) : parentWidth;
 
@@ -77,6 +80,7 @@ ArmaTools.Resizer = function()
       document.documentElement.addEventListener('mouseup', function stopDrag(){
         document.documentElement.removeEventListener('mousemove', drag, false);
         document.documentElement.removeEventListener('mouseup', stopDrag, false);
+        if (options['onFinished'] !== undefined) options['onFinished'](elem);
       }, false);
     }
   }
@@ -88,6 +92,7 @@ ArmaTools.Resizer = function()
       elem.style.left = info.size(newLeft);
       //console.log(info.size(info.left) + " : " + prev + " => " + elem.style.left);
       elem.style.width = info.size(info.startWidth + info.left - newLeft);
+      if (options['onResized'] !== undefined) options['onResized'](elem);
     });
   }
 
@@ -95,6 +100,7 @@ ArmaTools.Resizer = function()
     return setupDrag(elem, options, function(e, info) {
       var width = clamp((info.startWidth + e.clientX - info.startX), 0, options.cMax-info.left);
       elem.style.width = info.size(width);
+      if (options['onResized'] !== undefined) options['onResized'](elem);
     });
   }
 
@@ -102,6 +108,7 @@ ArmaTools.Resizer = function()
     return setupDrag(elem, options, function(e, info) {
       var newLeft = clamp((info.left + e.clientX - info.startX), options.cMin, options.cMax-info.startWidth);
       elem.style.left = info.size(newLeft);
+      if (options['onMoved'] !== undefined) options['onMoved'](elem);
     });
   }
 
@@ -123,8 +130,6 @@ ArmaTools.Resizer = function()
     var options = expandOptions(options);
     elem.classList.add('resizable');
 
-    var noClick = function(e){e.stopPropagation();};
-
     var handleLeft = document.createElement('div');
     handleLeft.className = 'resizer handle handle_left';
     elem.appendChild(handleLeft);
@@ -139,8 +144,6 @@ ArmaTools.Resizer = function()
 
     return {
       elem: elem,
-      handleLeft: handleLeft,
-      handleRight: handleRight,
       end: function(){
         // TODO : Delete everything...
         elem.classList.remove('resizable');
@@ -150,11 +153,24 @@ ArmaTools.Resizer = function()
     };
   }
 
+  var makeMovableAndResizable = function(elem, options){
+    var m = makeMovable(elem, options);
+    var r = makeResizable(elem, options);
+    return {
+      elem: elem,
+      end: function(){
+        m.end();
+        r.end();
+      }
+    }
+  }
+
 
   var oPublic =
   {
     makeResizable: makeResizable,
     makeMovable: makeMovable,
+    makeMovableAndResizable: makeMovableAndResizable,
   };
   return oPublic;
 }();
