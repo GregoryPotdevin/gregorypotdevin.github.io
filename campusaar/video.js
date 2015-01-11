@@ -544,15 +544,15 @@ var startMovable = function(){
   }
 }
 
-var nextField = function(el, usePrev){
-  if(usePrev) {                                              // when shift + tab
-    return el.parents().prevAll(":has(.editable:visible):first") // find the parent of the editable before this one in the markup
-                      .find(".editable:last");           // grab the editable and display it
-  } else {                                                      // when just tab
-    return el.parents().nextAll(":has(.editable:visible):first") // find the parent of the editable after this one in the markup
-        .find(".editable:first");          // grab the editable and display it
+  var nextField = function(el, usePrev){
+    if(usePrev) {                                              // when shift + tab
+      return el.parents().prevAll(":has(.editable:visible):first") // find the parent of the editable before this one in the markup
+                        .find(".editable:last");           // grab the editable and display it
+    } else {                                                      // when just tab
+      return el.parents().nextAll(":has(.editable:visible):first") // find the parent of the editable after this one in the markup
+          .find(".editable:first");          // grab the editable and display it
+    }
   }
-}
 
 var setEditable = function(editable){
     isEditable = editable;
@@ -608,6 +608,19 @@ $(document).ready(function(){
     setEditable(true);
   });
   $('#sidebar-video').width($('#affix-container').width());
+
+  $("a[data-action='style']").click(function(e){
+    var stylesheet = $(e.target).data('style');
+    $("#stylesheet-bootstrap").attr("href", 'libs/' + stylesheet);
+    var navbar = $("nav.navbar");
+    if (stylesheet == "bootstrap.min.css"){
+      navbar.addClass('navbar-default');
+      navbar.removeClass('navbar-inverse');
+    } else {
+      navbar.removeClass('navbar-default');
+      navbar.addClass('navbar-inverse');
+    }
+  });
 });
 
 $(window).resize(function () {
