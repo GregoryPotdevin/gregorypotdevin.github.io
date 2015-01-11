@@ -613,7 +613,7 @@ $(document).ready(function(){
     var stylesheet = $(e.target).data('style');
     $("#stylesheet-bootstrap").attr("href", 'libs/' + stylesheet);
     var navbar = $("nav.navbar");
-    if (stylesheet == "bootstrap.min.css"){
+    if (stylesheet == "bootstrap-theme.min.css"){
       navbar.addClass('navbar-default');
       navbar.removeClass('navbar-inverse');
     } else {
