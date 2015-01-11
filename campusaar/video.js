@@ -36,6 +36,30 @@ var seqColors = [
   "#fdd0a2"
 ];
 
+var summernoteOptions = {
+    focus: true,                 // set focus to editable area after initializing summernote);
+    fontNames: [
+      'Arial', 'Courier New',
+      'Helvetica Neue', 'Lucida Grande',
+      'Tahoma', 'Times New Roman', 'Verdana'
+    ],
+
+    toolbar: [
+      ['style', ['style']],
+      ['font', ['bold', 'italic', 'underline', 'clear']],
+      // ['fontname', ['fontname']],
+      ['color', ['color']],
+      // ['para', ['ul', 'ol', 'paragraph']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      // ['height', ['height']],
+      // ['table', ['table']],
+      // ['insert', ['link', 'picture', 'hr']],
+      // ['view', ['fullscreen', 'codeview']],
+      ['view', ['codeview']],
+      // ['help', ['help']]
+    ],
+}
+
 var dataType = {
   'text': {
     'name': 'text', 
@@ -47,7 +71,7 @@ var dataType = {
   },
   'html': {
     'name': 'html', 
-    'data_type': 'text', 
+    'data_type': 'summernote', 
     'icon': 'glyphicon-pencil',
     'display':   function(v){return v;},
     'extract':   function(v){return v;},
@@ -158,7 +182,7 @@ function mkEditable(id, field, seq, callback){
       seq[field.id] = video[0].currentTime;
       if (callback) callback(id, field, seq);
     });
-  } else if ((data_type == "text") || (data_type == "select2")){
+  } else if ((data_type == "text") || (data_type == "select2") || (data_type == "summernote")){
     if (data_type == "select2"){
       if (!dataLists.hasOwnProperty(field.list_type)){
         console.error("ERROR - unknown list type " + field.list_type);
@@ -175,6 +199,22 @@ function mkEditable(id, field, seq, callback){
            multiple: field.multi_value
         },
         'success': success
+      });
+    } else if (data_type == "summernote") {
+      $(p_id).editable({
+        'validate': function(v) {
+          console.log("validate " + v);
+          if (field.required && (!v || !v.length)){
+            return 'Ce champ est obligatoire';
+          }
+          return type.validator(v);
+        },
+        'disabled': true,
+        'onblur': 'submit',
+        'unsavedclass': null,
+        'mode': 'popup',
+        'success': success,
+        "summernote": summernoteOptions,
       });
     } else {
       $(p_id).editable({
@@ -597,7 +637,19 @@ var setEditable = function(editable){
     }
 }
 
-
+function getUrlParameter(sParam)
+{
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
+}  
 
 $(document).ready(function(){
   setEditable(false);
@@ -621,6 +673,12 @@ $(document).ready(function(){
       navbar.addClass('navbar-inverse');
     }
   });
+
+  if (getUrlParameter('edit') == "true"){
+    setTimeout(function(){
+      setEditable(true);
+    }, 500);
+  }
 });
 
 $(window).resize(function () {

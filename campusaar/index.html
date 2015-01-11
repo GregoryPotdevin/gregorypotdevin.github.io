@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)http://fiddle.jshell.net/oyogv3ja/show/light/ -->
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -13,6 +12,11 @@
   <link rel="stylesheet" type="text/css" href="libs/select2/select2-bootstrap.css">
   <link rel="stylesheet" type="text/css" href="libs/resizer/css/resizer.css">
   <link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/css/bootstrap-editable.css">
+  <link rel="stylesheet" type="text/css" href="libs/summernote/summernote.css">
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- <link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link> -->
+  <!-- <link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap3-wysihtml5.css"></link> -->
 
 
   <!--<link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap3-wysihtml5.min.css"></link>-->
@@ -34,9 +38,18 @@
   <script type="text/javascript" src="libs/select2/select2_locale_fr.js"></script>  
   <script type="text/javascript" src="libs/resizer/js/resizer.js"></script>  
   <!--<script type="text/javascript" src="libs/wysihtml5/bootstrap3-wysihtml5.min.js"></script>-->
+  <script src="libs/summernote/summernote.js"></script>
 
 	<script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
+  <script type="text/javascript" src="libs/bootstrap3-editable/bootstrap3-editable-summernote.js"></script>
   <!--<script type="text/javascript" src="libs/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js"></script>-->
+
+  <!-- // <script src="libs/wysihtml5/js/wysihtml5-0.3.0.js"></script> -->
+  <!-- // <script src="libs/wysihtml5/templates2.js"></script> -->
+  <!-- // <script src="libs/wysihtml5/bootstrap-wysihtml5-0.0.2.js"></script> -->
+  <!-- // <script src="libs/wysihtml5/bootstrap3-wysihtml5.js"></script> -->
+  <!-- // <script src="libs/wysihtml5/locales/bootstrap-wysihtml5.en-US.js"></script> -->
+  <!-- // <script src="libs/wysihtml5/locales/bootstrap-wysihtml5.fr-FR.js"></script> -->
 
   <script type="text/javascript" src="libs/data.js"></script>
 
@@ -141,71 +154,76 @@
 
 </head>
 <body>
-<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <!-- <a class="navbar-brand" href="#"><img style="height: 24px;" src="images/campusaar.jpg"/></a> -->
-      <img class="navbar-brand" style="height: 52px; padding: 4px;" src="images/campusaar.png"/>
-    </div>
+  <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- <a class="navbar-brand" href="#"><img style="height: 24px;" src="images/campusaar.jpg"/></a> -->
+        <img class="navbar-brand" style="height: 52px; padding: 4px;" src="images/campusaar.png"/>
+      </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="#">Home </a></li>
-        <li class="active"><a href="#">Video <span class="sr-only">(current)</span></a></li>
-      </ul>
-			<div class="col-sm-3 col-md-3 pull-right">
-				<form class="navbar-form" role="search">
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
-						<div class="input-group-btn">
-							<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-						</div>
-					</div>
-				</form>
-			</div>
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Styles <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a data-action="style" data-style="bootstrap-theme.min.css"     href="#">bootstrap</a></li>
-            <li><a data-action="style" data-style="bootstrap.flatly.css"  href="#">flatly</a></li>
-<!--             <li class="divider"></li>
-            <li><a href="#">Separated link</a></li> -->
-          </ul>
-        </li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="#">Home </a></li>
+          <li class="active"><a href="#">Video <span class="sr-only">(current)</span></a></li>
+        </ul>
+  			<div class="col-sm-3 col-md-3 pull-right">
+  				<form class="navbar-form" role="search">
+  					<div class="input-group">
+  						<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+  						<div class="input-group-btn">
+  							<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+  						</div>
+  					</div>
+  				</form>
+  			</div>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Styles <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a data-action="style" data-style="bootstrap-theme.min.css"     href="#">bootstrap</a></li>
+              <li><a data-action="style" data-style="bootstrap.flatly.css"  href="#">flatly</a></li>
+  <!--             <li class="divider"></li>
+              <li><a href="#">Separated link</a></li> -->
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>  
 	<div class="fluid-container">
 		<div id="affix-container" class="col-md-4" >
-    <div id="sidebar-video" data-spy="affix" data-offset-top="60">
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<h3 class="panel-title">Video</h3>
-				</div>
-				<div class="panel-body video-container">
-					<video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video>
-					<div id="video-timeline" class="timeline">
-						<div id="video-timeline-items">
+      <div id="sidebar-video" data-spy="affix" data-offset-top="60">
+  			<div class="panel panel-primary">
+  				<div class="panel-heading">
+  					<h3 class="panel-title">Video</h3>
+  				</div>
+  				<div class="panel-body video-container">
+  					<video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video>
+  					<div id="video-timeline" class="timeline">
+  						<div id="video-timeline-items">
 
-						</div>
-						<span id="video-timeline-marker" class="timeline-marker" />
-					</div>
-				</div>
-			</div>
-    </div>
+  						</div>
+  						<span id="video-timeline-marker" class="timeline-marker" />
+  					</div>
+  				</div>
+  			</div>
+      </div>
     </div>
 		<div class="col-md-8" style="margin-bottom:50px;">
-      <div class="panel panel-info">
+
+<!--   <div class="hero-unit" style="margin-top:40px">
+    <textarea class="textarea" placeholder="Enter text ..." style="width: 810px; height: 200px"></textarea>
+  </div>
+  <hr />
+ -->      <div class="panel panel-info">
         <div class="panel-heading collapsable">
           <h3 class="panel-title">
           	<a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
@@ -229,4 +247,31 @@
 		</div>
 	</div>
 </body>
+
+<script>
+  // $('.textarea').summernote({
+  //   focus: true,                 // set focus to editable area after initializing summernote);
+  //   fontNames: [
+  //     'Arial', 'Courier New',
+  //     'Helvetica Neue', 'Lucida Grande',
+  //     'Tahoma', 'Times New Roman', 'Verdana'
+  //   ],
+
+  //   toolbar: [
+  //     ['style', ['style']],
+  //     ['font', ['bold', 'italic', 'underline', 'clear']],
+  //     // ['fontname', ['fontname']],
+  //     ['color', ['color']],
+  //     // ['para', ['ul', 'ol', 'paragraph']],
+  //     ['para', ['ul', 'ol', 'paragraph']],
+  //     // ['height', ['height']],
+  //     // ['table', ['table']],
+  //     // ['insert', ['link', 'picture', 'hr']],
+  //     // ['view', ['fullscreen', 'codeview']],
+  //     ['view', ['codeview']],
+  //     // ['help', ['help']]
+  //   ],
+  // });
+</script>
+
 </html>
