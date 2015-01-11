@@ -212,7 +212,7 @@ function mkEditable(id, field, seq, callback){
         'disabled': true,
         'onblur': 'submit',
         'unsavedclass': null,
-        'mode': 'popup',
+        // 'mode': 'popup',
         'success': success,
         "summernote": summernoteOptions,
       });
@@ -663,7 +663,7 @@ $(document).ready(function(){
 
   $("a[data-action='style']").click(function(e){
     var stylesheet = $(e.target).data('style');
-    $("#stylesheet-bootstrap").attr("href", 'libs/' + stylesheet);
+    $("#stylesheet-bootstrap").attr("href", 'css/' + stylesheet);
     var navbar = $("nav.navbar");
     if (stylesheet == "bootstrap-theme.min.css"){
       navbar.addClass('navbar-default');
