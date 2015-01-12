@@ -6,6 +6,8 @@ var currentDoc = {};
 var noop = function(){};
 var endMovable = noop;
 
+var globalSequences = {};
+
 $.fn.editable.defaults.mode = 'inline';
 var isNumeric = function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -35,6 +37,50 @@ var seqColors = [
   "#fdae6b",
   "#fdd0a2"
 ];
+
+
+var Seeker = Seeker || {};
+
+Seeker.popcorn = function() {
+
+  var init= function(seq){
+    var pop = Popcorn("#video-frame");
+    var seq_id = "seq-" + seq.id;
+    var timeline_id = "timeline-" + seq.id;
+    pop.sequences(seq_id, {
+      start: seq.start,
+      end: seq.end,
+      data: seq,
+      target: seq_id,
+      effect: "applyclass",
+      applyclass: "active"
+    });
+    pop.footnote("timeline-" + seq_id, {
+      start: seq.start,
+      end: seq.end,
+      text: '',
+      target: timeline_id,
+      effect: "applyclass",
+      applyclass: "selected"
+    });
+  }
+
+  return {
+    init: init
+  }
+}();
+
+Seeker.videojs = function(){
+  var init = function(seq){
+
+  }
+
+  return {
+    init: init
+  }
+}();
+
+var seeker = Seeker.popcorn;
 
 var summernoteOptions = {
     focus: true,                 // set focus to editable area after initializing summernote);
@@ -351,6 +397,7 @@ var addDocument = function(seq){
   var info = $("#info");
 
   var seq_id = "seq-" + seq.id;
+  globalSequences[seq_id] = seq;
   console.log(seq_id);
   // var url = $.param.fragment( "#", {start: seq.start} );
   var sequence = $(templates.sequence(seq));
@@ -486,6 +533,7 @@ var newDocument = function(){
 }
 
 
+
 function loadSequences(sequences) {
   sequences = sequences.slice(0);
   sequences.sort(function(s1, s2) {
@@ -597,6 +645,18 @@ var startMovable = function(){
 var setEditable = function(editable){
     isEditable = editable;
 
+    if (editable){
+      var myPlayer = videojs('video-frame');
+      console.log(myPlayer);
+      // videojs("video-frame").ready(function(){
+      //   var myPlayer = this;
+      //   myPlayer.on("pause", function () {
+        myPlayer.on("play", function () { myPlayer.load (); myPlayer.off("play"); });
+      // });
+myPlayer.load ();
+myPlayer.off("play");
+    }
+
     var editables = $(".editable").editable('option', 'disabled', !isEditable);
     if (isEditable) {
       $("#document-save").show();
@@ -682,6 +742,30 @@ $(document).ready(function(){
       setEditable(true);
     }, 500);
   }
+
+  var sequenceFilter = function(item, val){
+    //val = val.replace(new RegExp("^[.]$|[\[\]|()*]",'g'),'');
+    //val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    // TODO : change regexp filter
+    val = removeDiacritics(val);
+    val = val && val.replace(new RegExp("[({[^.$*+?\\\]})]","g"),'');
+    val = '' + val;
+    if (val == ''){
+      return true;
+    }
+    var regSearch = new RegExp(val,'i');
+    var seq = globalSequences[item.id];
+    for (var k in seq){
+      if (seq.hasOwnProperty(k)) {
+        // console.log(val + " vs " + seq[k] + " (from " + k + ")");
+        if ((k in seq) && regSearch.test( removeDiacritics('' + seq[k]) )){
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+  $('#sequences').btsListFilter('#sequence-filter', {'itemFilter': sequenceFilter});
 });
 
 $(window).resize(function () {

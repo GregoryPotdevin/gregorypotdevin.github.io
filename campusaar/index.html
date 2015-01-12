@@ -5,8 +5,7 @@
 
 	<title>CampusAAR video demo</title>
 
-  <link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css">
-  <!-- <link rel="stylesheet" type="text/css" href="libs/bootstrap-theme.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link id="stylesheet-bootstrap" rel="stylesheet" type="text/css" href="css/bootstrap-theme.flatly.css">
   <link rel="stylesheet" type="text/css" href="libs/select2/select2.css">
   <link rel="stylesheet" type="text/css" href="libs/select2/select2-bootstrap.css">
@@ -17,46 +16,26 @@
 
   <link rel="stylesheet" type="text/css" href="libs/video-js/video-js.css">
   <link rel="stylesheet" type="text/css" href="css/videojs-sublime-skin.css">
-
-  <!-- <link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link> -->
-  <!-- <link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap3-wysihtml5.css"></link> -->
-
-
-  <!--<link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap3-wysihtml5.min.css"></link>-->
-
-  <!-- <link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/inputs-ext/typeaheadjs/lib/typeahead.js-bootstrap.css"> -->
   <link rel="stylesheet" type="text/css" href="video.css">
 
 
   <script type="text/javascript" src="libs/handlebars.min.js"></script>
-
-  <!--<script type="text/javascript" src="libs/wysihtml5/wysihtml5x-toolbar.min.js"></script>-->
-
   <script type="text/javascript" src="libs/jquery.min.js"></script>
   <script type="text/javascript" src="libs/jquery-migrate-1.2.1.js"></script>
 	<script type="text/javascript" src="libs/popcorn-complete.js"></script>
-	<script type="text/javascript" src="libs/bootstrap.min.js"></script>
+  <script type="text/javascript" src="libs/bootstrap/bootstrap.min.js"></script>
+  <script type="text/javascript" src="libs/bootstrap/bootstrap-list-filter.js"></script>
   <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
   <script type="text/javascript" src="libs/select2/select2.js"></script>  
   <script type="text/javascript" src="libs/select2/select2_locale_fr.js"></script>  
   <script type="text/javascript" src="libs/resizer/js/resizer.js"></script>  
-  <!--<script type="text/javascript" src="libs/wysihtml5/bootstrap3-wysihtml5.min.js"></script>-->
+  <script type="text/javascript" src="libs/diacritics.js"></script>  
   <script src="libs/summernote/summernote.js"></script>
 
 	<script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
   <script type="text/javascript" src="libs/bootstrap3-editable/bootstrap3-editable-summernote.js"></script>
 
-  <script src="libs/video-js/video.js"></script>
-
-
-  <!--<script type="text/javascript" src="libs/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js"></script>-->
-
-  <!-- // <script src="libs/wysihtml5/js/wysihtml5-0.3.0.js"></script> -->
-  <!-- // <script src="libs/wysihtml5/templates2.js"></script> -->
-  <!-- // <script src="libs/wysihtml5/bootstrap-wysihtml5-0.0.2.js"></script> -->
-  <!-- // <script src="libs/wysihtml5/bootstrap3-wysihtml5.js"></script> -->
-  <!-- // <script src="libs/wysihtml5/locales/bootstrap-wysihtml5.en-US.js"></script> -->
-  <!-- // <script src="libs/wysihtml5/locales/bootstrap-wysihtml5.fr-FR.js"></script> -->
+  <script type="text/javascript" src="libs/video-js/video.dev.js"></script>
 
   <script type="text/javascript" src="libs/data.js"></script>
 
@@ -128,31 +107,36 @@
           "id": 1,
 		      "start": 0,
 		      "end": 3,
-		      "title": "The current model of higher education is broken"
+		      "title": "The current model of higher education is broken",
+          "author": "Stephanie Lemoine"
 		    },
 		    {
           "id": 2,
 		      "start": 3,
 		      "end": 7,
-		      "title": "We are not getting the skills we need..."
+		      "title": "We are not getting the skills we need...",
+          "author": "Stephanie Lemoine"
 		    },
 		    {
           "id": 3,
 		      "start": 35,
 		      "end": 180,
-		      "title": "From 35s to 3 minutes..."
+		      "title": "From 35s to 3 minutes...",
+          "author": "Gregory Potdevin"
 		    },
 		    {
           "id": 4,
 		      "start": 180,
 		      "end": 210,
-		      "title": "From 3 minutes to the end..."
+		      "title": "From 3 minutes to the end...",
+          "author": "Benoit Vaugon"
 		    },
 		    {
           "id": 5,
 		      "start": 7,
 		      "end": 30,
-		      "title": "The model that we have today doesn't scale !!"
+		      "title": "The model that we have today doesn't scale !!",
+          "author": "Laurent Bel"
 		    }
 		  ]);
 		});//]]>  
@@ -186,7 +170,7 @@
   					<div class="input-group">
   						<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
   						<div class="input-group-btn">
-  							<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+  							<button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i></button>
   						</div>
   					</div>
   				</form>
@@ -218,25 +202,34 @@
   					<h3 class="panel-title">Video</h3>
   				</div>
   				<div class="panel-body video-container">
-  					<video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video>
+            <!-- <video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video> -->
+  					<video id="video-frame" class="video" src="http://download2.cerimes.fr/canalu/videos/utls_au_lycee/utls_270111l_bellivier_stand.mp4" controls=""></video>
+
 
             <!-- video-full -->
               <!-- poster="http://video-js.zencoder.com/oceans-clip.png" -->
-         <!--    <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
+            <!-- <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
               controls preload="auto"
-              preload="auto"
+              preload="auto" autoplay
               data-setup='{"width":"100%"}'>
-             <source src="videos/P2puvid.ogv" type='video/ogg' />
+             <source src="http://download2.cerimes.fr/canalu/videos/utls_au_lycee/utls_270111l_bellivier_stand.mp4" type='video/mp4' />
+             
              <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video> -->
   					<div id="video-timeline" class="timeline">
   						<div id="video-timeline-items">
 
   						</div>
-  						<span id="video-timeline-marker" class="timeline-marker" />
+  						<span id="video-timeline-marker" class="timeline-marker"></span>
   					</div>
   				</div>
   			</div>
+        <div class="input-group">
+            <input id="sequence-filter" type="text" class="form-control" placeholder="Search">
+            <div class="input-group-btn">
+                <button class="btn btn-info"><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+        </div>
       </div>
     </div>
 		<div class="col-md-8" style="margin-bottom:50px;">
@@ -248,7 +241,7 @@
  -->      
       <div class="panel panel-info">
         <div class="panel-heading collapsable">
-          <h3 class="panel-title">
+          <h3 class="panel-title" >
           	<a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
           		Sequences
         		</a>
@@ -271,31 +264,5 @@
 		</div>
 	</div>
 </body>
-
-<script>
-  // $('.textarea').summernote({
-  //   focus: true,                 // set focus to editable area after initializing summernote);
-  //   fontNames: [
-  //     'Arial', 'Courier New',
-  //     'Helvetica Neue', 'Lucida Grande',
-  //     'Tahoma', 'Times New Roman', 'Verdana'
-  //   ],
-
-  //   toolbar: [
-  //     ['style', ['style']],
-  //     ['font', ['bold', 'italic', 'underline', 'clear']],
-  //     // ['fontname', ['fontname']],
-  //     ['color', ['color']],
-  //     // ['para', ['ul', 'ol', 'paragraph']],
-  //     ['para', ['ul', 'ol', 'paragraph']],
-  //     // ['height', ['height']],
-  //     // ['table', ['table']],
-  //     // ['insert', ['link', 'picture', 'hr']],
-  //     // ['view', ['fullscreen', 'codeview']],
-  //     ['view', ['codeview']],
-  //     // ['help', ['help']]
-  //   ],
-  // });
-</script>
 
 </html>
