@@ -127,6 +127,15 @@
   width: 400px;  
 }
 
+.panel-heading.collapsable .collapser:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";    
+    float: right; 
+}
+.panel-heading.collapsable .collapser.collapsed:after {
+    content: "\e080";
+}
+
 .panel-heading.collapsable a:after {
     font-family: 'Glyphicons Halflings';
     content: "\e114";    
@@ -174,6 +183,20 @@
 
 .resizable { 
   z-index: 1;
+}
+
+.video-js {
+    width: 100% !important;
+    height: auto !important;
+}
+.video-js:after {
+    content: '.';
+    display: block;
+    position: relative;
+    padding: 75% 0 0 0; /* (height/width)*100%, eg. 56.25% for 16:9 75% for 4:3 */
+    margin: 0 0 0 -100%;
+    visibility: hidden;
+    height: 0; 
 }
 
 /*.editable-container {

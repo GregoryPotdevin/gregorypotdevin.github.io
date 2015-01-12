@@ -15,6 +15,9 @@
   <link rel="stylesheet" type="text/css" href="libs/summernote/summernote.css">
   <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 
+  <link rel="stylesheet" type="text/css" href="libs/video-js/video-js.css">
+  <link rel="stylesheet" type="text/css" href="css/videojs-sublime-skin.css">
+
   <!-- <link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link> -->
   <!-- <link rel="stylesheet" type="text/css" href="libs/wysihtml5/bootstrap3-wysihtml5.css"></link> -->
 
@@ -42,6 +45,10 @@
 
 	<script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
   <script type="text/javascript" src="libs/bootstrap3-editable/bootstrap3-editable-summernote.js"></script>
+
+  <script src="libs/video-js/video.js"></script>
+
+
   <!--<script type="text/javascript" src="libs/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js"></script>-->
 
   <!-- // <script src="libs/wysihtml5/js/wysihtml5-0.3.0.js"></script> -->
@@ -189,8 +196,11 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Styles <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               <li><a data-action="style" data-style="bootstrap-theme.min.css"     href="#">bootstrap</a></li>
-              <li><a data-action="style" data-style="bootstrap-theme.flatly.css"  href="#">flatly</a></li>
-              <li><a data-action="style" data-style="bootstrap-theme.AdminLTE.css"  href="#">AdminLTE</a></li>
+              <li class="selected"><a data-action="style" data-style="bootstrap-theme.flatly.css"  href="#">flatly</a></li>
+              <li><a data-action="style" data-style="bootstrap-theme.lumen.css"  href="#">lumen</a></li>
+              <li><a data-action="style" data-style="bootstrap-theme.google-plus.css"  href="#">google plus</a></li>
+              <!-- <li><a data-action="style" data-style="bootstrap-theme.material.css"  href="#">material</a></li> -->
+              <li><a data-action="style" data-style="bootstrap-theme.readable.css"  href="#">readable</a></li>
 
   <!--             <li class="divider"></li>
               <li><a href="#">Separated link</a></li> -->
@@ -209,6 +219,16 @@
   				</div>
   				<div class="panel-body video-container">
   					<video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video>
+
+            <!-- video-full -->
+              <!-- poster="http://video-js.zencoder.com/oceans-clip.png" -->
+         <!--    <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
+              controls preload="auto"
+              preload="auto"
+              data-setup='{"width":"100%"}'>
+             <source src="videos/P2puvid.ogv" type='video/ogg' />
+             <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+            </video> -->
   					<div id="video-timeline" class="timeline">
   						<div id="video-timeline-items">
 
@@ -225,7 +245,8 @@
     <textarea class="textarea" placeholder="Enter text ..." style="width: 810px; height: 200px"></textarea>
   </div>
   <hr />
- -->      <div class="panel panel-info">
+ -->      
+      <div class="panel panel-info">
         <div class="panel-heading collapsable">
           <h3 class="panel-title">
           	<a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
@@ -237,12 +258,13 @@
       </div>
 			<div class="panel panel-primary">
 				<div class="panel-heading clearfix">
-					<h3 class="panel-title pull-left">Sequence metadata</h3>
-					<div class="btn-group pull-right">
-						<span id="document-new"  class="header-button glyphicon glyphicon-plus" aria-hidden="true"></span>
+					<h3 class="panel-title">Sequence metadata
+          <div class="btn-group pull-right">
+            <span id="document-new"  class="header-button glyphicon glyphicon-plus" aria-hidden="true"></span>
             <span id="document-edit" class="header-button glyphicon glyphicon-pencil" aria-hidden="true"></span>
             <span id="document-save" class="header-button glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
-					</div>
+          </div>
+          </h3>
 				</div>
 				<div id="info" class="panel-body"></div>
 			</div>

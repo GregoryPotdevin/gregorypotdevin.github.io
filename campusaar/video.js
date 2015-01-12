@@ -662,9 +662,12 @@ $(document).ready(function(){
   $('#sidebar-video').width($('#affix-container').width());
 
   $("a[data-action='style']").click(function(e){
-    var stylesheet = $(e.target).data('style');
+    var el = $(e.target);
+    var stylesheet = el.data('style');
     $("#stylesheet-bootstrap").attr("href", 'css/' + stylesheet);
     var navbar = $("nav.navbar");
+    $("a[data-action='style']").parent().removeClass("active");
+    el.parent().addClass("active");
     if (stylesheet == "bootstrap-theme.min.css"){
       navbar.addClass('navbar-default');
       navbar.removeClass('navbar-inverse');
