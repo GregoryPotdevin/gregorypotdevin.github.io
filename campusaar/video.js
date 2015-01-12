@@ -645,17 +645,17 @@ var startMovable = function(){
 var setEditable = function(editable){
     isEditable = editable;
 
-    if (editable){
-      var myPlayer = videojs('video-frame');
-      console.log(myPlayer);
-      // videojs("video-frame").ready(function(){
-      //   var myPlayer = this;
-      //   myPlayer.on("pause", function () {
-        myPlayer.on("play", function () { myPlayer.load (); myPlayer.off("play"); });
-      // });
-myPlayer.load ();
-myPlayer.off("play");
-    }
+//     if (editable){
+//       var myPlayer = videojs('video-frame');
+//       console.log(myPlayer);
+//       // videojs("video-frame").ready(function(){
+//       //   var myPlayer = this;
+//       //   myPlayer.on("pause", function () {
+//         myPlayer.on("play", function () { myPlayer.load (); myPlayer.off("play"); });
+//       // });
+// myPlayer.load ();
+// myPlayer.off("play");
+//     }
 
     var editables = $(".editable").editable('option', 'disabled', !isEditable);
     if (isEditable) {
