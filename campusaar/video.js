@@ -269,7 +269,6 @@ function mkEditable(id, field, seq, callback){
     } else {
       $(p_id).editable({
         'validate': function(v) {
-          console.log("validate " + v);
           if (field.required && (!v || !v.length)){
             return 'Ce champ est obligatoire';
           }
@@ -401,7 +400,7 @@ var addDocument = function(seq){
 
   var seq_id = "seq-" + seq.id;
   globalSequences[seq.id] = seq;
-  console.log(seq_id);
+  //console.log(seq_id);
   // var url = $.param.fragment( "#", {start: seq.start} );
   var sequence = $(templates.sequence(seq));
   sequence.data("seq", seq);
@@ -535,13 +534,25 @@ var newDocument = function(){
   onOrderChanged();
 }
 
+var clearSequenceFilter;
 
 var updateSequenceCount = function(cnt){
+  var seqCnt = $("#sequence-cnt");
   if (cnt === undefined){
+    seqCnt.hide();
     return;
   }
   var total = sequenceCnt();
-  $("#sequence-cnt").html(cnt==total?total:(cnt + '/' + total));
+  seqCnt.show();
+  if (cnt == total){
+    seqCnt.text(cnt);
+    seqCnt.removeClass("closeable");
+    seqCnt.unbind('click');
+  } else {
+    seqCnt.text(cnt + '/' + total);
+    seqCnt.addClass("closeable");
+    seqCnt.click(Filter.clear);
+  }
 }
 
 
@@ -646,15 +657,36 @@ var startMovable = function(){
   }
 }
 
-  var nextField = function(el, usePrev){
-    if(usePrev) {                                              // when shift + tab
-      return el.parents().prevAll(":has(.editable:visible):first") // find the parent of the editable before this one in the markup
-                        .find(".editable:last");           // grab the editable and display it
-    } else {                                                      // when just tab
-      return el.parents().nextAll(":has(.editable:visible):first") // find the parent of the editable after this one in the markup
-          .find(".editable:first");          // grab the editable and display it
+var nextField = function(el, usePrev){
+  if(usePrev) { 
+    // prevAll(":has(.editable:visible):first").find(".editable:last");
+    return el.parents().prevAll(":has(.editable):first") // find the parent of the editable before this one in the markup
+                      .find(".editable:last");           // grab the editable and display it
+  } else {                                                      // when just tab
+    return el.parents().nextAll(":has(.editable):first") // find the parent of the editable after this one in the markup
+        .find(".editable:first");          // grab the editable and display it
+  }
+}
+
+var gotoNextField = function(el, usePrev){
+  var next = nextField(el, usePrev);
+  //if(next.paren)
+  return function(){
+    // Check if parent is expanded
+    var parent = next.closest("table").parent(".collapse");
+    console.log("aria-expanded", parent.attr("aria-expanded"));
+    if (parent.attr("aria-expanded") == "false"){
+      // expand if needed and show the field when finished
+      parent.one('shown.bs.collapse', function () {
+        next.editable('show');
+      });
+      console.log("open");
+      parent.collapse('show');
+    } else {
+      next.editable('show');
     }
   }
+}
 
 var setEditable = function(editable){
     isEditable = editable;
@@ -686,13 +718,13 @@ var setEditable = function(editable){
             if(e.which == 9) {                                              // when tab key is pressed
               e.preventDefault();
               console.log('this', this);
-              var next = nextField($(this), e.shiftKey);
+              var next = gotoNextField($(this), e.shiftKey);
               var form = $(this).closest("td").find("form");
               form.submit();
               if (form.has("div.has-error").length > 0){
                 console.log("Found error, cancel !");
               } else {
-                next.editable('show');
+                next();
               }
             }
           });
@@ -725,6 +757,78 @@ function getUrlParameter(sParam)
     }
 }  
 
+
+var Filter = function(){
+
+  var filterBuilder = function(val){
+    // TODO : change regexp filter, 
+    val = removeDiacritics(val);
+    val = val.toLowerCase();
+    val = ('' + val).split(' ');
+    // val = val && val.replace(new RegExp("[({[^.$*+?\\\]})]","g"),'');
+    return $.grep(val, function(v){return v != '';});
+  }
+
+  var seqContains = function(seq, val){
+    if (val == ''){
+      return true;
+    }
+    for (var k in seq){
+      if (seq.hasOwnProperty(k)) {
+        var seqVal = '' + seq[k];
+        seqVal = seqVal.toLowerCase();
+        seqVal = removeDiacritics(seqVal);
+        if (seqVal.indexOf(val) > -1){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  var itemFilter = function(item, val){
+    //val = val.replace(new RegExp("^[.]$|[\[\]|()*]",'g'),'');
+    //val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    if (val == ''){
+      return true;
+    }
+    var regSearch = new RegExp(val,'i');
+    var seq = $(item).data("seq");
+
+    for(var v in val){
+      if (!seqContains(seq, val[v])){
+        return false;
+      }
+    }
+    return true;
+  };
+
+  var options = {
+    'delay':150,
+    'filterBuilder': filterBuilder,
+    'itemFilter': itemFilter, 
+    'onFilter': updateSequenceCount,
+    'resetOnBlur': false,
+    'itemEl': '.sequence-item,.timeline-item'
+  };
+
+  var init = function(){
+    $('#sequences').btsListFilter('#sequence-filter', options);
+    $('#video-timeline-items').btsListFilter('#sequence-filter', options);
+  };
+
+  var clear = function(e){
+      e.stopPropagation();
+      $("#sequence-filter").val('').trigger('keyup');
+    }
+
+  return {
+    init: init,
+    clear: clear,
+  }
+
+}();
+
 $(document).ready(function(){
   setEditable(false);
   $("#document-edit").click(function(e){ setEditable(true); });
@@ -733,6 +837,17 @@ $(document).ready(function(){
     newDocument();
     setEditable(true);
   });
+
+  Mousetrap.bind(['command+e', 'ctrl+e'], function() {
+      setEditable(true);
+      return false;
+  });
+
+  Mousetrap.bind(['command+s', 'ctrl+s'], function() {
+      setEditable(false);
+      return false;
+  });
+
   $('#sidebar-video').width($('#affix-container').width());
 
   $("a[data-action='style']").click(function(e){
@@ -757,29 +872,6 @@ $(document).ready(function(){
     }, 500);
   }
 
-  var sequenceFilter = function(item, val){
-    //val = val.replace(new RegExp("^[.]$|[\[\]|()*]",'g'),'');
-    //val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-    // TODO : change regexp filter
-    val = removeDiacritics(val);
-    val = val && val.replace(new RegExp("[({[^.$*+?\\\]})]","g"),'');
-    val = '' + val;
-    if (val == ''){
-      return true;
-    }
-    var regSearch = new RegExp(val,'i');
-    var seq = $(item).data("seq");
-    for (var k in seq){
-      if (seq.hasOwnProperty(k)) {
-        // console.log(val + " vs " + seq[k] + " (from " + k + ")");
-        if ((k in seq) && regSearch.test( removeDiacritics('' + seq[k]) )){
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
   $(".has-clear").keyup(function () {
     var t = $(this);
     t.next('span').toggle(Boolean(t.val()));
@@ -792,17 +884,10 @@ $(document).ready(function(){
     $(this).hide();
   });
 
-  var filterOptions = {
-    'itemFilter': sequenceFilter, 
-    'delay':150,
-    'onFilter': updateSequenceCount,
-    'resetOnBlur': false,
-    'itemEl': '.sequence-item,.timeline-item'
-  };
+  Filter.init();
 
-  $('#sequences').btsListFilter('#sequence-filter', filterOptions);
-  $('#video-timeline-items').btsListFilter('#sequence-filter', filterOptions);
-  updateSequenceCount();
+  // TODO : optimize
+  $('[data-toggle="tooltip"]').tooltip();
 });
 
 $(window).resize(function () {

@@ -62,8 +62,14 @@ var model = {
       'type': 'number'
     },
     {
-      'id': 'continent', 
+      'id': 'region', 
       'header': 'Geography',
+      'label': 'Région',
+      'tab': 'info',
+      'type': 'text'
+    },
+    {
+      'id': 'continent', 
       'label': 'Continent',
       'tab': 'info',
       'type': 'list', 

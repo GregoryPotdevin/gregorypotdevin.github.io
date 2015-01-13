@@ -33,6 +33,7 @@
 			initial: true,
 			eventKey: 'keyup',
 			resetOnBlur: true,
+			filterBuilder: null,
 			sourceData: null,
 			sourceTmpl: '<a class="list-group-item" href="#"><span>{title}</span></a>',
 			sourceNode: function(data) {
@@ -61,6 +62,9 @@
 		inputEl$.on(options.eventKey, debouncer(function(e) {
 			
 			var val = $(this).val();
+			if(options.filterBuilder){
+				val = options.filterBuilder(val);
+			}
 
 			if(options.itemEl)
 				items$ = searchlist$.find(options.itemEl);

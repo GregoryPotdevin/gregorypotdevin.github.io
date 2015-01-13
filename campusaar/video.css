@@ -16,6 +16,7 @@
   display: none;
   visibility: hidden;
 }
+
 .info-item.selected {
   display: block;
   visibility: visible;
@@ -234,6 +235,12 @@
   width:100%;
 }*/
 
+.badge.closeable:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e014";    
+    float: right; 
+}
 
-
-
+.badge.closeable {
+  cursor: pointer;
+}
