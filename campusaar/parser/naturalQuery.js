@@ -72,63 +72,46 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,3],$V1=[1,4],$V2=[1,5],$V3=[1,6],$V4=[1,7],$V5=[1,9],$V6=[1,10],$V7=[1,11],$V8=[1,12],$V9=[1,13],$Va=[1,14],$Vb=[1,15],$Vc=[5,6,7,8,9,10,11,12,14],$Vd=[5,6,7,14],$Ve=[5,6,7,8,9,14];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[5,6,7],$V1=[2,2],$V2=[1,3],$V3=[2,11],$V4=[1,5],$V5=[1,6],$V6=[1,9],$V7=[6,7,9],$V8=[1,11],$V9=[1,13],$Va=[1,14],$Vb=[2,7],$Vc=[2,12],$Vd=[2,9],$Ve=[1,21],$Vf=[1,22],$Vg=[2,13],$Vh=[2,8],$Vi=[2,10],$Vj=[2,3],$Vk=[2,4],$Vl=[2,5],$Vm=[2,6],$Vn=[2,14],$Vo=[2,15];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"expressions":3,"e":4,"EOF":5,"+":6,"-":7,"*":8,"/":9,"^":10,"!":11,"%":12,"(":13,")":14,"NUMBER":15,"E":16,"PI":17,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",6:"+",7:"-",8:"*",9:"/",10:"^",11:"!",12:"%",13:"(",14:")",15:"NUMBER",16:"E",17:"PI"},
-productions_: [0,[3,2],[4,3],[4,3],[4,3],[4,3],[4,3],[4,2],[4,2],[4,2],[4,3],[4,1],[4,1],[4,1]],
+symbols_: {"error":2,"expressions":3,"e":4,"EOF":5,"&&":6,"||":7,"(":8,")":9,"key":10,":":11,"value":12,"TOKEN":13,"STRING":14,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",6:"&&",7:"||",8:"(",9:")",11:":",13:"TOKEN",14:"STRING"},
+productions_: [0,[3,2],[4,0],[4,3],[4,3],[4,3],[4,3],[4,1],[4,2],[4,1],[4,2],[10,0],[10,1],[12,0],[12,1],[12,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
- typeof console !== 'undefined' ? console.log($$[$0-1]) : print($$[$0-1]);
+ typeof console !== 'undefined' ? console.log('parsed', $$[$0-1]) : print('parsed', $$[$0-1]);
           return $$[$0-1]; 
 break;
-case 2:
-this.$ = $$[$0-2]+$$[$0];
-break;
 case 3:
-this.$ = $$[$0-2]-$$[$0];
+this.$ = {'type': 'and', 'expressions': [$$[$0-2],$$[$0]]};
 break;
 case 4:
-this.$ = $$[$0-2]*$$[$0];
+this.$ = {'type': 'or', 'expressions': [$$[$0-2],$$[$0]]};
 break;
 case 5:
-this.$ = $$[$0-2]/$$[$0];
-break;
-case 6:
-this.$ = Math.pow($$[$0-2], $$[$0]);
-break;
-case 7:
-
-          this.$ = (function fact (n) { return n==0 ? 1 : fact(n-1) * n })($$[$0-1]);
-        
-break;
-case 8:
-this.$ = $$[$0-1]/100;
-break;
-case 9:
-this.$ = -$$[$0];
-break;
-case 10:
 this.$ = $$[$0-1];
 break;
-case 11:
-this.$ = Number(yytext);
+case 6:
+this.$ = {'type': 'filter', 'key': $$[$0-2], 'value': $$[$0]};
 break;
-case 12:
-this.$ = Math.E;
+case 7: case 9:
+this.$ = {'type': 'string', 'value': yytext};
 break;
-case 13:
-this.$ = Math.PI;
+case 8: case 10:
+this.$ = {'type': 'strings', 'value': [$$[$0-1], $$[$0]]};
+break;
+case 12: case 14: case 15:
+ this.$ = yytext 
 break;
 }
 },
-table: [{3:1,4:2,7:$V0,13:$V1,15:$V2,16:$V3,17:$V4},{1:[3]},{5:[1,8],6:$V5,7:$V6,8:$V7,9:$V8,10:$V9,11:$Va,12:$Vb},{4:16,7:$V0,13:$V1,15:$V2,16:$V3,17:$V4},{4:17,7:$V0,13:$V1,15:$V2,16:$V3,17:$V4},o($Vc,[2,11]),o($Vc,[2,12]),o($Vc,[2,13]),{1:[2,1]},{4:18,7:$V0,13:$V1,15:$V2,16:$V3,17:$V4},{4:19,7:$V0,13:$V1,15:$V2,16:$V3,17:$V4},{4:20,7:$V0,13:$V1,15:$V2,16:$V3,17:$V4},{4:21,7:$V0,13:$V1,15:$V2,16:$V3,17:$V4},{4:22,7:$V0,13:$V1,15:$V2,16:$V3,17:$V4},o($Vc,[2,7]),o($Vc,[2,8]),o($Vc,[2,9]),{6:$V5,7:$V6,8:$V7,9:$V8,10:$V9,11:$Va,12:$Vb,14:[1,23]},o($Vd,[2,2],{8:$V7,9:$V8,10:$V9,11:$Va,12:$Vb}),o($Vd,[2,3],{8:$V7,9:$V8,10:$V9,11:$Va,12:$Vb}),o($Ve,[2,4],{10:$V9,11:$Va,12:$Vb}),o($Ve,[2,5],{10:$V9,11:$Va,12:$Vb}),o([5,6,7,8,9,10,14],[2,6],{11:$Va,12:$Vb}),o($Vc,[2,10])],
-defaultActions: {8:[2,1]},
+table: [o($V0,$V1,{3:1,4:2,10:4,8:$V2,11:$V3,13:$V4,14:$V5}),{1:[3]},{5:[1,7],6:[1,8],7:$V6},o($V7,$V1,{4:10,10:12,8:$V8,11:$V3,13:$V9,14:$Va}),{11:[1,15]},o($V0,$Vb,{11:$Vc,13:[1,16]}),o($V0,$Vd,{14:[1,17]}),{1:[2,1]},o($V0,$V1,{10:4,4:18,8:$V2,11:$V3,13:$V4,14:$V5}),o($V0,$V1,{10:4,4:19,8:$V2,11:$V3,13:$V4,14:$V5}),{6:$Ve,7:$Vf,9:[1,20]},o($V7,$V1,{10:12,4:23,8:$V8,11:$V3,13:$V9,14:$Va}),{11:[1,24]},o($V7,$Vb,{11:$Vc,13:[1,25]}),o($V7,$Vd,{14:[1,26]}),o($V0,$Vg,{12:27,13:[1,28],14:[1,29]}),o($V0,$Vh),o($V0,$Vi),o([5,6],$Vj,{7:$V6}),o($V0,$Vk),o($V0,$Vl),o($V7,$V1,{10:12,4:30,8:$V8,11:$V3,13:$V9,14:$Va}),o($V7,$V1,{10:12,4:31,8:$V8,11:$V3,13:$V9,14:$Va}),{6:$Ve,7:$Vf,9:[1,32]},o($V7,$Vg,{12:33,13:[1,34],14:[1,35]}),o($V7,$Vh),o($V7,$Vi),o($V0,$Vm),o($V0,$Vn),o($V0,$Vo),o([6,9],$Vj,{7:$Vf}),o($V7,$Vk),o($V7,$Vl),o($V7,$Vm),o($V7,$Vn),o($V7,$Vo)],
+defaultActions: {7:[2,1]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -603,38 +586,46 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:/* skip whitespace */
 break;
-case 1:return 15
+case 1:return 6
 break;
-case 2:return 8
+case 2:return 6
 break;
-case 3:return 9
+case 3:return 6
 break;
 case 4:return 7
 break;
-case 5:return 6
+case 5:return 7
 break;
-case 6:return 10
+case 6:return 7
 break;
-case 7:return 11
+case 7:return 8
 break;
-case 8:return 12
+case 8:return 9
 break;
-case 9:return 13
+case 9:return 11
 break;
-case 10:return 14
+case 10:this.begin('string');
 break;
-case 11:return 17
+case 11:this.popState();
 break;
-case 12:return 16
+case 12: return 14; 
 break;
-case 13:return 5
+case 13:this.begin('string2');
 break;
-case 14:return 'INVALID'
+case 14:this.popState();
+break;
+case 15: return 14; 
+break;
+case 16:return 13
+break;
+case 17:return 5
+break;
+case 18:return 'INVALID'
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:!)/,/^(?:%)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:$)/,/^(?:.)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:&&)/,/^(?:and\b)/,/^(?:et\b)/,/^(?:\|\|)/,/^(?:or\b)/,/^(?:et\b)/,/^(?:\()/,/^(?:\))/,/^(?::)/,/^(?:")/,/^(?:")/,/^(?:(\\"|[^"])*)/,/^(?:')/,/^(?:')/,/^(?:(\\\|\[\^)*)/,/^(?:[^\s|&:()]+)/,/^(?:$)/,/^(?:.)/],
+conditions: {"string":{"rules":[11,12],"inclusive":false},"string2":{"rules":[14,15],"inclusive":false},"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,13,16,17,18],"inclusive":true}}
 });
 return lexer;
 })();

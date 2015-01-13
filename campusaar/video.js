@@ -895,4 +895,22 @@ $(window).resize(function () {
 });
 
 
+function generateThumbnail() {     
+    //generate thumbnail URL data
+    var thecanvas = $("canvas")[0];
+    var context = thecanvas.getContext('2d');
+    context.drawImage($("video")[0], 0, 0, 220, 150);
+    var dataURL = thecanvas.toDataURL();
+
+    //create img
+    var img = document.createElement('img');
+    img.setAttribute('src', dataURL);
+
+    //append img in container div
+    document.getElementById('thumbnails').appendChild(img);
+}
+  Mousetrap.bind(['command+p', 'ctrl+p'], function() {
+      generateThumbnail();
+      return false;
+  });
 
