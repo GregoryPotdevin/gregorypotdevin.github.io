@@ -43,6 +43,7 @@
 			},
 			itemEl: '.list-group-item',
 			itemChild: null,	
+			onFilter: null,
 			itemFilter: function(item, val) {
 				//val = val.replace(new RegExp("^[.]$|[\[\]|()*]",'g'),'');
 				//val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -81,12 +82,14 @@
 			{
 				contains.show();
 				containsNot.hide();
+				if(options.onFilter){
+					options.onFilter(contains.size());
+				}
 
 				if($.type(options.sourceData)==='function')
 				{
 					contains.hide();
 					containsNot.hide();
-					
 					if(callReq)
 					{
 						if($.isFunction(callReq.abort))
@@ -115,6 +118,9 @@
 				contains.show();
 				containsNot.show();
 				searchlist$.find('.bts-dynamic-item').remove();
+				if(options.onFilter){
+					options.onFilter(contains.size() + containsNot.size());
+				}
 			}
 		}, options.delay));
 

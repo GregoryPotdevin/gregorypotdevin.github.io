@@ -224,12 +224,23 @@
   					</div>
   				</div>
   			</div>
-        <div class="input-group">
-            <input id="sequence-filter" type="text" class="form-control" placeholder="Search">
-            <div class="input-group-btn">
+        <form class="form form-horizontal">
+          <div class="has-feeback">
+          <!-- <div class="input-group has-feedback"> -->
+            <!-- <div class="col-md-12"> -->
+            <input id="sequence-filter" type="text" class="form-control form-control-inline has-clear" placeholder="Filter">
+            <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+          </div>
+            <!-- </div> -->
+          <!-- </div> -->
+
+           <!--  <div class="editable-input" style="position: relative;">
+              <input type="text" class="form-control input-sm" style="padding-right: 24px;">
+            </div> -->
+            <!-- <div class="input-group-btn">
                 <button class="btn btn-info"><i class="glyphicon glyphicon-search"></i></button>
-            </div>
-        </div>
+            </div> -->
+        </form>
       </div>
     </div>
 		<div class="col-md-8" style="margin-bottom:50px;">
@@ -243,7 +254,7 @@
         <div class="panel-heading collapsable">
           <h3 class="panel-title" >
           	<a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
-          		Sequences
+          		Sequences <span id="sequence-cnt" class="badge"></span>
         		</a>
         	</h3>
         </div>

@@ -76,6 +76,12 @@
   z-index: 2;
 }
 
+.form-control-inline {
+    min-width: 0;
+    width: 100%;
+    display: inline;
+}
+
 .tab-content {
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;

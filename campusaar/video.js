@@ -8,6 +8,10 @@ var endMovable = noop;
 
 var globalSequences = {};
 
+var sequenceCnt = function(){
+  return Object.keys(globalSequences).length;
+}
+
 $.fn.editable.defaults.mode = 'inline';
 var isNumeric = function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -349,7 +353,6 @@ var showDocument = function(seq){
   }
 }
 
-
 var initPopcorn = function(seq){
   var pop = Popcorn("#video-frame");
   var seq_id = "seq-" + seq.id;
@@ -397,13 +400,13 @@ var addDocument = function(seq){
   var info = $("#info");
 
   var seq_id = "seq-" + seq.id;
-  globalSequences[seq_id] = seq;
+  globalSequences[seq.id] = seq;
   console.log(seq_id);
   // var url = $.param.fragment( "#", {start: seq.start} );
   var sequence = $(templates.sequence(seq));
+  sequence.data("seq", seq);
   urlHash = $.param({ start: seq.start });
   sequence.fragment( urlHash, 2 );
-  sequence.data("seq", seq);
   list.append(sequence);
   $("#header ul").append('<li ><a href="/user/messages"><span class="tab">Message Center</span></a></li>');
 
@@ -533,6 +536,15 @@ var newDocument = function(){
 }
 
 
+var updateSequenceCount = function(cnt){
+  if (cnt === undefined){
+    return;
+  }
+  var total = sequenceCnt();
+  $("#sequence-cnt").html(cnt==total?total:(cnt + '/' + total));
+}
+
+
 
 function loadSequences(sequences) {
   sequences = sequences.slice(0);
@@ -592,6 +604,8 @@ function loadSequences(sequences) {
   if ("start" in params){
     videoSetTime(params.start)
   }
+
+  updateSequenceCount(sequenceCnt());
 }
 
 
@@ -754,7 +768,7 @@ $(document).ready(function(){
       return true;
     }
     var regSearch = new RegExp(val,'i');
-    var seq = globalSequences[item.id];
+    var seq = $(item).data("seq");
     for (var k in seq){
       if (seq.hasOwnProperty(k)) {
         // console.log(val + " vs " + seq[k] + " (from " + k + ")");
@@ -765,7 +779,30 @@ $(document).ready(function(){
     }
     return false;
   };
-  $('#sequences').btsListFilter('#sequence-filter', {'itemFilter': sequenceFilter});
+
+  $(".has-clear").keyup(function () {
+    var t = $(this);
+    t.next('span').toggle(Boolean(t.val()));
+  });
+
+  $(".clearer").hide($(this).prev('input').val());
+
+  $(".clearer").click(function () {
+    $(this).prev('input').val('').focus();
+    $(this).hide();
+  });
+
+  var filterOptions = {
+    'itemFilter': sequenceFilter, 
+    'delay':150,
+    'onFilter': updateSequenceCount,
+    'resetOnBlur': false,
+    'itemEl': '.sequence-item,.timeline-item'
+  };
+
+  $('#sequences').btsListFilter('#sequence-filter', filterOptions);
+  $('#video-timeline-items').btsListFilter('#sequence-filter', filterOptions);
+  updateSequenceCount();
 });
 
 $(window).resize(function () {
