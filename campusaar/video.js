@@ -914,3 +914,15 @@ function generateThumbnail() {
       return false;
   });
 
+function parse(str){
+  var lexer = parser.lexer;
+  var terminals = parser.terminals_;
+  var tokens = [];
+  var texts = [];
+  do {
+    tokens.push(lexer.lex());
+    texts.push(lexer.match);
+  } while(tokens[tokens.length-1] != 'EOF');
+  console.log(parse("foo et (author: stephanie)"));
+}
+
