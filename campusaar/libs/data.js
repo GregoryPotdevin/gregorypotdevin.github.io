@@ -1,9 +1,18 @@
 
-var model = {
+
+var segmentModel = {
   'fields': [
     {
       'id': 'id', 
       'label': 'Id', 
+      'tab': 'info',
+      'type': 'number', 
+      'editable': false,
+      'required': true
+    },
+    {
+      'id': 'parentId', 
+      'label': 'Layer Id', 
       'tab': 'info',
       'type': 'number', 
       'editable': false,
@@ -115,7 +124,129 @@ var model = {
     {'id': 'info', 'label': 'Informations'},
     {'id': 'time', 'label': 'Time'}
   ]
-}
+};
+
+var layerModel = {
+  'fields': [
+    {
+      'id': 'id', 
+      'label': 'Id', 
+      'tab': 'info',
+      'type': 'number', 
+      'editable': false,
+      'required': true
+    },
+    {
+      'id': 'analysisId', 
+      'label': 'Analysis Id', 
+      'tab': 'info',
+      'type': 'number', 
+      'editable': false,
+      'required': true
+    },
+    {
+      'id': 'title', 
+      'header': 'Metadata',
+      'label': 'Titre',
+      'tab': 'info',
+      'type': 'text',
+      'required': true
+    },
+    {
+      'id': 'author', 
+      'label': 'Auteur',
+      'tab': 'info',
+      'type': 'text'
+    },
+    {
+      'id': 'creation_date', 
+      'label': 'Date de création',
+      'tab': 'info',
+      'type': 'date'
+    },
+    {
+      'id': 'comment', 
+      'header': 'Autres',
+      'label': 'Commentaire',
+      'tab': 'info',
+      'type': 'html',
+    },
+    {
+      'id': 'start', 
+      'header': 'Timecodes',
+      'label': 'Début',
+      'tab': 'time',
+      'type': 'timecode'
+    },
+    {
+      'id': 'end', 
+      'label': 'Fin',
+      'tab': 'time',
+      'type': 'timecode'
+    }
+  ],
+  'tabs': [
+    {'id': 'info', 'label': 'Informations'},
+    {'id': 'time', 'label': 'Time'}
+  ]
+};
+
+var analysisModel = {
+  'fields': [
+    {
+      'id': 'id', 
+      'label': 'Id', 
+      'tab': 'info',
+      'type': 'number', 
+      'editable': false,
+      'required': true
+    },
+    {
+      'id': 'videoId', 
+      'label': 'Video Id', 
+      'tab': 'info',
+      'type': 'number', 
+      'editable': false,
+      'required': true
+    },
+    {
+      'id': 'title', 
+      'header': 'Metadata',
+      'label': 'Titre',
+      'tab': 'info',
+      'type': 'text',
+      'required': true
+    },
+    {
+      'id': 'author', 
+      'label': 'Auteur',
+      'tab': 'info',
+      'type': 'text'
+    },
+    {
+      'id': 'creation_date', 
+      'label': 'Date de création',
+      'tab': 'info',
+      'type': 'date'
+    },
+    {
+      'id': 'comment', 
+      'header': 'Autres',
+      'label': 'Commentaire',
+      'tab': 'info',
+      'type': 'html',
+    }
+  ],
+  'tabs': [
+    {'id': 'info', 'label': 'Informations'}
+  ]
+};
+
+var models = {
+    "analysis": analysisModel,
+    "layer": layerModel,
+    "segment": segmentModel,
+};
 
 
 var dataLists = {
@@ -432,5 +563,12 @@ var dataLists = {
     "Théâtre",
     "Thriller",
     "Western"
+  ],
+
+  "layer-type": [
+    "spatial",
+    "temporel",
+    "thématique",
+    "ingestion",
   ]
-}
+};

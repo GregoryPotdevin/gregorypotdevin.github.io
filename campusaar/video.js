@@ -47,8 +47,8 @@ var Seeker = Seeker || {};
 
 Seeker.popcorn = function() {
 
-  var init= function(seq){
-    var pop = Popcorn("#video-frame");
+  var init= function(selector, seq){
+    var pop = Popcorn(selector);
     var seq_id = "seq-" + seq.id;
     var timeline_id = "timeline-" + seq.id;
     pop.sequences(seq_id, {
@@ -69,8 +69,18 @@ Seeker.popcorn = function() {
     });
   }
 
+  var refresh = init;
+
+  setTime = function(start){
+    var video = $('#video-frame');
+    video[0].currentTime = start;
+    video[0].play();
+  }
+
   return {
-    init: init
+    init: init,
+    refresh: refresh,
+    setTime: setTime,
   }
 }();
 
@@ -204,12 +214,6 @@ var templates = function(){
 
 var isEditable = false;
 
-
-function videoSetTime(start){
-  var video = $('#video-frame');
-  video[0].currentTime = start;
-  video[0].play();
-}
 
 function mkEditable(id, field, seq, callback){
   if (field.hasOwnProperty('editable') && !field.editable){
@@ -352,45 +356,9 @@ var showDocument = function(seq){
   }
 }
 
-var initPopcorn = function(seq){
-  var pop = Popcorn("#video-frame");
-  var seq_id = "seq-" + seq.id;
-  var timeline_id = "timeline-" + seq.id;
-  pop.sequences(seq_id, {
-    start: seq.start,
-    end: seq.end,
-    data: seq,
-    target: seq_id,
-    effect: "applyclass",
-    applyclass: "active"
-  });
-  pop.footnote("timeline-" + seq_id, {
-    start: seq.start,
-    end: seq.end,
-    text: '',
-    target: timeline_id,
-    effect: "applyclass",
-    applyclass: "selected"
-  });
-}
 
-var refreshPopcorn = function(seq){
-  initPopcorn(seq);
-  // var pop = Popcorn("#video-frame");
-  // var seq_id = "seq-" + seq.id;
-  // var timeline_id = "timeline-" + seq.id;
-  // console.log("refresh " + seq_id + " from " + seq.start + " to " + seq.end);
-  // pop.sequences(seq_id, {
-  //   start: seq.start,
-  //   end: seq.end
-  // });
-  // pop.footnote("timeline-" + seq_id, {
-  //   start: seq.start,
-  //   end: seq.end
-  // });
-}
 
-var addDocument = function(seq){
+var addDocument = function(seq, model){
   var video = $("#video-frame");
   var pop = Popcorn("#video-frame");
 
@@ -407,7 +375,6 @@ var addDocument = function(seq){
   urlHash = $.param({ start: seq.start });
   sequence.fragment( urlHash, 2 );
   list.append(sequence);
-  $("#header ul").append('<li ><a href="/user/messages"><span class="tab">Message Center</span></a></li>');
 
   var info_id = "info-" + seq.id;
 
@@ -480,10 +447,10 @@ var addDocument = function(seq){
 
   timeline.append(timeline_entry);
 
-  initPopcorn(seq);
+  seeker.init("#video-frame", seq);
 
   var onClick = function(){
-    videoSetTime(seq.start);
+    seeker.setTime(seq.start);
     showDocument(seq);
     $.bbq.pushState({start: seq.start});
   }
@@ -503,7 +470,7 @@ var addDocument = function(seq){
     var start = seq.start*100/videoDuration;
     var width = duration*100/videoDuration;
     timeline_entry.css("left", start + '%').css("width", width + '%');
-    refreshPopcorn(seq);
+    seeker.refresh("#video-frame", seq);
     onOrderChanged();
   }
 
@@ -519,12 +486,12 @@ var addDocument = function(seq){
 }
 
 
-var newDocument = function(){
+var newDocument = function(model){
   nextId++;
   var video = $("#video-frame");
   var start = Math.round(video[0].currentTime);
   var seq = {'id': nextId, 'start': start, 'end': start+60}
-  addDocument(seq);
+  addDocument(seq, model);
   showDocument(seq);
 
   // Edit title by default
@@ -595,7 +562,7 @@ function loadSequences(sequences) {
 
   $.each(sequences, function (idx, seq) {
     nextId = Math.max(seq.id, nextId);
-    addDocument(seq);
+    addDocument(seq, models.segment);
     if ((seq.start <= videoStartTime) && (seq.end > videoStartTime)) {
       showDocument(seq);
     }
@@ -613,7 +580,7 @@ function loadSequences(sequences) {
   pop.play();
   var params = $.deparam.fragment();
   if ("start" in params){
-    videoSetTime(params.start)
+    seeker.setTime(params.start);
   }
 
   updateSequenceCount(sequenceCnt());
@@ -834,7 +801,7 @@ $(document).ready(function(){
   $("#document-edit").click(function(e){ setEditable(true); });
   $("#document-save").click(function(e){ setEditable(false); });
   $("#document-new").click(function(e){
-    newDocument();
+    newDocument(models.segment);
     setEditable(true);
   });
 
@@ -909,9 +876,9 @@ function generateThumbnail() {
     //append img in container div
     document.getElementById('thumbnails').appendChild(img);
 }
-  Mousetrap.bind(['command+p', 'ctrl+p'], function() {
+  Mousetrap.bind(['command+p', 'alt+p'], function() {
       generateThumbnail();
-      return false;
+      return true;
   });
 
 function parse(str){
