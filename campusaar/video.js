@@ -392,7 +392,7 @@ var addDocument = function(seq, model){
   });
 
   var info_entry_str = '\
-    <div id="' + info_id + '" class="info-item" role="tabpanel">\
+    <div id="' + info_id + '" class="info-item manual-tab-pane" role="tabpanel">\
       <ul id="tabs-' + info_id + '" class="nav nav-tabs" role="tablist">';
 
   model.tabs.forEach(function(tab, idx){
@@ -847,9 +847,16 @@ $(document).ready(function(){
   $(".clearer").hide($(this).prev('input').val());
 
   $(".clearer").click(function () {
-    $(this).prev('input').val('').focus();
-    $(this).hide();
+    var el = $(this);
+    el.prev('input').val('').focus();
+    el.hide();
   });
+
+  $(".metadata-pane-btn").click(function(){
+    var el = $(this);
+    $(".metadata-pane").removeClass("selected");
+    $('#' + el.attr('aria-controls')).addClass("selected");
+  })
 
   Filter.init();
 

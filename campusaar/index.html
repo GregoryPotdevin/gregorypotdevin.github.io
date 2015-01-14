@@ -23,7 +23,7 @@
   <script type="text/javascript" src="libs/jquery.min.js"></script>
   <script type="text/javascript" src="libs/jquery-migrate-1.2.1.js"></script>
   <script type="text/javascript">jQuery.migrateMute = true;</script>
-	<script type="text/javascript" src="libs/popcorn-complete.js"></script>
+  <script type="text/javascript" src="libs/popcorn-complete.js"></script>
   <script type="text/javascript" src="libs/bootstrap/bootstrap.min.js"></script>
   <script type="text/javascript" src="libs/bootstrap/bootstrap-list-filter.js"></script>
   <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
@@ -33,7 +33,7 @@
   <script type="text/javascript" src="libs/diacritics.js"></script>  
   <script src="libs/summernote/summernote.js"></script>
 
-	<script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
+  <script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
   <script type="text/javascript" src="libs/bootstrap3-editable/bootstrap3-editable-summernote.js"></script>
 
   <script type="text/javascript" src="libs/video-js/video.dev.js"></script>
@@ -42,10 +42,10 @@
   <script type="text/javascript" src="parser/naturalQuery.js"></script>
 
   <script id="sequence-item-template" type="text/x-handlebars-template">
-    <a href="#" id="seq-{{id}}" class="list-group-item sequence-item">
-      <h5 class="list-group-item-heading">{{title}}</h5>
-      <p class="list-group-item-text">{{timecode start}} - {{timecode end}}</p>
-    </a>
+  <a href="#" id="seq-{{id}}" class="list-group-item sequence-item">
+  <h5 class="list-group-item-heading">{{title}}</h5>
+  <p class="list-group-item-text">{{timecode start}} - {{timecode end}}</p>
+  </a>
   </script>
 <!--  
         <table class="table table-bordered table-striped table-info" style="clear: both">
@@ -53,97 +53,97 @@
            {{renderField this ../seq}}
          {{/each}}
          {{renderFields fields ../seq}} -->
-  <script id="sequence-info-template" type="text/x-handlebars-template">
-    <div role="tabpanel" class="tab-pane {{#if isActive}}active{{/if}}" id="info-{{seq.id}}-{{tab.id}}">
-      <div>
-        <table class="table table-striped table-info" style="clear: both">
-          <tbody>
-            {{#each fields}}
-              {{#if header}}
-                    </tbody>
-                  </table>
-                </div>
-                <div class="document-heading collapsable">
-                  <h4><a class="nounderline" data-toggle="collapse" href="#header-{{../../seq.id}}-{{header}}" aria-expanded="true" aria-controls="header-{{../../seq.id}}-{{header}}">{{header}}</a></h4>
-                </div>
-                <div id="header-{{../../seq.id}}-{{header}}" class="collapse in">
-                  <table class="table table-striped table-info" style="clear: both">
-                    <tbody>
-              {{/if}}
-              {{renderField this ../seq}}
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </script>
+         <script id="sequence-info-template" type="text/x-handlebars-template">
+         <div role="tabpanel" class="tab-pane {{#if isActive}}active{{/if}}" id="info-{{seq.id}}-{{tab.id}}">
+         <div>
+         <table class="table table-striped table-info" style="clear: both">
+         <tbody>
+         {{#each fields}}
+         {{#if header}}
+         </tbody>
+         </table>
+         </div>
+         <div class="document-heading collapsable">
+         <h4><a class="nounderline" data-toggle="collapse" href="#header-{{../../seq.id}}-{{header}}" aria-expanded="true" aria-controls="header-{{../../seq.id}}-{{header}}">{{header}}</a></h4>
+         </div>
+         <div id="header-{{../../seq.id}}-{{header}}" class="collapse in">
+         <table class="table table-striped table-info" style="clear: both">
+         <tbody>
+         {{/if}}
+         {{renderField this ../seq}}
+         {{/each}}
+         </tbody>
+         </table>
+         </div>
+         </div>
+         </script>
 
-  <script id="sequence-info-field-template" type="text/x-handlebars-template">
-    <tr>
-      <td width="15%">{{field.label}}</td>
-      <td width="85%">
-        <p id="seq-{{seq.id}}-{{field.id}}" style="float: left;" data-type="{{type.data_type}}" data-title={{field.label}}>
-          {{content seq field}}
-        </p>
-        {{#if field.editable}}
-          <span id="seq-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
-            class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
-        {{/if}}
-      </td>
-    </tr>
-  </script>
+         <script id="sequence-info-field-template" type="text/x-handlebars-template">
+         <tr>
+         <td width="15%">{{field.label}}</td>
+         <td width="85%">
+         <p id="seq-{{seq.id}}-{{field.id}}" style="float: left;" data-type="{{type.data_type}}" data-title={{field.label}}>
+         {{content seq field}}
+         </p>
+         {{#if field.editable}}
+         <span id="seq-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+         class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+         {{/if}}
+         </td>
+         </tr>
+         </script>
 
-          <!-- {{> field this field=this seq=../seq type=field.dtype}} -->
+         <!-- {{> field this field=this seq=../seq type=field.dtype}} -->
 
-	<script type="text/javascript" src="video.js"></script>
+         <script type="text/javascript" src="video.js"></script>
 
 
 	<script type="text/javascript">//<![CDATA[ 
 
-		$(window).load(function(){
+  $(window).load(function(){
 			// $.getJSON("http://www.mocky.io/v2/5492e82d827817e408aa8fd2", function (data) {
 			// 	loadSequences(data.sequences);
 			// });
-			loadSequences([
-		    {
-          "id": 1,
-		      "start": 0,
-		      "end": 3,
-		      "title": "The current model of higher education is broken",
-          "author": "Stephanie Lemoine"
-		    },
-		    {
-          "id": 2,
-		      "start": 3,
-		      "end": 7,
-		      "title": "We are not getting the skills we need...",
-          "author": "Stephanie Lemoine"
-		    },
-		    {
-          "id": 3,
-		      "start": 35,
-		      "end": 180,
-		      "title": "From 35s to 3 minutes...",
-          "author": "Gregory Potdevin"
-		    },
-		    {
-          "id": 4,
-		      "start": 180,
-		      "end": 210,
-		      "title": "From 3 minutes to the end...",
-          "author": "Benoit Vaugon"
-		    },
-		    {
-          "id": 5,
-		      "start": 7,
-		      "end": 30,
-		      "title": "The model that we have today doesn't scale !!",
-          "author": "Laurent Bel"
-		    }
-		  ]);
+  loadSequences([
+  {
+    "id": 1,
+    "start": 0,
+    "end": 3,
+    "title": "The current model of higher education is broken",
+    "author": "Stephanie Lemoine"
+  },
+  {
+    "id": 2,
+    "start": 3,
+    "end": 7,
+    "title": "We are not getting the skills we need...",
+    "author": "Stephanie Lemoine"
+  },
+  {
+    "id": 3,
+    "start": 35,
+    "end": 180,
+    "title": "From 35s to 3 minutes...",
+    "author": "Gregory Potdevin"
+  },
+  {
+    "id": 4,
+    "start": 180,
+    "end": 210,
+    "title": "From 3 minutes to the end...",
+    "author": "Benoit Vaugon"
+  },
+  {
+    "id": 5,
+    "start": 7,
+    "end": 30,
+    "title": "The model that we have today doesn't scale !!",
+    "author": "Laurent Bel"
+  }
+  ]);
 		});//]]>  
 
-	</script>
+  </script>
 
 </head>
 <body>
@@ -167,49 +167,49 @@
           <li><a href="#">Home </a></li>
           <li class="active"><a href="#">Video <span class="sr-only">(current)</span></a></li>
         </ul>
-  			<div class="col-sm-3 col-md-3 pull-right">
-  				<form class="navbar-form" role="search">
-  					<div class="input-group">
-  						<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
-  						<div class="input-group-btn">
-  							<button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-  						</div>
-  					</div>
-  				</form>
-  			</div>
-        <ul class="nav navbar-nav navbar-right">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Styles <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-              <li><a data-action="style" data-style="bootstrap-theme.min.css"     href="#">bootstrap</a></li>
-              <li class="selected"><a data-action="style" data-style="bootstrap-theme.flatly.css"  href="#">flatly</a></li>
-              <li><a data-action="style" data-style="bootstrap-theme.lumen.css"  href="#">lumen</a></li>
-              <li><a data-action="style" data-style="bootstrap-theme.google-plus.css"  href="#">google plus</a></li>
-              <!-- <li><a data-action="style" data-style="bootstrap-theme.material.css"  href="#">material</a></li> -->
-              <li><a data-action="style" data-style="bootstrap-theme.readable.css"  href="#">readable</a></li>
+        <div class="col-sm-3 col-md-3 pull-right">
+          <form class="navbar-form" role="search">
+           <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+            <div class="input-group-btn">
+             <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+           </div>
+         </div>
+       </form>
+     </div>
+     <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Styles <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+          <li><a data-action="style" data-style="bootstrap-theme.min.css"     href="#">bootstrap</a></li>
+          <li class="selected"><a data-action="style" data-style="bootstrap-theme.flatly.css"  href="#">flatly</a></li>
+          <li><a data-action="style" data-style="bootstrap-theme.lumen.css"  href="#">lumen</a></li>
+          <li><a data-action="style" data-style="bootstrap-theme.google-plus.css"  href="#">google plus</a></li>
+          <!-- <li><a data-action="style" data-style="bootstrap-theme.material.css"  href="#">material</a></li> -->
+          <li><a data-action="style" data-style="bootstrap-theme.readable.css"  href="#">readable</a></li>
 
   <!--             <li class="divider"></li>
-              <li><a href="#">Separated link</a></li> -->
-            </ul>
-          </li>
-        </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>  
-	<div class="fluid-container">
-		<div id="affix-container" class="col-md-4" >
-      <div id="sidebar-video" data-spy="affix" data-offset-top="60">
-  			<div class="panel panel-primary">
-  				<div class="panel-heading">
-  					<h3 class="panel-title">Video</h3>
-  				</div>
-  				<div class="panel-body video-container">
-            <video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video>
-  					<!-- <video id="video-frame" class="video" src="http://download2.cerimes.fr/canalu/videos/utls_au_lycee/utls_270111l_bellivier_stand.mp4" controls=""></video> -->
+  <li><a href="#">Separated link</a></li> -->
+</ul>
+</li>
+</ul>
+</div><!-- /.navbar-collapse -->
+</div><!-- /.container-fluid -->
+</nav>  
+<div class="fluid-container">
+  <div id="affix-container" class="col-md-4" >
+    <div id="sidebar-video" data-spy="affix" data-offset-top="60">
+     <div class="panel panel-primary">
+      <div class="panel-heading">
+       <h3 class="panel-title">Video</h3>
+     </div>
+     <div class="panel-body video-container">
+      <!-- <video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video> -->
+      <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls=""></video>
 
 
-            <!-- video-full -->
-              <!-- poster="http://video-js.zencoder.com/oceans-clip.png" -->
+      <!-- video-full -->
+      <!-- poster="http://video-js.zencoder.com/oceans-clip.png" -->
             <!-- <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
               controls preload="auto"
               preload="auto" autoplay
@@ -217,67 +217,66 @@
              <source src="http://download2.cerimes.fr/canalu/videos/utls_au_lycee/utls_270111l_bellivier_stand.mp4" type='video/mp4' />
              
              <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-            </video> -->
-  					<div id="video-timeline" class="timeline">
-  						<div id="video-timeline-items">
+           </video> -->
+           <div id="video-timeline" class="timeline">
+            <div id="video-timeline-items">
 
-  						</div>
-  						<span id="video-timeline-marker" class="timeline-marker"></span>
-  					</div>
-  				</div>
-  			</div>
-        <form class="form form-horizontal">
-          <div class="has-feeback">
-          <!-- <div class="input-group has-feedback"> -->
-            <!-- <div class="col-md-12"> -->
-            <input id="sequence-filter" type="text" class="form-control form-control-inline has-clear" placeholder="Filter">
-            <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+            </div>
+            <span id="video-timeline-marker" class="timeline-marker"></span>
           </div>
-          <canvas>
-          <div id="thumbnails"></div>
-            <!-- </div> -->
-          <!-- </div> -->
-
-           <!--  <div class="editable-input" style="position: relative;">
-              <input type="text" class="form-control input-sm" style="padding-right: 24px;">
-            </div> -->
-            <!-- <div class="input-group-btn">
-                <button class="btn btn-info"><i class="glyphicon glyphicon-search"></i></button>
-            </div> -->
-        </form>
+        </div>
+      </div>
+      <form class="form form-horizontal">
+        <div class="has-feeback">
+          <!-- <div class="input-group has-feedback"> -->
+          <!-- <div class="col-md-12"> -->
+          <input id="sequence-filter" type="text" class="form-control form-control-inline has-clear" placeholder="Filter">
+          <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+        </div>
+      </form>
+      <canvas></canvas>
+      <div id="thumbnails"></div>
+    </div>
+  </div>
+  <div class="col-md-8" style="margin-bottom:50px;">
+    <div class="panel panel-info">
+      <div class="panel-heading collapsable">
+        <h3 class="panel-title" >
+          <a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
+            Sequences <div id="sequence-cnt" class="badge"><span class="glyphicon glyphicon-remove"></span></div>
+          </a>
+        </h3>
+      </div>
+      <div id="sequences" class="list-group collapse in"></div>
+    </div>
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Metadata</h3>
+      </div>
+      <div class="panel-body">
+        <ul class="nav nav-pills nav-justified" role="tablist">
+          <li role="presentation"><a class="metadata-pane-btn" href="#metadata-video" aria-controls="metadata-video" role="tab" data-toggle="tab">Video</a></li>
+          <li role="presentation"><a class="metadata-pane-btn" href="#metadata-layer" aria-controls="metadata-layer" role="tab" data-toggle="tab">Layer</a></li>
+          <li role="presentation" class="active"><a class="metadata-pane-btn" href="#metadata-segment" aria-controls="metadata-segment" role="tab" data-toggle="tab">Segment</a></li>
+        </ul>
+        <div class="btn-toolbar clearfix" aria-label="commands" style="padding-top: 4px; padding-bottom: 4px;" >
+          <div></div>
+          <div class="btn-group-sm pull-right">
+            <button id="document-new"  type="button" class="btn btn-info" title="New sequence" aria-hidden="true"><i class="glyphicon glyphicon-plus"></i> New</button>
+            <button id="document-edit" type="button" class="btn btn-info" title="Edit sequence" aria-hidden="true"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
+            <button id="document-save" type="button" class="btn btn-info" title="Save" aria-hidden="true"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
+          </div>
+        </div>
+        <div id="metadata-video"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
+        <div id="metadata-layer"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
+        <div id="metadata-segment" role="tabpanel" class="tab-pane metadata-pane manual-tab-pane selected" >
+          <div id="info">
+          </div>
+        </div>
       </div>
     </div>
-		<div class="col-md-8" style="margin-bottom:50px;">
-
-<!--   <div class="hero-unit" style="margin-top:40px">
-    <textarea class="textarea" placeholder="Enter text ..." style="width: 810px; height: 200px"></textarea>
   </div>
-  <hr />
- -->      
-      <div class="panel panel-info">
-        <div class="panel-heading collapsable">
-          <h3 class="panel-title" >
-          	<a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
-          		Sequences <div id="sequence-cnt" class="badge"><span class="glyphicon glyphicon-remove"></span></div>
-        		</a>
-        	</h3>
-        </div>
-        <div id="sequences" class="list-group collapse in"></div>
-      </div>
-			<div class="panel panel-primary">
-				<div class="panel-heading clearfix">
-					<h3 class="panel-title">Sequence metadata
-          <div class="btn-group pull-right">
-            <span id="document-new"  title="New sequence" class="header-button glyphicon glyphicon-plus" aria-hidden="true"></span>
-            <span id="document-edit" title="Edit sequence" class="header-button glyphicon glyphicon-pencil" aria-hidden="true"></span>
-            <span id="document-save" title="Save" class="header-button glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
-          </div>
-          </h3>
-				</div>
-				<div id="info" class="panel-body"></div>
-			</div>
-		</div>
-	</div>
+</div>
 </body>
 
 </html>
