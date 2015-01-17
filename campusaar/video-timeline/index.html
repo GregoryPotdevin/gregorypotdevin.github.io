@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <title>CampusAAR video demo</title>
+
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.flatly.css">
+  <link rel="stylesheet" type="text/css" href="css/timeline.css">
+  <link rel="stylesheet" type="text/css" href="css/footer.css">
+  
+  <script type="text/javascript" src="libs/jquery.min.js"></script>
+  <script type="text/javascript" src="libs/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/resizer.js"></script>
+  <script type="text/javascript" src="js/timeline.js"></script>
+
+  <script type="text/javascript">//<![CDATA[ 
+
+  var createTrackDom = function(btnId, title){
+    return '\
+    <div class="track-info">\
+    <span>' + title + '</span>\
+    <div class="btn-group pull-right" role="group" >\
+    <button id="' + btnId + '" type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>\
+    </div>\
+    </div>\
+    ';
+  }
+
+  var nextEventId = 10;
+  var nextLayerId = 1;
+  var addTrack = function(){
+    var layerId = nextLayerId++;
+    var btnId = "btn-add-" + layerId;
+    VideoTimeline.timeline.onEventClick = function(trackId, eventId){
+      console.log("clicked on track " + trackId + ", event " + eventId);
+    };
+    VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, "Layer " + layerId));
+    $("#" + btnId).click(function(){
+      var eventId = nextEventId++;
+      console.log('Add track event', layerId, eventId);
+      VideoTimeline.timeline.addTrackEvent(layerId, eventId, "Event " + eventId);
+    });
+  }
+
+  var initTimelineVisibility = function(){
+    var footer = $("#video-timeline-footer");
+    var buttons = $("#new-layer");
+    footer.on('hide.bs.collapse', function () {
+      buttons.fadeOut();
+    });
+    footer.on('show.bs.collapse', function () {
+      buttons.fadeIn();
+    });
+
+
+
+    // Show timeline and toggle out
+    setTimeout(function(){
+      $("#toggle-timeline").trigger("click");
+    }, 500);
+  }
+
+
+  $(window).load(function(){
+    var timeline = VideoTimeline.timeline;
+    timeline.init("#video-timeline-footer");
+    addTrack();
+      // timeline.addTrack(2, "Layer 2");
+
+      timeline.addTrackEvents(1, [{
+        id: 1, 
+        title: "Test...", 
+        begin: 0.10, 
+        end: 0.25,
+        type: "alert"
+      },{
+        id: 2, 
+        title: "Test2 Longer test to see overflow", 
+        begin: 0.35, 
+        end: 0.45,
+        type: "info"
+      },
+      ]);
+
+      timeline.setAnimationTime(150);
+      // timeline.addTrackEvent(2, 3, "Test3, autre track", 0.05, 0.55);
+
+      $("#new-layer").click(addTrack);
+
+      initTimelineVisibility();
+      // initViewport();
+    });//]]>  
+
+  </script>
+
+</head>
+<body>        
+  <div class="vt-main-content">
+
+    <!-- Begin page content -->
+    <div class="container">
+      <h3>Video timeline test.</h3>
+      <h4>Look down...</h4>
+    </div>
+  </div>    
+  <div class="footer navbar-fixed-bottom">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="btn-toolbar clearfix">
+          <!-- <div class="btn-group-sm pull-right">
+          </div> -->
+          <div id="timeline-controls" class="btn-group-sm" style="margin-left: 10px;">
+            <button id="toggle-timeline" class="btn btn-info toggle-btn collapsed" type="button" data-toggle="collapse" data-target="#video-timeline-footer" aria-expanded="false" aria-controls="video-timeline-footer">
+               
+            </button>
+            <button id="new-layer" type="button" class="btn btn-info" title="Add layer" aria-hidden="true" style="display: none;"><i class="glyphicon glyphicon-plus" ></i> layer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapse" id="video-timeline-footer">
+        <div class="row">
+          <div id="video-timeline" class="vt-container" style="display:block;">
+            <div class="vt-tracks-wrapper">
+              <div class="vt-tracks-shadow">
+                <div class="vt-tracks" style="left: 0px; width: 100%;">
+                </div>
+              </div>
+            </div>
+            <div class="vt-left-pane vt-track-list">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="vt-container vt-sub-bar" style="display:block;">
+            <div class="vt-mini-scrollbar-wrapper">
+              <div style="width: 100%; height: 100%; position: relative;">
+                <div class="vt-mini-scrollbar-shadow">
+                  <div class="vt-mini-scrollbar-tracks">
+                  </div>
+                </div>
+
+                <div class="vt-viewport">
+                  <div class="vt-viewport-inner">
+                    <div id="vt-viewport-resizer" class="vt-viewport-border vt-handle-parent" style="left: 0%; width: 100%;">
+                      <div class="vt-handle vt-left-handle"></div>
+                      <div class="vt-handle vt-right-handle"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="vt-left-pane">
+              <div class="vt-logo"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+
+</html>

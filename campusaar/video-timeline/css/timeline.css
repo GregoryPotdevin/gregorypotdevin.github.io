@@ -1,0 +1,356 @@
+
+
+
+
+
+
+
+
+.vt-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+  /*height: 100px;*/
+  overflow: hidden;
+  background-color: #DDD;
+}
+
+.vt-container.vt-sub-bar {
+  height: 32px;
+}
+
+.vt-left-pane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 130px;
+  height: 100%;
+  background-color: #f4f5f5;
+}
+
+.vt-track-list {
+
+}
+
+.vt-track-info {
+  border: none;
+  border-bottom: 1px solid #b1b8b8;
+  width: 100%;
+  height: 30px;
+  background: #f4f5f5;
+  position: relative;
+  line-height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: inset 0 1px #FFF;
+  box-sizing: content-box;
+}
+
+.vt-tracks {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.vt-tracks-shadow {
+  background: #f4f5f5;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.2);
+  /*box-sizing: content-box;*/
+}
+
+.vt-tracks-wrapper {
+  position: relative;
+  padding-left: 130px;
+  top: 0;
+  height: 100%;
+  overflow: hidden;/*
+  background: #f4f5f5;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.2);*/
+}
+
+.vt-track {
+  width: 100%;
+  height: 30px;
+  position: relative;
+  border-bottom: 1px dashed #ccc;
+  box-sizing: content-box;
+}
+
+.vt-track-event {
+  background: #fff;
+  box-shadow: 1px 5px 2px -3px rgba(0,0,0,0.1);
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  border-top-color: #E3E3E3;
+  border-bottom-color: #BDBDBD;
+  cursor: move;
+  display: block;
+  height: 27px;
+  padding: 1px 0;
+  position: absolute;
+  overflow: hidden;
+  box-sizing: content-box;
+}
+
+
+.vt-track-event.vt-type {
+  border-top-width: 3px;
+  height: 25px;
+  border-top-left-radius: 0em;
+  border-top-right-radius: 0em;
+}
+
+.vt-track-event.vt-type-default {
+  border-top-color: #CCC;
+}
+
+.vt-track-event.vt-type-info {
+  border-top-color: #333;
+}
+
+.vt-track-event.vt-type-alert {
+  border-top-color: #E33;
+}
+
+.vt-track-event .vt-track-event-info {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
+}
+
+.vt-track-event-icon {
+  float: left;
+  height: 25px;
+}
+/*
+*:before, *:after {
+box-sizing: content-box;
+}
+*/
+
+
+/*.vt-track-event .vt-track-event-icon {
+  float: left;
+  height: 25px;
+  width: 30px;
+  background-size: 20px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  }*/
+
+.vt-track-event .title {
+  padding-left: 2px;
+  padding-right: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: left;
+  line-height: 25px;
+  color: #555;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.vt-handle{
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  text-align: center;
+  top: 3px;
+  opacity: 0;
+  /*background: #fff;*/
+  -webkit-transition: all .1s ease;
+  -moz-transition: all .1s ease;
+  -o-transition: all .1s ease;
+  -ms-transition: all .1s ease;
+  transition: all .1s ease;
+}
+
+.vt-handle:after {
+  font-family: 'Glyphicons Halflings';
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  -webkit-font-smoothing: antialiased;
+  /*color: #111;*/
+  color: #217dbb;
+  /*color: #3fb58e;*/
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: white;
+}
+
+.vt-left-handle:after {
+  content: "\e079";
+}
+
+.vt-right-handle:after {
+  content: "\e080";
+}
+
+
+.vt-handle-parent:hover .vt-handle {
+  /*opacity: 0.7;*/
+  opacity: 1;
+}
+
+.vt-left-handle {
+  left: 10px;
+  cursor: w-resize;
+  cursor: ew-resize;
+}
+
+.vt-right-handle {
+  right: 10px;
+  cursor: e-resize;
+  cursor: ew-resize;
+}
+
+.vt-handle-parent:hover .vt-left-handle {
+  left: 0px;
+}
+
+.vt-handle-parent:hover .vt-right-handle {
+  right: 0px;
+}
+
+
+.vt-mini-scrollbar-wrapper {
+  position: relative;
+  padding-left: 130px;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+
+.vt-mini-scrollbar-shadow {
+  background: #f4f5f5;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  padding: 4px;
+  box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.2);
+  /*box-sizing: content-box;*/
+}
+
+.vt-mini-scrollbar-wrapper {
+  position: relative;
+  padding-left: 130px;
+  top: 0;
+  height: 100%;
+  overflow: hidden;/*
+  background: #f4f5f5;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.2);*/
+}
+
+.vt-mini-scrollbar-tracks {
+  width: 100%;
+  height: 30px;
+  position: relative;
+  /*box-sizing: content-box;*/
+}
+
+.vt-mini-scrollbar-trackevent {
+  background: rgba(0,0,0,0.4);
+  height: 3px;
+  position: absolute;
+  z-index: 1;
+  display: block;
+}
+
+.vt-viewport {
+  /*background: #f4f5f5;*/
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  position: absolute;
+  /*box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.2);*/
+  /*box-sizing: content-box;*/
+  /*background-color: red;*/
+}
+
+.vt-viewport-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  /*background-color: yellow;*/
+  /*box-sizing: content-box;*/
+}
+
+.vt-viewport-border {
+  height: 100%;
+  cursor: move;
+  top: 0;
+  z-index: 2;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 4px solid #217dbb;
+  /*border-top-color: #FFF;*/
+  /*border-bottom-color: #FFF;*/
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 2px 0px inset, rgb(204, 204, 204) 0px 0px 0px 1px;
+}
+
+
+.track-info {
+  position: relative;
+  padding: 2px;
+}
+
+.track-info .btn-group {
+  padding-top: 3px;
+}
+
+.toggle-btn:after {
+  /*padding-left: 4px;*/
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";    
+  float: right; 
+}
+
+.toggle-btn.collapsed:after {
+  content: "\e113";  
+}
+.toggle-btn:focus {
+  outline: none;
+}
+/*.panel-heading.collapsable .collapser.collapsed:after {
+    content: "\e080";
+    }*/
+
+
+.vt-sub-bar .vt-left-pane {
+  background-color: #555;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.vt-logo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url("../img/armadillo_video.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center; 
+}

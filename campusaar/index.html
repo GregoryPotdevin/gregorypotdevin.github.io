@@ -29,7 +29,7 @@
   <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
   <script type="text/javascript" src="libs/select2/select2.js"></script>  
   <script type="text/javascript" src="libs/select2/select2_locale_fr.js"></script>  
-  <script type="text/javascript" src="libs/resizer/js/resizer.js"></script>  
+  <!-- // <script type="text/javascript" src="libs/resizer/js/resizer.js"></script>   -->
   <script type="text/javascript" src="libs/diacritics.js"></script>  
   <script src="libs/summernote/summernote.js"></script>
 
@@ -38,14 +38,18 @@
 
   <script type="text/javascript" src="libs/video-js/video.dev.js"></script>
 
+  <link rel="stylesheet" type="text/css" href="video-timeline/css/timeline.css">
+  <link rel="stylesheet" type="text/css" href="video-timeline/css/footer.css">
+  <script type="text/javascript" src="video-timeline/js/resizer.js"></script>
+  <script type="text/javascript" src="video-timeline/js/timeline.js"></script>
+
   <script type="text/javascript" src="libs/data.js"></script>
-  <script type="text/javascript" src="parser/naturalQuery.js"></script>
 
   <script id="sequence-item-template" type="text/x-handlebars-template">
-  <a href="#" id="seq-{{id}}" class="list-group-item sequence-item">
-  <h5 class="list-group-item-heading">{{title}}</h5>
-  <p class="list-group-item-text">{{timecode start}} - {{timecode end}}</p>
-  </a>
+    <a href="#" id="seq-{{id}}" class="list-group-item sequence-item">
+      <h5 class="list-group-item-heading">{{title}}</h5>
+      <p class="list-group-item-text">{{timecode start}} - {{timecode end}}</p>
+    </a>
   </script>
 <!--  
         <table class="table table-bordered table-striped table-info" style="clear: both">
@@ -53,45 +57,45 @@
            {{renderField this ../seq}}
          {{/each}}
          {{renderFields fields ../seq}} -->
-         <script id="sequence-info-template" type="text/x-handlebars-template">
-         <div role="tabpanel" class="tab-pane {{#if isActive}}active{{/if}}" id="info-{{seq.id}}-{{tab.id}}">
-         <div>
-         <table class="table table-striped table-info" style="clear: both">
-         <tbody>
-         {{#each fields}}
-         {{#if header}}
-         </tbody>
-         </table>
-         </div>
-         <div class="document-heading collapsable">
-         <h4><a class="nounderline" data-toggle="collapse" href="#header-{{../../seq.id}}-{{header}}" aria-expanded="true" aria-controls="header-{{../../seq.id}}-{{header}}">{{header}}</a></h4>
-         </div>
-         <div id="header-{{../../seq.id}}-{{header}}" class="collapse in">
-         <table class="table table-striped table-info" style="clear: both">
-         <tbody>
-         {{/if}}
-         {{renderField this ../seq}}
-         {{/each}}
-         </tbody>
-         </table>
-         </div>
-         </div>
-         </script>
+  <script id="sequence-info-template" type="text/x-handlebars-template">
+    <div role="tabpanel" class="tab-pane {{#if isActive}}active{{/if}}" id="info-{{seq.id}}-{{tab.id}}">
+      <div>
+        <table class="table table-striped table-info" style="clear: both">
+          <tbody>
+            {{#each fields}}
+            {{#if header}}
+          </tbody>
+        </table>
+      </div>
+      <div class="document-heading collapsable">
+        <h4><a class="nounderline" data-toggle="collapse" href="#header-{{../../seq.id}}-{{header}}" aria-expanded="true" aria-controls="header-{{../../seq.id}}-{{header}}">{{header}}</a></h4>
+      </div>
+      <div id="header-{{../../seq.id}}-{{header}}" class="collapse in">
+        <table class="table table-striped table-info" style="clear: both">
+          <tbody>
+            {{/if}}
+            {{renderField this ../seq}}
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </script>
 
-         <script id="sequence-info-field-template" type="text/x-handlebars-template">
-         <tr>
-         <td width="15%">{{field.label}}</td>
-         <td width="85%">
-         <p id="seq-{{seq.id}}-{{field.id}}" style="float: left;" data-type="{{type.data_type}}" data-title={{field.label}}>
-         {{content seq field}}
-         </p>
-         {{#if field.editable}}
-         <span id="seq-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
-         class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
-         {{/if}}
-         </td>
-         </tr>
-         </script>
+  <script id="sequence-info-field-template" type="text/x-handlebars-template">
+    <tr>
+      <td width="15%">{{field.label}}</td>
+      <td width="85%">
+        <p id="seq-{{seq.id}}-{{field.id}}" style="float: left;" data-type="{{type.data_type}}" data-title={{field.label}}>
+          {{content seq field}}
+        </p>
+        {{#if field.editable}}
+        <span id="seq-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+        class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+        {{/if}}
+      </td>
+    </tr>
+  </script>
 
          <!-- {{> field this field=this seq=../seq type=field.dtype}} -->
 
@@ -100,48 +104,125 @@
 
 	<script type="text/javascript">//<![CDATA[ 
 
+
+  var createTrackDom = function(btnId, title){
+    return '\
+    <div class="track-info">\
+    <span>' + title + '</span>\
+    <div class="btn-group pull-right" role="group" >\
+    <button id="' + btnId + '" type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>\
+    </div>\
+    </div>\
+    ';
+  }
+
+  var nextEventId = 10;
+  var nextLayerId = 1;
+  var addTrack = function(){
+    var layerId = nextLayerId++;
+    var btnId = "btn-add-" + layerId;
+    VideoTimeline.timeline.onEventClick = function(trackId, eventId){
+      console.log("clicked on track " + trackId + ", event " + eventId);
+    };
+    VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, "Layer " + layerId));
+    $("#" + btnId).click(function(){
+      var eventId = nextEventId++;
+      console.log('Add track event', layerId, eventId);
+      VideoTimeline.timeline.addTrackEvent(layerId, eventId, "Event " + eventId);
+    });
+  }
+
+  var initTimelineVisibility = function(){
+    var footer = $("#video-timeline-footer");
+    var buttons = $("#new-layer");
+    footer.on('hide.bs.collapse', function () {
+      buttons.fadeOut();
+    });
+    footer.on('show.bs.collapse', function () {
+      buttons.fadeIn();
+    });
+
+
+
+    // Show timeline and toggle out
+    setTimeout(function(){
+      $("#toggle-timeline").trigger("click");
+    }, 500);
+  }
+
+
   $(window).load(function(){
+    var timeline = VideoTimeline.timeline;
+    timeline.init("#video-timeline-footer");
+    addTrack();
+      // timeline.addTrack(2, "Layer 2");
+
+    // timeline.addTrackEvents(1, [{
+    //   id: 1, 
+    //   title: "Test...", 
+    //   begin: 0.10, 
+    //   end: 0.25,
+    //   type: "alert"
+    // },{
+    //   id: 2, 
+    //   title: "Test2 Longer test to see overflow", 
+    //   begin: 0.35, 
+    //   end: 0.45,
+    //   type: "info"
+    // },
+    // ]);
+
+    timeline.setAnimationTime(150);
+    // timeline.addTrackEvent(2, 3, "Test3, autre track", 0.05, 0.55);
+
+    $("#new-layer").click(addTrack);
+
+    initTimelineVisibility();
+
+
 			// $.getJSON("http://www.mocky.io/v2/5492e82d827817e408aa8fd2", function (data) {
 			// 	loadSequences(data.sequences);
 			// });
-  loadSequences([
-  {
-    "id": 1,
-    "start": 0,
-    "end": 3,
-    "title": "The current model of higher education is broken",
-    "author": "Stephanie Lemoine"
-  },
-  {
-    "id": 2,
-    "start": 3,
-    "end": 7,
-    "title": "We are not getting the skills we need...",
-    "author": "Stephanie Lemoine"
-  },
-  {
-    "id": 3,
-    "start": 35,
-    "end": 180,
-    "title": "From 35s to 3 minutes...",
-    "author": "Gregory Potdevin"
-  },
-  {
-    "id": 4,
-    "start": 180,
-    "end": 210,
-    "title": "From 3 minutes to the end...",
-    "author": "Benoit Vaugon"
-  },
-  {
-    "id": 5,
-    "start": 7,
-    "end": 30,
-    "title": "The model that we have today doesn't scale !!",
-    "author": "Laurent Bel"
-  }
-  ]);
-		});//]]>  
+    loadSequences([
+    {
+      "id": 1,
+      "start": 0,
+      "end": 3,
+      "title": "The current model of higher education is broken",
+      "author": "Stephanie Lemoine"
+    },
+    {
+      "id": 2,
+      "start": 3,
+      "end": 7,
+      "title": "We are not getting the skills we need...",
+      "author": "Stephanie Lemoine"
+    },
+    {
+      "id": 3,
+      "start": 35,
+      "end": 180,
+      "title": "From 35s to 3 minutes...",
+      "author": "Gregory Potdevin"
+    },
+    {
+      "id": 4,
+      "start": 180,
+      "end": 210,
+      "title": "From 3 minutes to the end...",
+      "author": "Benoit Vaugon"
+    },
+    {
+      "id": 5,
+      "start": 7,
+      "end": 30,
+      "title": "The model that we have today doesn't scale !!",
+      "author": "Laurent Bel"
+    }
+    ]);
+    initTimelineVisibility();
+  });//]]>  
+
 
   </script>
 
@@ -238,7 +319,7 @@
       <div id="thumbnails"></div>
     </div>
   </div>
-  <div class="col-md-8" style="margin-bottom:50px;">
+  <div class="col-md-8" style="margin-bottom:240px;">
     <div class="panel panel-info">
       <div class="panel-heading collapsable">
         <h3 class="panel-title" >
@@ -277,50 +358,64 @@
     </div>
   </div>
 </div>
+  <div class="footer navbar-fixed-bottom">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="btn-toolbar clearfix">
+          <!-- <div class="btn-group-sm pull-right">
+          </div> -->
+          <div id="timeline-controls" class="btn-group-sm" style="margin-left: 10px;">
+            <button id="toggle-timeline" class="btn btn-info toggle-btn collapsed" type="button" data-toggle="collapse" data-target="#video-timeline-footer" aria-expanded="false" aria-controls="video-timeline-footer">
+               
+            </button>
+            <button id="new-layer" type="button" class="btn btn-info" title="Add layer" aria-hidden="true" style="display: none;"><i class="glyphicon glyphicon-plus" ></i> layer</button>
+          </div>
+        </div>
+      </div>
 
-<div id="footer">
-  <div class="container">
-    <p class="text-muted">Place sticky footer content here.</p>
-  </div>
-</div>
-<!-- <div class="panel-group" id="accordion">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-          Click Me
-        </a>
-      </h4>
-    </div>
-    <div id="collapseOne" class="panel-collapse collapse">
-      <div class="panel-body">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus, adipisci, quibusdam, minima ratione voluptas quidem porro sint nobis odio cupiditate alias nisi. Magnam et fugiat labore eum at adipisci ex.
+      <div class="collapse" id="video-timeline-footer">
+        <div class="row">
+          <div id="video-timeline" class="vt-container" style="display:block;">
+            <div class="vt-tracks-wrapper">
+              <div class="vt-tracks-shadow">
+                <div class="vt-tracks" style="left: 0px; width: 100%;">
+                </div>
+              </div>
+            </div>
+            <div class="vt-left-pane vt-track-list">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="vt-container vt-sub-bar" style="display:block;">
+            <div class="vt-mini-scrollbar-wrapper">
+              <div style="width: 100%; height: 100%; position: relative;">
+                <div class="vt-mini-scrollbar-shadow">
+                  <div class="vt-mini-scrollbar-tracks">
+                  </div>
+                </div>
+
+                <div class="vt-viewport">
+                  <div class="vt-viewport-inner">
+                    <div id="vt-viewport-resizer" class="vt-viewport-border vt-handle-parent" style="left: 0%; width: 100%;">
+                      <div class="vt-handle vt-left-handle"></div>
+                      <div class="vt-handle vt-right-handle"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="vt-left-pane">
+              <div class="vt-logo"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
-</div> -->
-<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
-  <div class="document-heading collapsable">
-     <h4><a class="nounderline" data-toggle="collapse" href="#footer-expandable" aria-expanded="false" aria-controls="footer-expandable">Timeline</a></h4>
-  </div>
-  <div id="footer-expandable" class="collapse in" aria-expanded="true">
-    <div class="btn-group-sm pull-right">
-            <button type="button" class="btn btn-info" title="New sequence" aria-hidden="true"><i class="glyphicon glyphicon-plus"></i> New</button>
-            <button type="button" class="btn btn-info" title="Edit sequence" aria-hidden="true"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
-            <button type="button" class="btn btn-info" title="Save" aria-hidden="true" style="display: none;"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
-    </div>
-  </div>
-  <div class="document-heading collapsable">
-     <h4><a class="nounderline" data-toggle="collapse" href="#footer-expandable" aria-expanded="false" aria-controls="footer-expandable2">Timeline2</a></h4>
-  </div>
-  <div id="footer-expandable2" class="collapse in" aria-expanded="true">
-    <div class="btn-group-sm pull-right">
-            <button type="button" class="btn btn-info" title="New sequence" aria-hidden="true"><i class="glyphicon glyphicon-plus"></i> New</button>
-            <button type="button" class="btn btn-info" title="Edit sequence" aria-hidden="true"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
-            <button type="button" class="btn btn-info" title="Save" aria-hidden="true" style="display: none;"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
-    </div>
-  </div>
-</nav>
+</div>
+
 </body>
 
 </html>

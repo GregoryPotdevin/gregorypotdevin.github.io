@@ -483,6 +483,15 @@ var addDocument = function(seq, model){
       mkEditable(seq_id, field, seq);
     }
   });
+
+  var evt = {
+    id: seq.id,
+    title: seq.title,
+    begin: seq.start / videoDuration,
+    end: seq.end / videoDuration,
+  };
+  console.log(evt);
+  VideoTimeline.timeline.addTrackEvents(1, [evt]);
 }
 
 
