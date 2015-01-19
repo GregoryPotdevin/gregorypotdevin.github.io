@@ -510,8 +510,6 @@ var newDocument = function(model){
   onOrderChanged();
 }
 
-var clearSequenceFilter;
-
 var updateSequenceCount = function(cnt){
   var seqCnt = $("#sequence-cnt");
   if (cnt === undefined){
@@ -794,6 +792,7 @@ var Filter = function(){
   var clear = function(e){
       e.stopPropagation();
       $("#sequence-filter").val('').trigger('keyup');
+      return false;
     }
 
   return {
