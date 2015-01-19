@@ -521,12 +521,10 @@ var updateSequenceCount = function(cnt){
   var total = sequenceCnt();
   seqCnt.show();
   if (cnt == total){
-    seqCnt.text(cnt);
-    seqCnt.removeClass("closeable");
+    seqCnt.html(cnt);
     seqCnt.unbind('click');
   } else {
-    seqCnt.text(cnt + '/' + total);
-    seqCnt.addClass("closeable");
+    seqCnt.html(cnt + '/' + total + ' <span class="glyphicon glyphicon-remove"></span>');
     seqCnt.click(Filter.clear);
   }
 }
