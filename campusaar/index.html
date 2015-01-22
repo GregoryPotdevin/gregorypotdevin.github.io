@@ -122,7 +122,11 @@
     var layerId = nextLayerId++;
     var btnId = "btn-add-" + layerId;
     VideoTimeline.timeline.onEventClick = function(trackId, eventId){
-      console.log("clicked on track " + trackId + ", event " + eventId);
+      // console.log("clicked on track " + trackId + ", event " + eventId);
+      // console.log(sequences);
+      if (eventId in globalSequences){
+        clickDocument(globalSequences[eventId]);
+      }
     };
     VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, "Layer " + layerId));
     $("#" + btnId).click(function(){
@@ -153,7 +157,11 @@
 
   $(window).load(function(){
     var timeline = VideoTimeline.timeline;
+
+    VideoTimeline.viewport.createViewport(".vt-sub-bar .vt-mini-scrollbar-container");
     timeline.init("#video-timeline-footer");
+    miniTrack = timeline.createMiniTracks("#otherMiniTrack");
+
     addTrack();
       // timeline.addTrack(2, "Layer 2");
 
@@ -299,11 +307,16 @@
              
              <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
            </video> -->
-           <div id="video-timeline" class="timeline">
+           <div id="video-timeline" class="timeline" style="display: none;">
             <div id="video-timeline-items">
 
             </div>
             <span id="video-timeline-marker" class="timeline-marker"></span>
+          </div>
+          <div class="vt-mini-scrollbar-container" >
+            <div id="otherMiniTrack" class="vt-mini-scrollbar-shadow custom-mini-tracks">
+              
+            </div>
           </div>
         </div>
       </div>
@@ -389,18 +402,9 @@
         <div class="row">
           <div class="vt-container vt-sub-bar" style="display:block;">
             <div class="vt-mini-scrollbar-wrapper">
-              <div style="width: 100%; height: 100%; position: relative;">
+              <div class="vt-mini-scrollbar-container">
                 <div class="vt-mini-scrollbar-shadow">
                   <div class="vt-mini-scrollbar-tracks">
-                  </div>
-                </div>
-
-                <div class="vt-viewport">
-                  <div class="vt-viewport-inner">
-                    <div id="vt-viewport-resizer" class="vt-viewport-border vt-handle-parent" style="left: 0%; width: 100%;">
-                      <div class="vt-handle vt-left-handle"></div>
-                      <div class="vt-handle vt-right-handle"></div>
-                    </div>
                   </div>
                 </div>
               </div>

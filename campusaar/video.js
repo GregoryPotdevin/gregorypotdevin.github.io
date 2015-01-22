@@ -50,7 +50,7 @@ Seeker.popcorn = function() {
   var init= function(selector, seq){
     var pop = Popcorn(selector);
     var seq_id = "seq-" + seq.id;
-    var timeline_id = "timeline-" + seq.id;
+    // var timeline_id = "timeline-" + seq.id;
     pop.sequences(seq_id, {
       start: seq.start,
       end: seq.end,
@@ -59,14 +59,14 @@ Seeker.popcorn = function() {
       effect: "applyclass",
       applyclass: "active"
     });
-    pop.footnote("timeline-" + seq_id, {
-      start: seq.start,
-      end: seq.end,
-      text: '',
-      target: timeline_id,
-      effect: "applyclass",
-      applyclass: "selected"
-    });
+    // pop.footnote("timeline-" + seq_id, {
+    //   start: seq.start,
+    //   end: seq.end,
+    //   text: '',
+    //   target: timeline_id,
+    //   effect: "applyclass",
+    //   applyclass: "selected"
+    // });
   }
 
   var refresh = init;
@@ -341,7 +341,7 @@ var sortItems = function(parent, children){
 }
 
 var onOrderChanged = function(){
-  sortItems('#video-timeline-items', 'span.timeline-item');
+  // sortItems('#video-timeline-items', 'span.timeline-item');
   sortItems('#sequences', 'a.sequence-item');
 }
 
@@ -356,13 +356,18 @@ var showDocument = function(seq){
   }
 }
 
+var clickDocument = function (seq){
+  seeker.setTime(seq.start);
+  showDocument(seq);
+  $.bbq.pushState({start: seq.start});
+}
 
 
 var addDocument = function(seq, model){
   var video = $("#video-frame");
   var pop = Popcorn("#video-frame");
 
-  var timeline = $("#video-timeline-items");
+  // var timeline = $("#video-timeline-items");
   var list = $("#sequences");
   var info = $("#info");
 
@@ -430,22 +435,22 @@ var addDocument = function(seq, model){
   //   applyclass: "selected"
   // });
 
-  var timeline_id = "timeline-" + seq.id;
-  var duration = seq.end - seq.start;
-  var start = seq.start*100/videoDuration;
-  var width = duration*100/videoDuration;
-  var timeline_entry = $('\
-    <span id="' + timeline_id + '" class="timeline-item" \
-      style="position: absolute; top: 0; left: ' + start + '%; width: ' + width + '%;" \
-    data-toggle="tooltip" data-placement="bottom" title="' + seq.title + '"/>\
-      ');
-  timeline_entry.data("seq", seq);
-  timeline_entry.tooltip();
+  // var timeline_id = "timeline-" + seq.id;
+  // var duration = seq.end - seq.start;
+  // var start = seq.start*100/videoDuration;
+  // var width = duration*100/videoDuration;
+  // var timeline_entry = $('\
+  //   <span id="' + timeline_id + '" class="timeline-item" \
+  //     style="position: absolute; top: 0; left: ' + start + '%; width: ' + width + '%;" \
+  //   data-toggle="tooltip" data-placement="bottom" title="' + seq.title + '"/>\
+  //     ');
+  // timeline_entry.data("seq", seq);
+  // timeline_entry.tooltip();
 
-  forwardHover(timeline_entry, sequence);
-  forwardHover(sequence, timeline_entry);
+  // forwardHover(timeline_entry, sequence);
+  // forwardHover(sequence, timeline_entry);
 
-  timeline.append(timeline_entry);
+  // timeline.append(timeline_entry);
 
   seeker.init("#video-frame", seq);
 
@@ -456,20 +461,22 @@ var addDocument = function(seq, model){
   }
 
   sequence.click(onClick);
-  timeline_entry.click(onClick);
+  // timeline_entry.click(onClick);
 
   var updateTitle = function(id, field, seq){
     sequence.find("h5").text(seq.title);
-    timeline_entry.attr("title", seq.title);
-    timeline_entry.attr('data-original-title', seq.title)
-        .tooltip('fixTitle');
+    // TODO : update title
+    // timeline_entry.attr("title", seq.title);
+    // timeline_entry.attr('data-original-title', seq.title)
+    //     .tooltip('fixTitle');
   }
   var updateTimecode = function(id, field, seq){
     sequence.find("p").text(timecodeString(seq));
     var duration = seq.end - seq.start;
     var start = seq.start*100/videoDuration;
     var width = duration*100/videoDuration;
-    timeline_entry.css("left", start + '%').css("width", width + '%');
+    // TODO : update time...
+    // timeline_entry.css("left", start + '%').css("width", width + '%');
     seeker.refresh("#video-frame", seq);
     onOrderChanged();
   }
@@ -487,8 +494,8 @@ var addDocument = function(seq, model){
   var evt = {
     id: seq.id,
     title: seq.title,
-    begin: seq.start / videoDuration,
-    end: seq.end / videoDuration,
+    begin: seq.start / videoDuration,//video[0].duration,
+    end: seq.end / videoDuration,//video[0].duration,
   };
   console.log(evt);
   VideoTimeline.timeline.addTrackEvents(1, [evt]);
@@ -575,7 +582,8 @@ function loadSequences(sequences) {
 
   var marker = $("#video-timeline-marker");
   video[0].addEventListener( "timeupdate", function( e ) {
-      marker.css('left', (video[0].currentTime*100/videoDuration) + '%');
+      // marker.css('left', (video[0].currentTime*100/video[0].duration) + '%');
+      VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
   }, false );
 
   // $(function () {
@@ -786,7 +794,7 @@ var Filter = function(){
 
   var init = function(){
     $('#sequences').btsListFilter('#sequence-filter', options);
-    $('#video-timeline-items').btsListFilter('#sequence-filter', options);
+    // $('#video-timeline-items').btsListFilter('#sequence-filter', options);
   };
 
   var clear = function(e){
