@@ -309,7 +309,7 @@ function mkEditable(id, field, seq, callback){
 }
 
 
-var videoDuration = 370;
+var videoDuration = 2486; // TODO : fixme
 var nextId = 1;
 
 
@@ -350,10 +350,10 @@ var showDocument = function(seq){
   currentDoc = seq;
   $(".info-item").removeClass("selected");
   $("#info-" + seq.id).addClass("selected");
-  if (isEditable){
-    endMovable();
-    startMovable();
-  }
+  // if (isEditable){
+  //   endMovable();
+  //   startMovable();
+  // }
 }
 
 var clickDocument = function (seq){
@@ -471,11 +471,15 @@ var addDocument = function(seq, model){
     //     .tooltip('fixTitle');
   }
   var updateTimecode = function(id, field, seq){
-    sequence.find("p").text(timecodeString(seq));
+    // sequence.find("p").text(timecodeString(seq));
+    sequence.find("[data-timecode-type=begin]").text(formatTime(seq.start));
+    sequence.find("[data-timecode-type=end]").text(formatTime(seq.end));
     var duration = seq.end - seq.start;
     var start = seq.start*100/videoDuration;
     var width = duration*100/videoDuration;
-    // TODO : update time...
+    
+
+    // TODO : update time...// VideoTimeline.timeline.
     // timeline_entry.css("left", start + '%').css("width", width + '%');
     seeker.refresh("#video-frame", seq);
     onOrderChanged();
@@ -534,6 +538,11 @@ var updateSequenceCount = function(cnt){
   }
 }
 
+var updateProgress = function(video, el){
+  var seq = globalSequences[$(el).attr("data-seq-id")];
+  var ratio = (video[0].currentTime - seq.start)/(seq.end - seq.start);
+  el.style.width = (ratio*100) + "%";
+}
 
 
 function loadSequences(sequences) {
@@ -581,9 +590,14 @@ function loadSequences(sequences) {
   });
 
   var marker = $("#video-timeline-marker");
+  var sequencePanel = $("#sequences");
   video[0].addEventListener( "timeupdate", function( e ) {
       // marker.css('left', (video[0].currentTime*100/video[0].duration) + '%');
+      sequencePanel.find(".sequence-item.active").find(".progress-bar").each(function(index){
+        updateProgress(video, this);
+      });
       VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
+      // VideoTimeline.timeline.setTimeInfo(video[0].currentTime, video[0].duration);
   }, false );
 
   // $(function () {
@@ -600,42 +614,44 @@ function loadSequences(sequences) {
 }
 
 
-var onChangeTime = function(seq, start, end){
-  seq.start =start;
-  seq.end = end;
-  $("#seq-" + seq.id).find("p").text(timecodeString(seq));
-  $("#info-" + seq.id + "-start").text(formatTime(seq.start));
-  $("#info-" + seq.id + "-end").text(formatTime(seq.end));
-  // refreshPopcorn(seq);
+// var onChangeTime = function(seq, start, end){
+//   seq.start =start;
+//   seq.end = end;
+//   var seqEl = $("#seq-" + seq.id);
+//   seqEl.find("[data-timecode-type=begin]").text(formatTime(seq.start));
+//   seqEl.find("[data-timecode-type=end]").text(formatTime(seq.end));
+//   $("#info-" + seq.id + "-start").text(formatTime(seq.start));
+//   $("#info-" + seq.id + "-end").text(formatTime(seq.end));
+//   // refreshPopcorn(seq);
 
-  // var duration = seq.end - seq.start;
-  // var start = seq.start*100/videoDuration;
-  // var width = duration*100/videoDuration;
-  // timeline_entry.css("left", start + '%').css("width", width + '%');
-  onOrderChanged();
-}
+//   // var duration = seq.end - seq.start;
+//   // var start = seq.start*100/videoDuration;
+//   // var width = duration*100/videoDuration;
+//   // timeline_entry.css("left", start + '%').css("width", width + '%');
+//   onOrderChanged();
+// }
 
-var startMovable = function(){
-  var seq = currentDoc;
-  var elem = $('#timeline-' + seq.id).get()[0];
-  console.log(elem);
-  var update = function(elem){
-    var start = parseFloat(elem.style.left) / 100.0;
-    var length = parseFloat(elem.style.width) / 100.0;
-    onChangeTime(seq, Math.round(start*videoDuration), Math.round((start+length)*videoDuration));
-  }
-  movableInfo = Resizer.makeMovableAndResizable(elem, {
-    usePercentage: true,
-    onMoved: update,
-    onResized: update,
-    onFinished: function(elem){
-      update(elem);
-    }
-  });
-  endMovable = function(){
-    movableInfo.end();
-  }
-}
+// var startMovable = function(){
+//   var seq = currentDoc;
+//   var elem = $('#timeline-' + seq.id).get()[0];
+//   console.log(elem);
+//   var update = function(elem){
+//     var start = parseFloat(elem.style.left) / 100.0;
+//     var length = parseFloat(elem.style.width) / 100.0;
+//     onChangeTime(seq, Math.round(start*videoDuration), Math.round((start+length)*videoDuration));
+//   }
+//   movableInfo = Resizer.makeMovableAndResizable(elem, {
+//     usePercentage: true,
+//     onMoved: update,
+//     onResized: update,
+//     onFinished: function(elem){
+//       update(elem);
+//     }
+//   });
+//   endMovable = function(){
+//     movableInfo.end();
+//   }
+// }
 
 var nextField = function(el, usePrev){
   if(usePrev) { 
@@ -689,7 +705,7 @@ var setEditable = function(editable){
       $("#document-edit").hide();
       $("#document-new").hide();
 
-      startMovable();
+      // startMovable();
       // Make timeline item resizable
       $(".edit-btn").show();
       editables.on('shown', function(e, editable) {

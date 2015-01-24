@@ -48,7 +48,14 @@
   <script id="sequence-item-template" type="text/x-handlebars-template">
     <a href="#" id="seq-{{id}}" class="list-group-item sequence-item">
       <h5 class="list-group-item-heading">{{title}}</h5>
-      <p class="list-group-item-text">{{timecode start}} - {{timecode end}}</p>
+      <div class="clearfix">
+        <span class="badge" data-timecode-type="begin" style="float: left; vertical-align: middle; margin-right: 4px;">{{timecode start}}</span>
+        <span class="badge" data-timecode-type="end"   style="float: right; vertical-align: middle; margin-left: 4px;">{{timecode end}}</span>
+        <div class="progress" style="vertical-align: middle; margin: 4px;">
+          <div class="progress-bar progress-bar-info" role="progressbar" data-seq-id="{{id}}" style="width: 00%;">
+          </div>
+        </div>
+      </div>
     </a>
   </script>
 <!--  
@@ -185,7 +192,6 @@
 
     $("#new-layer").click(addTrack);
 
-    initTimelineVisibility();
 
 
 			// $.getJSON("http://www.mocky.io/v2/5492e82d827817e408aa8fd2", function (data) {

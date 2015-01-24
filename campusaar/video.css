@@ -238,6 +238,18 @@ html {
   width:100%;
 }*/
 
+.list-group-item.active .badge {
+    background-color: #3498db;
+}
+
+.list-group-item .progress {
+  display: none;
+}
+
+.list-group-item.active .progress {
+  display: block;
+}
+
 .badge.closeable:after {
     font-family: 'Glyphicons Halflings';
     content: "\e014";    
