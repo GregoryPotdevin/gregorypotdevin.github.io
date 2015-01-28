@@ -1,4 +1,9 @@
 // url hash plugin : http://benalman.com/projects/jquery-bbq-plugin/
+var ArmaTools = ArmaTools || {};
+var ArmaVideo = ArmaVideo || {};
+
+var Notif = ArmaTools.Notifications;
+var NotifNames = ArmaVideo.Notifications.names;
 
 var Resizer = ArmaTools.Resizer;
 
@@ -47,29 +52,6 @@ var Seeker = Seeker || {};
 
 Seeker.popcorn = function() {
 
-  var init= function(selector, seq){
-    var pop = Popcorn(selector);
-    var seq_id = "seq-" + seq.id;
-    // var timeline_id = "timeline-" + seq.id;
-    pop.sequences(seq_id, {
-      start: seq.start,
-      end: seq.end,
-      data: seq,
-      target: seq_id,
-      effect: "applyclass",
-      applyclass: "active"
-    });
-    // pop.footnote("timeline-" + seq_id, {
-    //   start: seq.start,
-    //   end: seq.end,
-    //   text: '',
-    //   target: timeline_id,
-    //   effect: "applyclass",
-    //   applyclass: "selected"
-    // });
-  }
-
-  var refresh = init;
 
   setTime = function(start){
     var video = $('#video-frame');
@@ -78,8 +60,6 @@ Seeker.popcorn = function() {
   }
 
   return {
-    init: init,
-    refresh: refresh,
     setTime: setTime,
   }
 }();
@@ -313,38 +293,19 @@ var videoDuration = 2486; // TODO : fixme
 var nextId = 1;
 
 
+
 var sortItems = function(parent, children){
-  // console.log("sort " + children + " in " + parent);
   var parent = $(parent);
   var items = parent.children(children);
   items.sort(function(a,b){
-    var an = $(a).data('seq').start;//getAttribute('data-order');
-    var bn = $(b).data('seq').start;//getAttribute('data-order');
-    // console.log(an + ' vs ' + bn);
+    var an = $(a).data('seq').start;
+    var bn = $(b).data('seq').start;
     if(an > bn)  return 1;
     if(an < bn)  return -1;
     return 0;
   });
   items.detach().appendTo(parent);
-/*  console.log('parent: ' + parent);
-  console.log('items: ' + items);
-
-  items.sort(function(a,b){
-  var an = a.data('seq').start;//getAttribute('data-order');
-  var bn = b.data('seq').start;//getAttribute('data-order');
-  if(an > bn)  return 1;
-  if(an < bn)  return -1;
-  return 0;
-  });
-
-  items.detach().appendTo(parent);*/
 }
-
-var onOrderChanged = function(){
-  // sortItems('#video-timeline-items', 'span.timeline-item');
-  sortItems('#sequences', 'a.sequence-item');
-}
-
 
 var showDocument = function(seq){
   currentDoc = seq;
@@ -354,6 +315,10 @@ var showDocument = function(seq){
   //   endMovable();
   //   startMovable();
   // }
+}
+
+var showDocumentById = function(seqId){
+  showDocument(globalSequences[seqId]);
 }
 
 var clickDocument = function (seq){
@@ -367,19 +332,12 @@ var addDocument = function(seq, model){
   var video = $("#video-frame");
   var pop = Popcorn("#video-frame");
 
-  // var timeline = $("#video-timeline-items");
-  var list = $("#sequences");
   var info = $("#info");
 
   var seq_id = "seq-" + seq.id;
   globalSequences[seq.id] = seq;
   //console.log(seq_id);
   // var url = $.param.fragment( "#", {start: seq.start} );
-  var sequence = $(templates.sequence(seq));
-  sequence.data("seq", seq);
-  urlHash = $.param({ start: seq.start });
-  sequence.fragment( urlHash, 2 );
-  list.append(sequence);
 
   var info_id = "info-" + seq.id;
 
@@ -426,63 +384,24 @@ var addDocument = function(seq, model){
 
   info.append(info_entry);
 
-  // pop.footnote({
-  //   start: seq.start,
-  //   end: seq.end,
-  //   text: '',
-  //   target: info_id,
-  //   effect: "applyclass",
-  //   applyclass: "selected"
-  // });
-
-  // var timeline_id = "timeline-" + seq.id;
-  // var duration = seq.end - seq.start;
-  // var start = seq.start*100/videoDuration;
-  // var width = duration*100/videoDuration;
-  // var timeline_entry = $('\
-  //   <span id="' + timeline_id + '" class="timeline-item" \
-  //     style="position: absolute; top: 0; left: ' + start + '%; width: ' + width + '%;" \
-  //   data-toggle="tooltip" data-placement="bottom" title="' + seq.title + '"/>\
-  //     ');
-  // timeline_entry.data("seq", seq);
-  // timeline_entry.tooltip();
-
-  // forwardHover(timeline_entry, sequence);
-  // forwardHover(sequence, timeline_entry);
-
-  // timeline.append(timeline_entry);
-
-  seeker.init("#video-frame", seq);
-
-  var onClick = function(){
-    seeker.setTime(seq.start);
-    showDocument(seq);
-    $.bbq.pushState({start: seq.start});
-  }
-
-  sequence.click(onClick);
-  // timeline_entry.click(onClick);
-
   var updateTitle = function(id, field, seq){
-    sequence.find("h5").text(seq.title);
-    // TODO : update title
-    // timeline_entry.attr("title", seq.title);
-    // timeline_entry.attr('data-original-title', seq.title)
-    //     .tooltip('fixTitle');
+    Notif.post(NotifNames.eventSetTitle, {trackId: 1, eventId: seq.id, title: seq.title});
+    VideoTimeline.timeline.setTrackEventTitle(1, seq.id, seq.title);
+    // TODO : update timeline title
   }
-  var updateTimecode = function(id, field, seq){
-    // sequence.find("p").text(timecodeString(seq));
-    sequence.find("[data-timecode-type=begin]").text(formatTime(seq.start));
-    sequence.find("[data-timecode-type=end]").text(formatTime(seq.end));
-    var duration = seq.end - seq.start;
-    var start = seq.start*100/videoDuration;
-    var width = duration*100/videoDuration;
-    
 
+  var updateTimecode = function(id, field, seq){
+    if (seq.start > seq.end){
+      if (field.id == "start"){
+        seq.end = seq.start;
+      } else {
+        seq.start = seq.end
+      }
+      $("#seq-" + seq.id + "-start").text(formatTime(seq.start));
+      $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
+    }
+    Notif.post(NotifNames.eventUpdateTime, {trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
     // TODO : update time...// VideoTimeline.timeline.
-    // timeline_entry.css("left", start + '%').css("width", width + '%');
-    seeker.refresh("#video-frame", seq);
-    onOrderChanged();
   }
 
   model.fields.forEach(function(field){
@@ -502,6 +421,15 @@ var addDocument = function(seq, model){
     end: seq.end / videoDuration,//video[0].duration,
   };
   console.log(evt);
+
+  Notif.post(NotifNames.eventAdd, {
+    trackId: 1,
+    eventId: seq.id,
+    title: seq.title,
+    begin: seq.start,
+    end: seq.end,
+  });
+  // ArmaVideo.EventList.addEvent(seq.id, seq.title, seq.start, seq.end);
   VideoTimeline.timeline.addTrackEvents(1, [evt]);
 }
 
@@ -518,7 +446,6 @@ var newDocument = function(model){
   setTimeout(function () {
    $("#seq-" + seq.id + "-title-btn").trigger("click");
   }, 200);
-  onOrderChanged();
 }
 
 var updateSequenceCount = function(cnt){
@@ -538,14 +465,18 @@ var updateSequenceCount = function(cnt){
   }
 }
 
-var updateProgress = function(video, el){
-  var seq = globalSequences[$(el).attr("data-seq-id")];
-  var ratio = (video[0].currentTime - seq.start)/(seq.end - seq.start);
-  el.style.width = (ratio*100) + "%";
-}
-
-
 function loadSequences(sequences) {
+
+  Notif.register(NotifNames.onEventClick, function(obj){
+    var seq = globalSequences[obj.eventId];
+    seeker.setTime(seq.start);
+    ArmaVideo.Notifications.setVideoTime(seq.start);
+    showDocument(seq);
+    $.bbq.pushState({start: seq.start});
+  });
+
+  ArmaVideo.EventList.init("#sequences");
+
   sequences = sequences.slice(0);
   sequences.sort(function(s1, s2) {
       return s1.start - s2.start;
@@ -579,25 +510,24 @@ function loadSequences(sequences) {
   var params = $.deparam.fragment();
   if ("start" in params){
     videoStartTime = parseInt(params.start);
+    console.log("videoStartTime", videoStartTime);
   }
 
   $.each(sequences, function (idx, seq) {
     nextId = Math.max(seq.id, nextId);
     addDocument(seq, models.segment);
-    if ((seq.start <= videoStartTime) && (seq.end > videoStartTime)) {
+    if ((seq.start <= videoStartTime) && (videoStartTime < seq.end)) {
       showDocument(seq);
     }
   });
+  if ((currentDoc === undefined) && (sequences.length > 0)){
+    showDocument(sequences[0]);
+  }
 
   var marker = $("#video-timeline-marker");
-  var sequencePanel = $("#sequences");
   video[0].addEventListener( "timeupdate", function( e ) {
-      // marker.css('left', (video[0].currentTime*100/video[0].duration) + '%');
-      sequencePanel.find(".sequence-item.active").find(".progress-bar").each(function(index){
-        updateProgress(video, this);
-      });
+      ArmaVideo.Notifications.setVideoTime(video[0].currentTime);
       VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
-      // VideoTimeline.timeline.setTimeInfo(video[0].currentTime, video[0].duration);
   }, false );
 
   // $(function () {
@@ -789,7 +719,7 @@ var Filter = function(){
       return true;
     }
     var regSearch = new RegExp(val,'i');
-    var seq = $(item).data("seq");
+    var seq = globalSequences[$(item).attr("data-seq-id")];
 
     for(var v in val){
       if (!seqContains(seq, val[v])){

@@ -158,7 +158,7 @@ VideoTimeline.timeline = function(){
         }
     });
 
-    timeRatio(0);timeRatio
+    timeRatio(0);
 
     // initViewport();
   }
@@ -303,6 +303,10 @@ VideoTimeline.timeline = function(){
     });
   }
 
+  var setTrackEventTitle = function(trackId, eventId, title){
+    trackView[trackId].events[eventId].find(".title").text(title);
+  }
+
   var setTrackEventType = function(trackId, eventId, type){
     var track = trackView[trackId][eventId];
     track.removeClass("vt-type-default");
@@ -330,6 +334,7 @@ VideoTimeline.timeline = function(){
     addTrackEvents: addTrackEvents,
     deleteTrackEvent: deleteTrackEvent,
     setAnimationTime: function(animTime){animationTime = animTime;},
+    setTrackEventTitle: setTrackEventTitle,
     setTrackEventType: setTrackEventType,
     setTimecodeKeys: setTimecodeKeys,
     timeRatio : timeRatio,
