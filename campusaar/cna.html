@@ -183,8 +183,18 @@ var initTimelineVisibility = function(){
         clickDocument(globalSequences[eventId]);
       }
     };
+
+    var onEventUpdated = function(trackId, eventId, begin, end){
+      var seq = globalSequences[eventId];
+      seq.start = begin*videoDuration;
+      seq.end = end*videoDuration;
+      $("#seq-" + seq.id + "-start").text(formatTime(seq.start));
+      $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
+      Notif.post(NotifNames.eventUpdateTime, {trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
+    };
     miniTrack.setOnEventClick(onEventClick);
     VideoTimeline.timeline.onEventClick = onEventClick;
+    VideoTimeline.timeline.onEventUpdated = onEventUpdated;
 
     addTrack();
 

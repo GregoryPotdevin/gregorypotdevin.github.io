@@ -274,6 +274,11 @@ VideoTimeline.timeline = function(){
     var updateMiniTrack = function(){
       var te = trackEvent[0];
       miniTrackEvents.forEach(function(mte){mte.setPos(te.style.left, te.style.width);});
+      if (VideoTimeline.timeline.onEventUpdated){
+        var begin = parseFloat(te.style.left)/100;
+        var width = parseFloat(te.style.width)/100;
+        VideoTimeline.timeline.onEventUpdated(trackId, eventId, begin, begin+width);
+      }
     }
 
     ArmaTools.Resizer.makeMovableAndResizable(trackEvent[0],{
