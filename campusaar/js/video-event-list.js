@@ -96,8 +96,6 @@ ArmaVideo.EventList = function(){
   }
 
   var setEventBeginEnd = function(eventId, begin, end){
-    console.log(eventId);
-    console.log(events);
     events[eventId].begin = begin;
     events[eventId].end = end;
     var v = view.events[eventId];

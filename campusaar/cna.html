@@ -148,6 +148,7 @@ $("#" + btnId).click(function(){
   var eventId = nextEventId++;
   console.log('Add track event', layerId, eventId);
   newDocument(layerId, models.segment);
+  setEditable(true);
         // VideoTimeline.timeline.addTrackEvent(layerId, eventId, "Event " + eventId);
       });
 }

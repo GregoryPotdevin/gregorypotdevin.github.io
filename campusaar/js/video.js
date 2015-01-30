@@ -439,7 +439,14 @@ var newDocument = function(trackId, model){
   nextId++;
   var video = $("#video-frame");
   var start = Math.round(video[0].currentTime);
-  var seq = {'trackId': trackId, 'id': nextId, 'start': start, 'end': start+60, 'title': "Segment " + nextId}
+  var seq = {
+    'trackId': trackId, 
+    'id': nextId, 
+    'start': start, 
+    'end': start+videoDuration/10, 
+    'title': "Segment " + nextId,
+    'filename': "video.seq." + nextId + ".mp4",
+  };
   addDocument(seq, model);
   showDocument(seq);
 
