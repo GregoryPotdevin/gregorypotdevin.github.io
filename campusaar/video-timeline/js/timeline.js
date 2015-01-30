@@ -21,6 +21,7 @@ VideoTimeline.timeline = function(){
   var createMiniTracks = function(parentSelector){
     var tracks = {};
     var parent = $(parentSelector);
+    var onEventClick;
     var trackContainer = $('<div class="vt-mini-scrollbar-tracks"></div>');
     var timeMarker = $('<span class="vt-timeline-marker" style="left: 0%;"></span>');
     trackContainer.appendTo(parent);
@@ -56,6 +57,11 @@ VideoTimeline.timeline = function(){
           style="left: ' + left + '; width: ' + width + '; display: none;"></div>\
         ');
       miniTrackEvent.appendTo(tracks[trackId].line).fadeIn(animationTime);
+      miniTrackEvent.click(function(){
+        if (onEventClick){
+          onEventClick(trackId, eventId);
+        }
+      });
       tracks[trackId].events[eventId] = miniTrackEvent;
 
       var setPos = function(left, width){
@@ -88,6 +94,7 @@ VideoTimeline.timeline = function(){
       addEvent: addEvent,
       getEvent: getEvent,
       deleteEvent: deleteEvent,
+      setOnEventClick: function(f) {onEventClick = f;},
     };
     miniTracks.push(miniT);
 

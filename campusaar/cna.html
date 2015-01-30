@@ -143,19 +143,13 @@
     var addTrack = function(){
       var layerId = nextLayerId++;
       var btnId = "btn-add-" + layerId;
-      VideoTimeline.timeline.onEventClick = function(trackId, eventId){
-      // console.log("clicked on track " + trackId + ", event " + eventId);
-      // console.log(sequences);
-      if (eventId in globalSequences){
-        clickDocument(globalSequences[eventId]);
-      }
-    };
-    VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, ""));//"Layer " + layerId));
+      VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, ""));//"Layer " + layerId));
 $("#" + btnId).click(function(){
   var eventId = nextEventId++;
   console.log('Add track event', layerId, eventId);
-  VideoTimeline.timeline.addTrackEvent(layerId, eventId, "Event " + eventId);
-});
+  newDocument(layerId, models.segment);
+        // VideoTimeline.timeline.addTrackEvent(layerId, eventId, "Event " + eventId);
+      });
 }
 
 var initTimelineVisibility = function(){
@@ -184,14 +178,22 @@ var initTimelineVisibility = function(){
     timeline.init("#video-timeline-footer");
     miniTrack = timeline.createMiniTracks("#otherMiniTrack");
 
+    var onEventClick = function(trackId, eventId){
+      if (eventId in globalSequences){
+        clickDocument(globalSequences[eventId]);
+      }
+    };
+    miniTrack.setOnEventClick(onEventClick);
+    VideoTimeline.timeline.onEventClick = onEventClick;
+
     addTrack();
 
     function FormatNumberLength(num, length) {
-        var r = "" + num;
-        while (r.length < length) {
-            r = "0" + r;
-        }
-        return r;
+      var r = "" + num;
+      while (r.length < length) {
+        r = "0" + r;
+      }
+      return r;
     }
 
     var timecode = $("#timecode");
@@ -200,24 +202,8 @@ var initTimelineVisibility = function(){
     notif.register(names.currentTime, function(obj){
       timecode.text(formatTime(obj.time) + "." + FormatNumberLength(Math.floor(obj.time*1000)%1000, 3));
     });
-      // timeline.addTrack(2, "Layer 2");
 
-    // timeline.addTrackEvents(1, [{
-    //   id: 1, 
-    //   title: "Test...", 
-    //   begin: 0.10, 
-    //   end: 0.25,
-    //   type: "alert"
-    // },{
-    //   id: 2, 
-    //   title: "Test2 Longer test to see overflow", 
-    //   begin: 0.35, 
-    //   end: 0.45,
-    //   type: "info"
-    // },
-    // ]);
-
-  timeline.setAnimationTime(150);
+    timeline.setAnimationTime(150);
     // timeline.addTrackEvent(2, 3, "Test3, autre track", 0.05, 0.55);
 
     $("#new-layer").click(addTrack);
@@ -227,36 +213,36 @@ var initTimelineVisibility = function(){
 			// $.getJSON("http://www.mocky.io/v2/5492e82d827817e408aa8fd2", function (data) {
 			// 	loadSequences(data.sequences);
 			// });
-  loadSequences([
-  {
-    "trackId": 1,
-    "id": 1,
-    "start": 0,
-    "end": 480,
-    "title": "Sequence 1 - introduction",
-    "filename": "video.seq.1.mp4",
-    "author": "Stephanie Lemoine"
-  },
-  {
-    "trackId": 1,
-    "id": 2,
-    "start": 600,
-    "end": 1000,
-    "title": "Sequence 2 - contenu",
-    "filename": "video.seq.2.mp4",
-    "author": "Stephanie Lemoine"
-  },
-  {
-    "trackId": 1,
-    "id": 3,
-    "start": 1200,
-    "end": 1800,
-    "title": "Sequence 3 - retour d'expérience",
-    "filename": "video.seq.3.mp4",
-    "author": "Gregory Potdevin"
-  },
-  ]);
-  initTimelineVisibility();
+loadSequences([
+{
+  "trackId": 1,
+  "id": 1,
+  "start": 0,
+  "end": 480,
+  "title": "Segment 1 - introduction",
+  "filename": "video.seq.1.mp4",
+  "author": "Stephanie Lemoine"
+},
+{
+  "trackId": 1,
+  "id": 2,
+  "start": 600,
+  "end": 1000,
+  "title": "Segment 2 - contenu",
+  "filename": "video.seq.2.mp4",
+  "author": "Stephanie Lemoine"
+},
+{
+  "trackId": 1,
+  "id": 3,
+  "start": 1200,
+  "end": 1800,
+  "title": "Segment 3 - retour d'expérience",
+  "filename": "video.seq.3.mp4",
+  "author": "Gregory Potdevin"
+},
+]);
+initTimelineVisibility();
   });//]]>  
 
 
@@ -318,7 +304,10 @@ var initTimelineVisibility = function(){
           <div class="panel-body video-container" style="position:relative;">
             <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls=""></video>
             <div id="timecode" style="position:absolute; top:0; left:0; z-index:1; padding:4px; color: white; font-size: 20px;">00:00.000</div>
-            <div style="position:absolute; top:0; right:0; z-index:1; padding:4px; color: white; font-size: 20px;">CNA</div>
+            <div style="position:absolute; top:0; right:0; z-index:1; ">
+              <img src="images/cna.png" style="width:40px; padding: 4px; height:auto; opacity: 1;"/>
+              <!-- <img src="images/campusaar.png"/> -->
+            </div>
               <!-- 
               <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
                 controls preload="auto"
@@ -358,7 +347,7 @@ var initTimelineVisibility = function(){
       <div class="panel-heading collapsable">
         <h3 class="panel-title" >
           <a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
-            Sequences <div id="sequence-cnt" class="badge"><span class="glyphicon glyphicon-remove"></span></div>
+            Segments <div id="sequence-cnt" class="badge"><span class="glyphicon glyphicon-remove"></span></div>
           </a>
         </h3>
       </div>
@@ -367,39 +356,47 @@ var initTimelineVisibility = function(){
   </div>
   <div class="col-md-8">
     <!-- TIMELINE -->
+    <div class="panel panel-info panel-timeline">
+      <div class="panel-heading">
+        <h3 class="panel-title" >Timeline</h3>
+      </div>
+
+      <div class="panel-body">
+
     <div class="container-fluid">
-      <div class="collapse in" id="video-timeline-footer">
-        <div class="row">
-          <div class="vt-container vt-sub-bar" style="display:block;">
-            <div class="vt-mini-scrollbar-wrapper">
-              <div class="vt-mini-scrollbar-container">
-                <div class="vt-mini-scrollbar-shadow">
-                  <div class="vt-mini-scrollbar-tracks">
+        <div id="video-timeline-footer">
+          <div class="row">
+            <div class="vt-container vt-sub-bar" style="display:block;">
+              <div class="vt-mini-scrollbar-wrapper">
+                <div class="vt-mini-scrollbar-container">
+                  <div class="vt-mini-scrollbar-shadow">
+                    <div class="vt-mini-scrollbar-tracks">
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="vt-left-pane">
-              <div class="vt-logo"></div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div id="video-timeline" class="vt-container" style="display:block;">
-            <div class="vt-tracks-wrapper">
-              <div class="vt-tracks-shadow">
-                <div class="vt-tracks" style="left: 0px; width: 100%;">
-                </div>
+              <div class="vt-left-pane">
+                <div class="vt-logo"></div>
               </div>
             </div>
-            <div class="vt-left-pane vt-track-list">
+          </div>
+          <div class="row">
+            <div id="video-timeline" class="vt-container" style="display:block;">
+              <div class="vt-tracks-wrapper">
+                <div class="vt-tracks-shadow">
+                  <div class="vt-tracks" style="left: 0px; width: 100%;">
+                  </div>
+                </div>
+              </div>
+              <div class="vt-left-pane vt-track-list">
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      </div>
 
-    <br />
+    </div>
 
     <!-- METADATA -->
     <div class="panel panel-primary">

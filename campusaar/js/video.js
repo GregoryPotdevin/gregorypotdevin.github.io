@@ -322,9 +322,10 @@ var showDocumentById = function(seqId){
 }
 
 var clickDocument = function (seq){
-  seeker.setTime(seq.start);
-  showDocument(seq);
-  $.bbq.pushState({start: seq.start});
+  Notif.post(NotifNames.onEventClick, {eventId: seq.id});
+  // seeker.setTime(seq.start);
+  // showDocument(seq);
+  // $.bbq.pushState({start: seq.start});
 }
 
 
@@ -423,22 +424,22 @@ var addDocument = function(seq, model){
 //  console.log(evt);
 
   Notif.post(NotifNames.eventAdd, {
-    trackId: 1,
+    trackId: seq.trackId ? seq.trackId : 1,
     eventId: seq.id,
     title: seq.title,
     begin: seq.start,
     end: seq.end,
   });
   // ArmaVideo.EventList.addEvent(seq.id, seq.title, seq.start, seq.end);
-  VideoTimeline.timeline.addTrackEvents(1, [evt]);
+  VideoTimeline.timeline.addTrackEvents(seq.trackId ? seq.trackId : 1, [evt]);
 }
 
 
-var newDocument = function(model){
+var newDocument = function(trackId, model){
   nextId++;
   var video = $("#video-frame");
   var start = Math.round(video[0].currentTime);
-  var seq = {'id': nextId, 'start': start, 'end': start+60}
+  var seq = {'trackId': trackId, 'id': nextId, 'start': start, 'end': start+60, 'title': "Segment " + nextId}
   addDocument(seq, model);
   showDocument(seq);
 
@@ -536,6 +537,12 @@ function loadSequences(sequences) {
       ArmaVideo.Notifications.setVideoTime(video[0].currentTime);
       VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
   }, false );
+  var autoUpdateTime = function(){
+    ArmaVideo.Notifications.setVideoTime(video[0].currentTime);
+    VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
+    setTimeout(autoUpdateTime, 50);
+  }
+  autoUpdateTime();
 
   // $(function () {
   //   $('[data-toggle="tooltip"]').tooltip()
@@ -768,7 +775,7 @@ $(document).ready(function(){
   $("#document-edit").click(function(e){ setEditable(true); });
   $("#document-save").click(function(e){ setEditable(false); });
   $("#document-new").click(function(e){
-    newDocument(models.segment);
+    newDocument(1, models.segment);
     setEditable(true);
   });
 
