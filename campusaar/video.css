@@ -138,21 +138,49 @@ html {
 }
 
 .panel-heading.collapsable .collapser:after {
-    font-family: 'Glyphicons Halflings';
-    content: "\e114";    
-    float: right; 
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";    
+  float: right; 
+  transition: transform 0.1s;
 }
+
 .panel-heading.collapsable .collapser.collapsed:after {
-    content: "\e080";
+    /*content: "\e080";  */
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .panel-heading.collapsable a:after {
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";    
+  float: right; 
+  transition: transform 0.1s;
+}
+.panel-heading.collapsable a.collapsed:after {
+    /*content: "\e080";*/
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+
+
+.document-heading.collapsable a:after {
     font-family: 'Glyphicons Halflings';
     content: "\e114";    
     float: right; 
+  transition: transform 0.1s;
 }
-.panel-heading.collapsable a.collapsed:after {
-    content: "\e080";
+.document-heading.collapsable a.collapsed:after {
+    text-decoration: none;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+    /*content: "\e080";*/
 }
 
 .affix-top,.affix{
@@ -178,16 +206,6 @@ html {
 
 .document-heading a {
   color: #337ab7 !important;
-}
-
-.document-heading.collapsable a:after {
-    font-family: 'Glyphicons Halflings';
-    content: "\e114";    
-    float: right; 
-}
-.document-heading.collapsable a.collapsed:after {
-    text-decoration: none;
-    content: "\e080";
 }
 
 

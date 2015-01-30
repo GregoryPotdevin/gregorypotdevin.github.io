@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>CampusAAR video demo</title>
+
+  <!-- // <script src="http://fb.me/react-0.12.2.js"></script> -->
+  <script src="http://fb.me/react-with-addons-0.12.2.js"></script>
+  <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link id="stylesheet-bootstrap" rel="stylesheet" type="text/css" href="css/bootstrap-theme.flatly.css">
+  <link rel="stylesheet" type="text/css" href="libs/select2/select2.css">
+  <link rel="stylesheet" type="text/css" href="libs/select2/select2-bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="libs/resizer/css/resizer.css">
+  <link rel="stylesheet" type="text/css" href="libs/bootstrap3-editable/css/bootstrap-editable.css">
+  <link rel="stylesheet" type="text/css" href="libs/summernote/summernote.css">
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="libs/video-js/video-js.css">
+  <link rel="stylesheet" type="text/css" href="css/videojs-sublime-skin.css">
+  <link rel="stylesheet" type="text/css" href="video.css">
+
+
+  <script type="text/javascript" src="js/notifications.js"></script>
+  <script type="text/javascript" src="libs/mousetrap.min.js"></script>
+  <script type="text/javascript" src="libs/handlebars.min.js"></script>
+  <script type="text/javascript" src="libs/jquery.min.js"></script>
+  <script type="text/javascript" src="libs/jquery-migrate-1.2.1.js"></script>
+  <script type="text/javascript">jQuery.migrateMute = true;</script>
+  <script type="text/javascript" src="libs/popcorn-complete.js"></script>
+  <script type="text/javascript" src="libs/bootstrap/bootstrap.min.js"></script>
+  <script type="text/javascript" src="libs/bootstrap/bootstrap-list-filter.js"></script>
+  <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
+  <script type="text/javascript" src="libs/select2/select2.js"></script>  
+  <script type="text/javascript" src="libs/select2/select2_locale_fr.js"></script>  
+  <!-- // <script type="text/javascript" src="libs/resizer/js/resizer.js"></script>   -->
+  <script type="text/javascript" src="libs/diacritics.js"></script>  
+  <script src="libs/summernote/summernote.js"></script>
+
+  <script type="text/javascript" src="libs/bootstrap3-editable/js/bootstrap-editable.js"></script>
+  <script type="text/javascript" src="libs/bootstrap3-editable/bootstrap3-editable-summernote.js"></script>
+
+  <script type="text/javascript" src="libs/video-js/video.dev.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="video-timeline/css/timeline.css">
+  <link rel="stylesheet" type="text/css" href="video-timeline/css/footer.css">
+  <script type="text/javascript" src="video-timeline/js/resizer.js"></script>
+  <script type="text/javascript" src="video-timeline/js/timeline.js"></script>
+
+  <script type="text/javascript" src="json/data-cna.js"></script>
+
+  <script id="sequence-item-template" type="text/x-handlebars-template">
+    <a href="#" id="seq-{{id}}" class="list-group-item sequence-item" data-event-id="{{id}}">
+      <h5 class="list-group-item-heading">{{title}}</h5>
+      <div class="clearfix">
+        <span class="badge pull-left" data-timecode-type="begin" style="margin-right: 4px;">{{timecode begin}}</span>
+        <span class="badge pull-right" data-timecode-type="end"   style="margin-left: 4px;">{{timecode end}}</span>
+        <div class="mini-commands">
+          <div class="btn-group-xs pull-left" data-toggle="buttons">
+            <label class="btn btn-warning active" style="margin-right: 4px;">
+              <input type="checkbox" autocomplete="off" checked><span class="glyphicon glyphicon-repeat"></span>
+            </label>
+          </div>
+          <div class="progress" style="vertical-align: middle; margin-bottom: 4px;">
+            <div class="progress-bar progress-bar-info" role="progressbar" data-seq-id="{{id}}" style="width: 00%;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </script>
+<!--  
+        <table class="table table-bordered table-striped table-info" style="clear: both">
+           {{#each fields}}
+           {{renderField this ../seq}}
+         {{/each}}
+         {{renderFields fields ../seq}} -->
+         <script id="sequence-info-template" type="text/x-handlebars-template">
+          <div role="tabpanel" class="tab-pane {{#if isActive}}active{{/if}}" id="info-{{seq.id}}-{{tab.id}}">
+            <div>
+              <table class="table table-striped table-info" style="clear: both">
+                <tbody>
+                  {{#each fields}}
+                  {{#if header}}
+                </tbody>
+              </table>
+            </div>
+            <div class="document-heading collapsable">
+              <h4><a class="nounderline" data-toggle="collapse" href="#header-{{../../seq.id}}-{{header}}" aria-expanded="true" aria-controls="header-{{../../seq.id}}-{{header}}">{{header}}</a></h4>
+            </div>
+            <div id="header-{{../../seq.id}}-{{header}}" class="collapse in">
+              <table class="table table-striped table-info" style="clear: both">
+                <tbody>
+                  {{/if}}
+                  {{renderField this ../seq}}
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </script>
+
+        <script id="sequence-info-field-template" type="text/x-handlebars-template">
+          <tr>
+            <td width="15%">{{field.label}}</td>
+            <td width="85%">
+              <p id="seq-{{seq.id}}-{{field.id}}" style="float: left;" data-type="{{type.data_type}}" data-title={{field.label}}>
+                {{content seq field}}
+              </p>
+              {{#if field.editable}}
+              <span id="seq-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+              class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+              {{/if}}
+            </td>
+          </tr>
+        </script>
+
+        <!-- {{> field this field=this seq=../seq type=field.dtype}} -->
+
+        <script type="text/javascript" src="js/video-notifications.js"></script>
+        <script type="text/javascript" src="js/video-event-list.js"></script>
+        <script type="text/javascript" src="js/video.js"></script>
+
+
+	<script type="text/javascript">//<![CDATA[ 
+
+
+    var createTrackDom = function(btnId, title){
+      return '\
+      <div class="track-info">\
+        <span>' + title + '</span>\
+        <div class="btn-group pull-right" role="group" >\
+          <button id="' + btnId + '" type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>\
+        </div>\
+      </div>\
+      ';
+    }
+
+    var nextEventId = 10;
+    var nextLayerId = 1;
+    var addTrack = function(){
+      var layerId = nextLayerId++;
+      var btnId = "btn-add-" + layerId;
+      VideoTimeline.timeline.onEventClick = function(trackId, eventId){
+      // console.log("clicked on track " + trackId + ", event " + eventId);
+      // console.log(sequences);
+      if (eventId in globalSequences){
+        clickDocument(globalSequences[eventId]);
+      }
+    };
+    VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, ""));//"Layer " + layerId));
+$("#" + btnId).click(function(){
+  var eventId = nextEventId++;
+  console.log('Add track event', layerId, eventId);
+  VideoTimeline.timeline.addTrackEvent(layerId, eventId, "Event " + eventId);
+});
+}
+
+var initTimelineVisibility = function(){
+  var footer = $("#video-timeline-footer");
+  var buttons = $("#new-layer");
+  footer.on('hide.bs.collapse', function () {
+    buttons.fadeOut();
+  });
+  footer.on('show.bs.collapse', function () {
+    buttons.fadeIn();
+  });
+
+
+
+    // Show timeline and toggle out
+    setTimeout(function(){
+      $("#toggle-timeline").trigger("click");
+    }, 500);
+  }
+
+
+  $(window).load(function(){
+    var timeline = VideoTimeline.timeline;
+
+    VideoTimeline.viewport.createViewport(".vt-sub-bar .vt-mini-scrollbar-container");
+    timeline.init("#video-timeline-footer");
+    miniTrack = timeline.createMiniTracks("#otherMiniTrack");
+
+    addTrack();
+
+    function FormatNumberLength(num, length) {
+        var r = "" + num;
+        while (r.length < length) {
+            r = "0" + r;
+        }
+        return r;
+    }
+
+    var timecode = $("#timecode");
+    var notif = ArmaTools.Notifications;
+    var names = ArmaVideo.Notifications.names;
+    notif.register(names.currentTime, function(obj){
+      timecode.text(formatTime(obj.time) + "." + FormatNumberLength(Math.floor(obj.time*1000)%1000, 3));
+    });
+      // timeline.addTrack(2, "Layer 2");
+
+    // timeline.addTrackEvents(1, [{
+    //   id: 1, 
+    //   title: "Test...", 
+    //   begin: 0.10, 
+    //   end: 0.25,
+    //   type: "alert"
+    // },{
+    //   id: 2, 
+    //   title: "Test2 Longer test to see overflow", 
+    //   begin: 0.35, 
+    //   end: 0.45,
+    //   type: "info"
+    // },
+    // ]);
+
+  timeline.setAnimationTime(150);
+    // timeline.addTrackEvent(2, 3, "Test3, autre track", 0.05, 0.55);
+
+    $("#new-layer").click(addTrack);
+
+
+
+			// $.getJSON("http://www.mocky.io/v2/5492e82d827817e408aa8fd2", function (data) {
+			// 	loadSequences(data.sequences);
+			// });
+  loadSequences([
+  {
+    "trackId": 1,
+    "id": 1,
+    "start": 0,
+    "end": 480,
+    "title": "Sequence 1 - introduction",
+    "filename": "video.seq.1.mp4",
+    "author": "Stephanie Lemoine"
+  },
+  {
+    "trackId": 1,
+    "id": 2,
+    "start": 600,
+    "end": 1000,
+    "title": "Sequence 2 - contenu",
+    "filename": "video.seq.2.mp4",
+    "author": "Stephanie Lemoine"
+  },
+  {
+    "trackId": 1,
+    "id": 3,
+    "start": 1200,
+    "end": 1800,
+    "title": "Sequence 3 - retour d'expérience",
+    "filename": "video.seq.3.mp4",
+    "author": "Gregory Potdevin"
+  },
+  ]);
+  initTimelineVisibility();
+  });//]]>  
+
+
+</script>
+
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="display: none;">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <img class="navbar-brand" style="height: 52px; padding: 4px;" src="images/campusaar.png"/>
+      </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="#">Home </a></li>
+          <li class="active"><a href="#">Video <span class="sr-only">(current)</span></a></li>
+        </ul>
+        <div class="col-sm-3 col-md-3 pull-right">
+          <form class="navbar-form" role="search">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+              <div class="input-group-btn">
+                <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Styles <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a data-action="style" data-style="bootstrap-theme.min.css"     href="#">bootstrap</a></li>
+              <li class="selected"><a data-action="style" data-style="bootstrap-theme.flatly.css"  href="#">flatly</a></li>
+              <li><a data-action="style" data-style="bootstrap-theme.lumen.css"  href="#">lumen</a></li>
+              <li><a data-action="style" data-style="bootstrap-theme.google-plus.css"  href="#">google plus</a></li>
+              <li><a data-action="style" data-style="bootstrap-theme.readable.css"  href="#">readable</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>  
+  <div class="fluid-container">
+    <div class="row">
+      <div class="col-md-4" >
+        <div id="sidebar-video">
+         <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Video</h3>
+          </div>
+          <div class="panel-body video-container" style="position:relative;">
+            <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls=""></video>
+            <div id="timecode" style="position:absolute; top:0; left:0; z-index:1; padding:4px; color: white; font-weight: bold;">TIMECODE</div>
+            <div style="position:absolute; top:0; right:0; z-index:1; padding:4px; color: white; font-weight: bold;">CNA</div>
+              <!-- 
+              <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
+                controls preload="auto"
+                preload="auto" autoplay
+                data-setup='{"width":"100%"}'>
+               <source src="http://download2.cerimes.fr/canalu/videos/utls_au_lycee/utls_270111l_bellivier_stand.mp4" type='video/mp4' />
+               
+               <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+             </video> 
+           -->
+           <div id="video-timeline" class="timeline" style="display: none;">
+            <div id="video-timeline-items">
+
+            </div>
+            <span id="video-timeline-marker" class="timeline-marker"></span>
+          </div>
+          <div class="vt-mini-scrollbar-container" >
+            <div id="otherMiniTrack" class="vt-mini-scrollbar-shadow custom-mini-tracks">
+
+            </div>
+          </div>
+        </div>
+      </div>
+<!--       <form class="form form-horizontal">
+        <div class="has-feeback">
+          <input id="sequence-filter" type="text" class="form-control form-control-inline has-clear" placeholder="Filter">
+          <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+        </div>
+      </form> -->
+<!--       <div id="react-sequences"></div>
+      <canvas></canvas>
+      <div id="thumbnails"></div> -->
+    </div>
+
+    <!-- SEGMENTS -->
+    <div class="panel panel-info">
+      <div class="panel-heading collapsable">
+        <h3 class="panel-title" >
+          <a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
+            Sequences <div id="sequence-cnt" class="badge"><span class="glyphicon glyphicon-remove"></span></div>
+          </a>
+        </h3>
+      </div>
+      <div id="sequences" class="list-group collapse in"></div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <!-- TIMELINE -->
+    <div class="container-fluid">
+      <div class="collapse in" id="video-timeline-footer">
+        <div class="row">
+          <div class="vt-container vt-sub-bar" style="display:block;">
+            <div class="vt-mini-scrollbar-wrapper">
+              <div class="vt-mini-scrollbar-container">
+                <div class="vt-mini-scrollbar-shadow">
+                  <div class="vt-mini-scrollbar-tracks">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="vt-left-pane">
+              <div class="vt-logo"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div id="video-timeline" class="vt-container" style="display:block;">
+            <div class="vt-tracks-wrapper">
+              <div class="vt-tracks-shadow">
+                <div class="vt-tracks" style="left: 0px; width: 100%;">
+                </div>
+              </div>
+            </div>
+            <div class="vt-left-pane vt-track-list">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br />
+
+    <!-- METADATA -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Metadata</h3>
+      </div>
+      <div class="panel-body">
+        <ul class="nav nav-pills nav-justified" role="tablist" style="display: none;">
+          <li role="presentation"><a class="metadata-pane-btn" href="#metadata-video" aria-controls="metadata-video" role="tab" data-toggle="tab">Video</a></li>
+          <li role="presentation"><a class="metadata-pane-btn" href="#metadata-layer" aria-controls="metadata-layer" role="tab" data-toggle="tab">Layer</a></li>
+          <li role="presentation" class="active"><a class="metadata-pane-btn" href="#metadata-segment" aria-controls="metadata-segment" role="tab" data-toggle="tab">Segment</a></li>
+        </ul>
+        <div class="btn-toolbar clearfix" aria-label="commands" style="padding-top: 4px; padding-bottom: 4px;" >
+          <div></div>
+          <div class="btn-group-sm pull-right">
+            <button id="document-new"  type="button" class="btn btn-info" title="New sequence" aria-hidden="true"><i class="glyphicon glyphicon-plus"></i> New</button>
+            <button id="document-edit" type="button" class="btn btn-info" title="Edit sequence" aria-hidden="true"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
+            <button id="document-save" type="button" class="btn btn-info" title="Save" aria-hidden="true"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
+          </div>
+        </div>
+        <div id="metadata-video"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
+        <div id="metadata-layer"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
+        <div id="metadata-segment" role="tabpanel" class="tab-pane metadata-pane manual-tab-pane selected" >
+          <div id="info">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+</div>
+</div>
+<script type="text/jsx;harmony=true" src="js/react-video-event-list.js"></script>
+</body>
+
+</html>

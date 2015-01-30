@@ -7,7 +7,7 @@ var NotifNames = ArmaVideo.Notifications.names;
 
 var Resizer = ArmaTools.Resizer;
 
-var currentDoc = {};
+var currentDoc;
 var noop = function(){};
 var endMovable = noop;
 
@@ -420,7 +420,7 @@ var addDocument = function(seq, model){
     begin: seq.start / videoDuration,//video[0].duration,
     end: seq.end / videoDuration,//video[0].duration,
   };
-  console.log(evt);
+//  console.log(evt);
 
   Notif.post(NotifNames.eventAdd, {
     trackId: 1,
@@ -466,6 +466,12 @@ var updateSequenceCount = function(cnt){
 }
 
 function loadSequences(sequences) {
+
+  // React.render(
+  //   // <VideoEventList />,
+  //   React.createElement(VideoEventList, null),
+  //   document.getElementById('react-sequences')
+  // );
 
   Notif.register(NotifNames.onEventClick, function(obj){
     var seq = globalSequences[obj.eventId];
@@ -520,6 +526,7 @@ function loadSequences(sequences) {
       showDocument(seq);
     }
   });
+  console.log(currentDoc);
   if ((currentDoc === undefined) && (sequences.length > 0)){
     showDocument(sequences[0]);
   }

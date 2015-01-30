@@ -189,7 +189,7 @@ VideoTimeline.timeline = function(){
     var el = $(track);
     // el.appendTo(tracks).slideDown(animationTime);
     el.insertBefore(timeMarker).slideDown(animationTime);
-    console.log(trackView, id);
+    //console.log(trackView, id);
     trackView[id] = {
       "line": el,
       "events": {}
@@ -223,7 +223,7 @@ VideoTimeline.timeline = function(){
 
   var addTrackEvent = function(trackId, eventId, name, begin, end, options){
     var track = trackView[trackId];
-    console.log(viewport);
+    //console.log(viewport);
     if (begin === undefined){
       begin = viewport.viewport.left*viewport.viewport.width;
       begin = _timeRatio;
@@ -232,7 +232,7 @@ VideoTimeline.timeline = function(){
       end = begin + viewport.viewport.width*DEFAULT_EVENT_WIDTH;
       end = begin + DEFAULT_EVENT_WIDTH;//viewport.viewport.width*DEFAULT_EVENT_WIDTH;
     }
-    console.log("pos: ", begin, end);
+    //console.log("pos: ", begin, end);
     if (end > 1){
       // begin -= end-1;
       end = 1;
@@ -260,7 +260,7 @@ VideoTimeline.timeline = function(){
     track.events[eventId] = trackEvent;
     trackEvent.appendTo(track.line).fadeIn(animationTime);
 
-    console.log(left, width);
+//    console.log(left, width);
 
     var miniTrackEvents = miniTracks.map(function(mt){return mt.addEvent(trackId, eventId, left, width);});
 

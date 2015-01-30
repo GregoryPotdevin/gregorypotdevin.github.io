@@ -5,6 +5,10 @@
 
 	<title>CampusAAR video demo</title>
 
+  <!-- // <script src="http://fb.me/react-0.12.2.js"></script> -->
+  <script src="http://fb.me/react-with-addons-0.12.2.js"></script>
+  <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
+
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link id="stylesheet-bootstrap" rel="stylesheet" type="text/css" href="css/bootstrap-theme.flatly.css">
   <link rel="stylesheet" type="text/css" href="libs/select2/select2.css">
@@ -267,10 +271,8 @@ timeline.setAnimationTime(150);
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <!-- <a class="navbar-brand" href="#"><img style="height: 24px;" src="images/campusaar.jpg"/></a> -->
         <img class="navbar-brand" style="height: 52px; padding: 4px;" src="images/campusaar.png"/>
       </div>
-
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
@@ -279,123 +281,116 @@ timeline.setAnimationTime(150);
         </ul>
         <div class="col-sm-3 col-md-3 pull-right">
           <form class="navbar-form" role="search">
-           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
-            <div class="input-group-btn">
-             <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-           </div>
-         </div>
-       </form>
-     </div>
-     <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Styles <span class="caret"></span></a>
-        <ul class="dropdown-menu" role="menu">
-          <li><a data-action="style" data-style="bootstrap-theme.min.css"     href="#">bootstrap</a></li>
-          <li class="selected"><a data-action="style" data-style="bootstrap-theme.flatly.css"  href="#">flatly</a></li>
-          <li><a data-action="style" data-style="bootstrap-theme.lumen.css"  href="#">lumen</a></li>
-          <li><a data-action="style" data-style="bootstrap-theme.google-plus.css"  href="#">google plus</a></li>
-          <!-- <li><a data-action="style" data-style="bootstrap-theme.material.css"  href="#">material</a></li> -->
-          <li><a data-action="style" data-style="bootstrap-theme.readable.css"  href="#">readable</a></li>
-
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+              <div class="input-group-btn">
+                <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Styles <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a data-action="style" data-style="bootstrap-theme.min.css"     href="#">bootstrap</a></li>
+              <li class="selected"><a data-action="style" data-style="bootstrap-theme.flatly.css"  href="#">flatly</a></li>
+              <li><a data-action="style" data-style="bootstrap-theme.lumen.css"  href="#">lumen</a></li>
+              <li><a data-action="style" data-style="bootstrap-theme.google-plus.css"  href="#">google plus</a></li>
+              <li><a data-action="style" data-style="bootstrap-theme.readable.css"  href="#">readable</a></li>
+            </ul>
+          </li>
         </ul>
-      </li>
-    </ul>
-  </div><!-- /.navbar-collapse -->
-</div><!-- /.container-fluid -->
-</nav>  
-<div class="fluid-container">
-  <div id="affix-container" class="col-md-4" >
-    <div id="sidebar-video" data-spy="affix" data-offset-top="60">
-     <div class="panel panel-primary">
-      <div class="panel-heading">
-       <h3 class="panel-title">Video</h3>
-     </div>
-     <div class="panel-body video-container">
-      <!-- <video id="video-frame" class="video" src="videos/P2puvid.ogv" controls=""></video> -->
-      <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls=""></video>
-
-
-      <!-- video-full -->
-      <!-- poster="http://video-js.zencoder.com/oceans-clip.png" -->
-            <!-- <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>  
+  <div class="fluid-container">
+    <div id="affix-container" class="col-md-4" >
+      <div id="sidebar-video" data-spy="affix" data-offset-top="60">
+       <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Video</h3>
+        </div>
+        <div class="panel-body video-container">
+          <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls=""></video>
+            <!-- 
+            <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
               controls preload="auto"
               preload="auto" autoplay
               data-setup='{"width":"100%"}'>
              <source src="http://download2.cerimes.fr/canalu/videos/utls_au_lycee/utls_270111l_bellivier_stand.mp4" type='video/mp4' />
              
              <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-           </video> -->
-           <div id="video-timeline" class="timeline" style="display: none;">
-            <div id="video-timeline-items">
+           </video> 
+         -->
+         <div id="video-timeline" class="timeline" style="display: none;">
+          <div id="video-timeline-items">
 
-            </div>
-            <span id="video-timeline-marker" class="timeline-marker"></span>
           </div>
-          <div class="vt-mini-scrollbar-container" >
-            <div id="otherMiniTrack" class="vt-mini-scrollbar-shadow custom-mini-tracks">
+          <span id="video-timeline-marker" class="timeline-marker"></span>
+        </div>
+        <div class="vt-mini-scrollbar-container" >
+          <div id="otherMiniTrack" class="vt-mini-scrollbar-shadow custom-mini-tracks">
 
-            </div>
           </div>
         </div>
       </div>
-      <form class="form form-horizontal">
-        <div class="has-feeback">
-          <!-- <div class="input-group has-feedback"> -->
-          <!-- <div class="col-md-12"> -->
-          <input id="sequence-filter" type="text" class="form-control form-control-inline has-clear" placeholder="Filter">
-          <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
-        </div>
-      </form>
-      <canvas></canvas>
-      <div id="thumbnails"></div>
     </div>
+    <form class="form form-horizontal">
+      <div class="has-feeback">
+        <input id="sequence-filter" type="text" class="form-control form-control-inline has-clear" placeholder="Filter">
+        <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+      </div>
+    </form>
+    <div id="react-sequences"></div>
+    <canvas></canvas>
+    <div id="thumbnails"></div>
   </div>
-  <div class="col-md-8" style="margin-bottom:240px;">
-    <div class="panel panel-info">
-      <div class="panel-heading collapsable">
-        <h3 class="panel-title" >
-          <a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
-            Sequences <div id="sequence-cnt" class="badge"><span class="glyphicon glyphicon-remove"></span></div>
-          </a>
-        </h3>
-      </div>
-      <div id="sequences" class="list-group collapse in"></div>
+</div>
+<div class="col-md-8" style="margin-bottom:240px;">
+  <div class="panel panel-info">
+    <div class="panel-heading collapsable">
+      <h3 class="panel-title" >
+        <a class="nounderline" data-toggle="collapse" href="#sequences" aria-expanded="true" aria-controls="sequences">
+          Sequences <div id="sequence-cnt" class="badge"><span class="glyphicon glyphicon-remove"></span></div>
+        </a>
+      </h3>
     </div>
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Metadata</h3>
-      </div>
-      <div class="panel-body">
-        <ul class="nav nav-pills nav-justified" role="tablist">
-          <li role="presentation"><a class="metadata-pane-btn" href="#metadata-video" aria-controls="metadata-video" role="tab" data-toggle="tab">Video</a></li>
-          <li role="presentation"><a class="metadata-pane-btn" href="#metadata-layer" aria-controls="metadata-layer" role="tab" data-toggle="tab">Layer</a></li>
-          <li role="presentation" class="active"><a class="metadata-pane-btn" href="#metadata-segment" aria-controls="metadata-segment" role="tab" data-toggle="tab">Segment</a></li>
-        </ul>
-        <div class="btn-toolbar clearfix" aria-label="commands" style="padding-top: 4px; padding-bottom: 4px;" >
-          <div></div>
-          <div class="btn-group-sm pull-right">
-            <button id="document-new"  type="button" class="btn btn-info" title="New sequence" aria-hidden="true"><i class="glyphicon glyphicon-plus"></i> New</button>
-            <button id="document-edit" type="button" class="btn btn-info" title="Edit sequence" aria-hidden="true"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
-            <button id="document-save" type="button" class="btn btn-info" title="Save" aria-hidden="true"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
-          </div>
+    <div id="sequences" class="list-group collapse in"></div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">Metadata</h3>
+    </div>
+    <div class="panel-body">
+      <ul class="nav nav-pills nav-justified" role="tablist">
+        <li role="presentation"><a class="metadata-pane-btn" href="#metadata-video" aria-controls="metadata-video" role="tab" data-toggle="tab">Video</a></li>
+        <li role="presentation"><a class="metadata-pane-btn" href="#metadata-layer" aria-controls="metadata-layer" role="tab" data-toggle="tab">Layer</a></li>
+        <li role="presentation" class="active"><a class="metadata-pane-btn" href="#metadata-segment" aria-controls="metadata-segment" role="tab" data-toggle="tab">Segment</a></li>
+      </ul>
+      <div class="btn-toolbar clearfix" aria-label="commands" style="padding-top: 4px; padding-bottom: 4px;" >
+        <div></div>
+        <div class="btn-group-sm pull-right">
+          <button id="document-new"  type="button" class="btn btn-info" title="New sequence" aria-hidden="true"><i class="glyphicon glyphicon-plus"></i> New</button>
+          <button id="document-edit" type="button" class="btn btn-info" title="Edit sequence" aria-hidden="true"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
+          <button id="document-save" type="button" class="btn btn-info" title="Save" aria-hidden="true"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
         </div>
-        <div id="metadata-video"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
-        <div id="metadata-layer"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
-        <div id="metadata-segment" role="tabpanel" class="tab-pane metadata-pane manual-tab-pane selected" >
-          <div id="info">
-          </div>
+      </div>
+      <div id="metadata-video"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
+      <div id="metadata-layer"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
+      <div id="metadata-segment" role="tabpanel" class="tab-pane metadata-pane manual-tab-pane selected" >
+        <div id="info">
         </div>
       </div>
     </div>
   </div>
 </div>
+</div>
 <div class="footer navbar-fixed-bottom">
   <div class="container-fluid">
     <div class="row">
       <div class="btn-toolbar clearfix">
-          <!-- <div class="btn-group-sm pull-right">
-        </div> -->
         <div id="timeline-controls" class="btn-group-sm" style="margin-left: 10px;">
           <button id="toggle-timeline" class="btn btn-info toggle-btn collapsed" type="button" data-toggle="collapse" data-target="#video-timeline-footer" aria-expanded="false" aria-controls="video-timeline-footer">
 
@@ -438,7 +433,7 @@ timeline.setAnimationTime(150);
 
 </div>
 </div>
-
+<script type="text/jsx;harmony=true" src="js/react-video-event-list.js"></script>
 </body>
 
 </html>
