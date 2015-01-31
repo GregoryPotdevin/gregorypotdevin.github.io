@@ -7,3 +7,5 @@ campusaar/video-timeline/.svn/format
 campusaar/video-timeline/.svn/wc.db
 
 *.svn-base
+
+campusaar/libs/Flux.js

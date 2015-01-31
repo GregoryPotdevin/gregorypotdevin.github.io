@@ -5,6 +5,8 @@ var ArmaVideo = ArmaVideo || {};
 var Notif = ArmaTools.Notifications;
 var NotifNames = ArmaVideo.Notifications.names;
 
+var videoDispatcher = new ArmaTools.Dispatcher();
+
 var Resizer = ArmaTools.Resizer;
 
 var currentDoc;
@@ -23,6 +25,7 @@ var isNumeric = function isNumber(n) {
 }
 
 var formatTime = function(seconds) {
+  var t = Math.round(seconds*1000)/1000; // Realign milliseconds
   seconds = Math.floor(seconds);
   var min = Math.floor(seconds / 60);
   var sec = seconds % 60;
@@ -321,14 +324,6 @@ var showDocumentById = function(seqId){
   showDocument(globalSequences[seqId]);
 }
 
-var clickDocument = function (seq){
-  Notif.post(NotifNames.onEventClick, {eventId: seq.id});
-  // seeker.setTime(seq.start);
-  // showDocument(seq);
-  // $.bbq.pushState({start: seq.start});
-}
-
-
 var addDocument = function(seq, model){
   var video = $("#video-frame");
   var pop = Popcorn("#video-frame");
@@ -386,6 +381,7 @@ var addDocument = function(seq, model){
   info.append(info_entry);
 
   var updateTitle = function(id, field, seq){
+    videoDispatcher.dispatch({actionType: "updateEventTitle", trackId: 1, eventId: seq.id, title: seq.title});
     Notif.post(NotifNames.eventSetTitle, {trackId: 1, eventId: seq.id, title: seq.title});
     VideoTimeline.timeline.setTrackEventTitle(1, seq.id, seq.title);
     // TODO : update timeline title
@@ -400,7 +396,8 @@ var addDocument = function(seq, model){
       }
       $("#seq-" + seq.id + "-start").text(formatTime(seq.start));
       $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
-    }
+    }    
+    videoDispatcher.dispatch({actionType: "updateEventTimecodes", trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
     Notif.post(NotifNames.eventUpdateTime, {trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
     // TODO : update time...// VideoTimeline.timeline.
   }
@@ -423,15 +420,23 @@ var addDocument = function(seq, model){
   };
 //  console.log(evt);
 
-  Notif.post(NotifNames.eventAdd, {
+  videoDispatcher.dispatch({
+    actionType: "onEventAdded",
     trackId: seq.trackId ? seq.trackId : 1,
     eventId: seq.id,
     title: seq.title,
     begin: seq.start,
     end: seq.end,
   });
+  // Notif.post(NotifNames.eventAdd, {
+  //   trackId: seq.trackId ? seq.trackId : 1,
+  //   eventId: seq.id,
+  //   title: seq.title,
+  //   begin: seq.start,
+  //   end: seq.end,
+  // });
   // ArmaVideo.EventList.addEvent(seq.id, seq.title, seq.start, seq.end);
-  VideoTimeline.timeline.addTrackEvents(seq.trackId ? seq.trackId : 1, [evt]);
+  // VideoTimeline.timeline.addTrackEvents(seq.trackId ? seq.trackId : 1, [evt]);
 }
 
 
@@ -481,15 +486,35 @@ function loadSequences(sequences) {
   //   document.getElementById('react-sequences')
   // );
 
-  Notif.register(NotifNames.onEventClick, function(obj){
+  var onEventClick = function(obj){
     var seq = globalSequences[obj.eventId];
     seeker.setTime(seq.start);
     ArmaVideo.Notifications.setVideoTime(seq.start);
     showDocument(seq);
     $.bbq.pushState({start: seq.start});
-  });
+  };
+  // Notif.register(NotifNames.onEventClick, onEventClick);
 
-  ArmaVideo.EventList.init("#sequences");
+  var updateMetadataEventTimecodes = function(eventId, begin, end){
+    var seq = globalSequences[eventId];
+    seq.start = begin;
+    seq.end = end;
+    $("#seq-" + seq.id + "-start").text(formatTime(seq.start));
+    $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
+    // Notif.post(NotifNames.eventUpdateTime, {trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
+  };
+
+
+  videoDispatcher.register(function(obj){
+    switch(obj.actionType){
+      case "onEventClick": onEventClick(obj); break;
+      case "updateEventTimecodes": updateMetadataEventTimecodes(obj.eventId, obj.begin, obj.end);
+      default: break;
+    }
+
+  })
+
+  ArmaVideo.EventList.init("#sequences", videoDispatcher);
 
   sequences = sequences.slice(0);
   sequences.sort(function(s1, s2) {
@@ -540,11 +565,12 @@ function loadSequences(sequences) {
   }
 
   var marker = $("#video-timeline-marker");
-  video[0].addEventListener( "timeupdate", function( e ) {
-      ArmaVideo.Notifications.setVideoTime(video[0].currentTime);
-      VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
-  }, false );
+  // video[0].addEventListener( "timeupdate", function( e ) {
+  //     ArmaVideo.Notifications.setVideoTime(video[0].currentTime);
+  //     VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
+  // }, false );
   var autoUpdateTime = function(){
+    videoDispatcher.dispatch({actionType: "currentTime", time: video[0].currentTime, duration: video[0].duration});
     ArmaVideo.Notifications.setVideoTime(video[0].currentTime);
     VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
     setTimeout(autoUpdateTime, 50);

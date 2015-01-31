@@ -24,6 +24,7 @@
 
 
   <script type="text/javascript" src="js/notifications.js"></script>
+  <script type="text/javascript" src="js/dispatcher.js"></script>
   <script type="text/javascript" src="libs/mousetrap.min.js"></script>
   <script type="text/javascript" src="libs/handlebars.min.js"></script>
   <script type="text/javascript" src="libs/jquery.min.js"></script>
@@ -138,20 +139,16 @@
       ';
     }
 
-    var nextEventId = 10;
     var nextLayerId = 1;
     var addTrack = function(){
       var layerId = nextLayerId++;
       var btnId = "btn-add-" + layerId;
       VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, ""));//"Layer " + layerId));
-$("#" + btnId).click(function(){
-  var eventId = nextEventId++;
-  console.log('Add track event', layerId, eventId);
-  newDocument(layerId, models.segment);
-  setEditable(true);
-        // VideoTimeline.timeline.addTrackEvent(layerId, eventId, "Event " + eventId);
+      $("#" + btnId).click(function(){
+        newDocument(layerId, models.segment);
+        setEditable(true);
       });
-}
+    }
 
 var initTimelineVisibility = function(){
   var footer = $("#video-timeline-footer");
@@ -176,27 +173,10 @@ var initTimelineVisibility = function(){
     var timeline = VideoTimeline.timeline;
 
     VideoTimeline.viewport.createViewport(".vt-sub-bar .vt-mini-scrollbar-container");
-    timeline.init("#video-timeline-footer");
+    timeline.init("#video-timeline-footer", videoDispatcher);
     miniTrack = timeline.createMiniTracks("#otherMiniTrack");
-
-    var onEventClick = function(trackId, eventId){
-      if (eventId in globalSequences){
-        clickDocument(globalSequences[eventId]);
-      }
-    };
-
-    var onEventUpdated = function(trackId, eventId, begin, end){
-      var seq = globalSequences[eventId];
-      seq.start = begin*videoDuration;
-      seq.end = end*videoDuration;
-      $("#seq-" + seq.id + "-start").text(formatTime(seq.start));
-      $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
-      Notif.post(NotifNames.eventUpdateTime, {trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
-    };
-    miniTrack.setOnEventClick(onEventClick);
-    VideoTimeline.timeline.onEventClick = onEventClick;
-    VideoTimeline.timeline.onEventUpdated = onEventUpdated;
-
+    miniTrack.setClickable(true);
+    
     addTrack();
 
     function FormatNumberLength(num, length) {
@@ -374,37 +354,37 @@ initTimelineVisibility();
 
       <div class="panel-body">
 
-    <div class="container-fluid">
-        <div id="video-timeline-footer">
-          <div class="row">
-            <div class="vt-container vt-sub-bar" style="display:block;">
-              <div class="vt-mini-scrollbar-wrapper">
-                <div class="vt-mini-scrollbar-container">
-                  <div class="vt-mini-scrollbar-shadow">
-                    <div class="vt-mini-scrollbar-tracks">
+        <div class="container-fluid">
+          <div id="video-timeline-footer">
+            <div class="row">
+              <div class="vt-container vt-sub-bar" style="display:block;">
+                <div class="vt-mini-scrollbar-wrapper">
+                  <div class="vt-mini-scrollbar-container">
+                    <div class="vt-mini-scrollbar-shadow">
+                      <div class="vt-mini-scrollbar-tracks">
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="vt-left-pane">
-                <div class="vt-logo"></div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div id="video-timeline" class="vt-container" style="display:block;">
-              <div class="vt-tracks-wrapper">
-                <div class="vt-tracks-shadow">
-                  <div class="vt-tracks" style="left: 0px; width: 100%;">
-                  </div>
+                <div class="vt-left-pane">
+                  <div class="vt-logo"></div>
                 </div>
               </div>
-              <div class="vt-left-pane vt-track-list">
+            </div>
+            <div class="row">
+              <div id="video-timeline" class="vt-container" style="display:block;">
+                <div class="vt-tracks-wrapper">
+                  <div class="vt-tracks-shadow">
+                    <div class="vt-tracks" style="left: 0px; width: 100%;">
+                    </div>
+                  </div>
+                </div>
+                <div class="vt-left-pane vt-track-list">
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
 
     </div>

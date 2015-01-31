@@ -24,6 +24,7 @@
 
 
   <script type="text/javascript" src="js/notifications.js"></script>
+  <script type="text/javascript" src="js/dispatcher.js"></script>
   <script type="text/javascript" src="libs/mousetrap.min.js"></script>
   <script type="text/javascript" src="libs/handlebars.min.js"></script>
   <script type="text/javascript" src="libs/jquery.min.js"></script>
@@ -138,51 +139,43 @@
       ';
     }
 
-    var nextEventId = 10;
     var nextLayerId = 1;
     var addTrack = function(){
       var layerId = nextLayerId++;
       var btnId = "btn-add-" + layerId;
-      VideoTimeline.timeline.onEventClick = function(trackId, eventId){
-      // console.log("clicked on track " + trackId + ", event " + eventId);
-      // console.log(sequences);
-      if (eventId in globalSequences){
-        clickDocument(globalSequences[eventId]);
-      }
-    };
-    VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, "Layer " + layerId));
-    $("#" + btnId).click(function(){
-      var eventId = nextEventId++;
-      console.log('Add track event', layerId, eventId);
-      VideoTimeline.timeline.addTrackEvent(layerId, eventId, "Event " + eventId);
-    });
-  }
+      VideoTimeline.timeline.addTrack(layerId, createTrackDom(btnId, "Layer " + layerId));
+      $("#" + btnId).click(function(){
+        newDocument(layerId, models.segment);
+        setEditable(true);
+      });
+    }
 
-  var initTimelineVisibility = function(){
-    var footer = $("#video-timeline-footer");
-    var buttons = $("#new-layer");
-    footer.on('hide.bs.collapse', function () {
-      buttons.fadeOut();
-    });
-    footer.on('show.bs.collapse', function () {
-      buttons.fadeIn();
-    });
+    var initTimelineVisibility = function(){
+      var footer = $("#video-timeline-footer");
+      var buttons = $("#new-layer");
+      footer.on('hide.bs.collapse', function () {
+        buttons.fadeOut();
+      });
+      footer.on('show.bs.collapse', function () {
+        buttons.fadeIn();
+      });
 
 
 
-    // Show timeline and toggle out
-    setTimeout(function(){
-      $("#toggle-timeline").trigger("click");
-    }, 500);
-  }
+      // Show timeline and toggle out
+      setTimeout(function(){
+        $("#toggle-timeline").trigger("click");
+      }, 500);
+    }
 
 
   $(window).load(function(){
     var timeline = VideoTimeline.timeline;
 
     VideoTimeline.viewport.createViewport(".vt-sub-bar .vt-mini-scrollbar-container");
-    timeline.init("#video-timeline-footer");
+    timeline.init("#video-timeline-footer", videoDispatcher);
     miniTrack = timeline.createMiniTracks("#otherMiniTrack");
+    miniTrack.setClickable(true);
 
     addTrack();
       // timeline.addTrack(2, "Layer 2");
@@ -202,7 +195,7 @@
     // },
     // ]);
 
-timeline.setAnimationTime(150);
+  timeline.setAnimationTime(150);
     // timeline.addTrackEvent(2, 3, "Test3, autre track", 0.05, 0.55);
 
     $("#new-layer").click(addTrack);

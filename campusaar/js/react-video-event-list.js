@@ -22,23 +22,29 @@ var VideoEvent = React.createClass({
       'active': this.props.isActive
     });
     var onChange = function(){console.log("ok");};
+    var commands = 
+      !this.props.isActive ? 
+      null : 
+      (
+        <div className="mini-commands">
+          <div className="btn-group-xs pull-left" data-toggle="buttons">
+            <label className="btn btn-warning active" style={{marginRight: "4px" }}>
+              <input type="checkbox" autoComplete="off" checked onChange={onChange} /><span className="glyphicon glyphicon-repeat"></span>
+            </label>
+          </div>
+          <div className="progress" style={{verticalAlign: "middle", marginBottom: "4px"}} >
+            <div className="progress-bar progress-bar-info" role="progressbar" style={{width: (this.props.progress*100) + "0%" }} >
+            </div>
+          </div>
+        </div>
+      );
     return (
       <a href="#" className={classes} onClick={this.handleClick}>
         <h5 className="list-group-item-heading">{data.title}</h5>
         <div className="clearfix">
           <span className="badge pull-left"  data-timecode-type="begin" style={{marginRight: "4px" }} >{formatTime(data.begin)}</span>
           <span className="badge pull-right" data-timecode-type="end"   style={{marginLeft: "4px" }}  >{formatTime(data.end)}</span>
-          <div className="mini-commands">
-            <div className="btn-group-xs pull-left" data-toggle="buttons">
-              <label className="btn btn-warning active" style={{marginRight: "4px" }}>
-                <input type="checkbox" autoComplete="off" checked onChange={onChange} /><span className="glyphicon glyphicon-repeat"></span>
-              </label>
-            </div>
-            <div className="progress" style={{verticalAlign: "middle", marginBottom: "4px"}} >
-              <div className="progress-bar progress-bar-info" role="progressbar" style={{width: (this.props.progress*100) + "0%" }} >
-              </div>
-            </div>
-          </div>
+          {commands}
         </div>
       </a>
     );

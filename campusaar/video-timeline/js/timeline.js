@@ -17,6 +17,7 @@ VideoTimeline.timeline = function(){
   var keyBegin = "begin";
   var keyEnd = "end";
   var _timeRatio = 0;
+  var dispatcher;
 
   var createMiniTracks = function(parentSelector){
     var tracks = {};
@@ -24,6 +25,7 @@ VideoTimeline.timeline = function(){
     var onEventClick;
     var trackContainer = $('<div class="vt-mini-scrollbar-tracks"></div>');
     var timeMarker = $('<span class="vt-timeline-marker" style="left: 0%;"></span>');
+    var isClickable = false;
     trackContainer.appendTo(parent);
     timeMarker.appendTo(parent);
 
@@ -58,6 +60,9 @@ VideoTimeline.timeline = function(){
         ');
       miniTrackEvent.appendTo(tracks[trackId].line).fadeIn(animationTime);
       miniTrackEvent.click(function(){
+        if (isClickable && dispatcher){
+          dispatcher.dispatch({actionType: 'onEventClick', trackId: trackId, eventId: eventId});
+        }
         if (onEventClick){
           onEventClick(trackId, eventId);
         }
@@ -95,6 +100,7 @@ VideoTimeline.timeline = function(){
       getEvent: getEvent,
       deleteEvent: deleteEvent,
       setOnEventClick: function(f) {onEventClick = f;},
+      setClickable: function(b) {isClickable = b;},
     };
     miniTracks.push(miniT);
 
@@ -135,10 +141,11 @@ VideoTimeline.timeline = function(){
     viewport.refreshHandlePosition();
   }
 
-  var init = function(timeline){
+  var init = function(timeline, videoDispatcher){
     root = $(timeline);
     tracks = root.find(".vt-tracks");
     trackList = root.find(".vt-track-list");
+    dispatcher = videoDispatcher;
     createMiniTracks(root.find(".vt-mini-scrollbar-shadow"));//root.find(".vt-mini-scrollbar-tracks");
 
     timeMarker = $('<span class="vt-timeline-marker" style="left: 0%;"></span>');
@@ -167,6 +174,18 @@ VideoTimeline.timeline = function(){
 
     timeRatio(0);
 
+    if (dispatcher){
+      dispatcher.register(function(obj){
+        switch(obj.actionType){
+          case "currentTime": timeRatio(obj.time/obj.duration); break;
+          case "onEventAdded": addTrackEvent(obj.trackId, obj.eventId, obj.title, obj.begin/videoDuration, obj.end/videoDuration); break;
+          case "updateEventTitle": setTrackEventTitle(obj.trackId, obj.eventId, obj.title); break;
+          case "updateEventTimecodes": if (obj.sender != "timeline") setTrackEventBeginEnd(obj.trackId, obj.eventId, obj.begin, obj.end);break;
+          default: break;
+        }
+      });
+    }
+
     // initViewport();
   }
 
@@ -174,6 +193,9 @@ VideoTimeline.timeline = function(){
     if (preventClick){
       preventClick = false;
       return;
+    }
+    if (dispatcher){
+      dispatcher.dispatch({actionType: 'onEventClick', trackId: trackId, eventId: eventId});
     }
     if (VideoTimeline.timeline.onEventClick){
       VideoTimeline.timeline.onEventClick(trackId, eventId);
@@ -274,9 +296,15 @@ VideoTimeline.timeline = function(){
     var updateMiniTrack = function(){
       var te = trackEvent[0];
       miniTrackEvents.forEach(function(mte){mte.setPos(te.style.left, te.style.width);});
+      var begin = parseFloat(te.style.left)/100;
+      var width = parseFloat(te.style.width)/100;
+      if (dispatcher){
+        // Round milliseconds to limit precision errors
+        var beginTime = Math.round(begin*videoDuration*1000)/1000;
+        var endTime = Math.round((begin+width)*videoDuration*1000)/1000;
+        dispatcher.dispatch({actionType: "updateEventTimecodes", trackId: trackId, eventId: eventId, begin: beginTime, end: endTime, sender: "timeline"});
+      }
       if (VideoTimeline.timeline.onEventUpdated){
-        var begin = parseFloat(te.style.left)/100;
-        var width = parseFloat(te.style.width)/100;
         VideoTimeline.timeline.onEventUpdated(trackId, eventId, begin, begin+width);
       }
     }
@@ -319,6 +347,12 @@ VideoTimeline.timeline = function(){
     trackView[trackId].events[eventId].find(".title").text(title);
   }
 
+  var setTrackEventBeginEnd = function(trackId, eventId, begin, end){
+    var el = trackView[trackId].events[eventId][0];
+    el.style.left = (begin*100/videoDuration) + "%";
+    el.style.width = ((end-begin)*100/videoDuration) + "%";
+  }
+
   var setTrackEventType = function(trackId, eventId, type){
     var track = trackView[trackId][eventId];
     track.removeClass("vt-type-default");
@@ -347,6 +381,7 @@ VideoTimeline.timeline = function(){
     deleteTrackEvent: deleteTrackEvent,
     setAnimationTime: function(animTime){animationTime = animTime;},
     setTrackEventTitle: setTrackEventTitle,
+    setTrackEventBeginEnd: setTrackEventBeginEnd,
     setTrackEventType: setTrackEventType,
     setTimecodeKeys: setTimecodeKeys,
     timeRatio : timeRatio,

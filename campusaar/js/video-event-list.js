@@ -7,6 +7,7 @@ ArmaVideo.EventList = function(){
   var onClickCallback;
   var videoTime = 0; 
   var shouldSort = false;
+  var dispatcher;
 
 
   var sortItems = function(parent, children){
@@ -115,6 +116,16 @@ ArmaVideo.EventList = function(){
     }
   }
 
+  var onDispatch = function(obj){
+    switch(obj.actionType){
+      case "currentTime": setVideoTime(obj.time); break;
+      case "onEventAdded": addEvent(obj.eventId, obj.title, obj.begin, obj.end); break;
+      case "updateEventTitle": setEventTitle(obj.eventId, obj.title); break;
+      case "updateEventTimecodes": setEventBeginEnd(obj.eventId, obj.begin, obj.end);break;
+      default: break;
+    }
+  }
+
   var initNotifications = function(){
     var notif = ArmaTools.Notifications;
     var names = ArmaVideo.Notifications.names;
@@ -135,13 +146,18 @@ ArmaVideo.EventList = function(){
     });
   }
 
-  var init = function(listSelector){
+  var init = function(listSelector, videoDispatcher){
     view.list = $(listSelector);
     view.events = {};
     videoTime = 0;
 
-    if (ArmaTools.Notifications){
-      initNotifications();
+    if (videoDispatcher){
+      videoDispatcher.register(onDispatch);
+      dispatcher = videoDispatcher;
+      setOnClick(function(eventId){
+        dispatcher.dispatch({actionType: "onEventClick", eventId: eventId});
+      });
+      // initNotifications();
     }
   }
 
