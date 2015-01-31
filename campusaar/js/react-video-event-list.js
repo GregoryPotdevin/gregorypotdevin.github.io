@@ -51,11 +51,11 @@ var VideoEvent = React.createClass({
   }
 });
 var VideoEventList = function(){
-  var notif = ArmaTools.Notifications;
-  var names = ArmaVideo.Notifications.names;
 
   var onClick = function(evt){
-    notif.post(names.onEventClick, {eventId: evt.eventId});
+      if (videoDispatcher){
+        videoDispatcher.dispatch({actionType: "onEventClick", eventId: evt.eventId});
+      }
   }
   return React.createClass({
 
@@ -63,9 +63,6 @@ var VideoEventList = function(){
       this.state.data.sort(function(a,b){
         return a.begin - b.begin;
       });
-    },
-    onClick: function(evt){
-      notif.post(names.onEventClick, {eventId: evt.eventId});
     },
     ratio: function(v, min, max){
       if (min == max){
@@ -76,26 +73,33 @@ var VideoEventList = function(){
       if (r > 1) return 1;
       return r;
     },
-    initNotifications: function(){
-      notif.register(names.currentTime, function(obj){
-        this.setState({time: obj.time});
-      }.bind(this));
-      notif.register(names.eventAdd, function(obj){
-        this.state.data.push(obj);
-        this.state.events[obj.eventId] = obj;
-        this.sortData();
-        this.setState({data: this.state.data, events: this.state.events});
-      }.bind(this));
-      notif.register(names.eventSetTitle, function(obj){
-        this.state.events[obj.eventId].title = obj.title;
+    initDispatcher: function(){
+      var refresh = function(){
         this.setState({data: this.state.data});
-      }.bind(this));
-      notif.register(names.eventUpdateTime, function(obj){     
-        var evt = this.state.events[obj.eventId]
-        evt.begin = obj.begin;
-        evt.end = obj.end;
-        this.sortData();
-        this.setState({data: this.state.data});
+      };
+      videoDispatcher.register(function(obj){
+        switch(obj.actionType){
+          case "currentTime": this.setState({time: obj.time}); break;
+          case "onEventAdded": 
+            var evt = {trackId: obj.trackId, eventId: obj.eventId, title: obj.title, begin: obj.begin, end: obj.end};
+            this.state.data.push(evt);
+            this.state.events[obj.eventId] = evt;
+            this.sortData();
+            this.setState({data: this.state.data, events: this.state.events});
+            break;
+          case "updateEventTitle": 
+            this.state.events[obj.eventId].title = obj.title;
+            refresh();
+            break;
+          case "updateEventTimecodes": 
+            var evt = this.state.events[obj.eventId];
+            evt.begin = obj.begin;
+            evt.end = obj.end;
+            this.sortData();
+            refresh();
+            break;
+          default: break;
+        }
       }.bind(this));
     },
     getInitialState: function() {
@@ -103,7 +107,9 @@ var VideoEventList = function(){
     },
     componentDidMount: function() {
       // var this = this;
-      this.initNotifications();
+      if (videoDispatcher){
+        this.initDispatcher();
+      }
       // $.ajax({
       //   url: this.props.url,
       //   dataType: 'json',

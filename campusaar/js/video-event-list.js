@@ -126,26 +126,6 @@ ArmaVideo.EventList = function(){
     }
   }
 
-  var initNotifications = function(){
-    var notif = ArmaTools.Notifications;
-    var names = ArmaVideo.Notifications.names;
-    notif.register(names.currentTime, function(obj){
-      setVideoTime(obj.time);
-    });
-    notif.register(names.eventAdd, function(obj){
-      addEvent(obj.eventId, obj.title, obj.begin, obj.end);
-    });
-    notif.register(names.eventSetTitle, function(obj){
-      setEventTitle(obj.eventId, obj.title);
-    });
-    notif.register(names.eventUpdateTime, function(obj){
-      setEventBeginEnd(obj.eventId, obj.begin, obj.end);
-    });
-    setOnClick(function(eventId){
-      notif.post(names.onEventClick, {eventId: eventId});
-    });
-  }
-
   var init = function(listSelector, videoDispatcher){
     view.list = $(listSelector);
     view.events = {};
@@ -157,7 +137,6 @@ ArmaVideo.EventList = function(){
       setOnClick(function(eventId){
         dispatcher.dispatch({actionType: "onEventClick", eventId: eventId});
       });
-      // initNotifications();
     }
   }
 

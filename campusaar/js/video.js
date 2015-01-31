@@ -2,9 +2,6 @@
 var ArmaTools = ArmaTools || {};
 var ArmaVideo = ArmaVideo || {};
 
-var Notif = ArmaTools.Notifications;
-var NotifNames = ArmaVideo.Notifications.names;
-
 var videoDispatcher = new ArmaTools.Dispatcher();
 
 var Resizer = ArmaTools.Resizer;
@@ -382,7 +379,6 @@ var addDocument = function(seq, model){
 
   var updateTitle = function(id, field, seq){
     videoDispatcher.dispatch({actionType: "updateEventTitle", trackId: 1, eventId: seq.id, title: seq.title});
-    Notif.post(NotifNames.eventSetTitle, {trackId: 1, eventId: seq.id, title: seq.title});
     VideoTimeline.timeline.setTrackEventTitle(1, seq.id, seq.title);
     // TODO : update timeline title
   }
@@ -398,7 +394,6 @@ var addDocument = function(seq, model){
       $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
     }    
     videoDispatcher.dispatch({actionType: "updateEventTimecodes", trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
-    Notif.post(NotifNames.eventUpdateTime, {trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
     // TODO : update time...// VideoTimeline.timeline.
   }
 
@@ -428,15 +423,6 @@ var addDocument = function(seq, model){
     begin: seq.start,
     end: seq.end,
   });
-  // Notif.post(NotifNames.eventAdd, {
-  //   trackId: seq.trackId ? seq.trackId : 1,
-  //   eventId: seq.id,
-  //   title: seq.title,
-  //   begin: seq.start,
-  //   end: seq.end,
-  // });
-  // ArmaVideo.EventList.addEvent(seq.id, seq.title, seq.start, seq.end);
-  // VideoTimeline.timeline.addTrackEvents(seq.trackId ? seq.trackId : 1, [evt]);
 }
 
 
@@ -489,11 +475,9 @@ function loadSequences(sequences) {
   var onEventClick = function(obj){
     var seq = globalSequences[obj.eventId];
     seeker.setTime(seq.start);
-    ArmaVideo.Notifications.setVideoTime(seq.start);
     showDocument(seq);
     $.bbq.pushState({start: seq.start});
   };
-  // Notif.register(NotifNames.onEventClick, onEventClick);
 
   var updateMetadataEventTimecodes = function(eventId, begin, end){
     var seq = globalSequences[eventId];
@@ -501,7 +485,6 @@ function loadSequences(sequences) {
     seq.end = end;
     $("#seq-" + seq.id + "-start").text(formatTime(seq.start));
     $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
-    // Notif.post(NotifNames.eventUpdateTime, {trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
   };
 
 
@@ -566,12 +549,10 @@ function loadSequences(sequences) {
 
   var marker = $("#video-timeline-marker");
   // video[0].addEventListener( "timeupdate", function( e ) {
-  //     ArmaVideo.Notifications.setVideoTime(video[0].currentTime);
   //     VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
   // }, false );
   var autoUpdateTime = function(){
     videoDispatcher.dispatch({actionType: "currentTime", time: video[0].currentTime, duration: video[0].duration});
-    ArmaVideo.Notifications.setVideoTime(video[0].currentTime);
     VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
     setTimeout(autoUpdateTime, 50);
   }

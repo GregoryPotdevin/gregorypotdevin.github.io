@@ -9,7 +9,7 @@
   <script src="http://fb.me/react-with-addons-0.12.2.js"></script>
   <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
 
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"> -->
   <link id="stylesheet-bootstrap" rel="stylesheet" type="text/css" href="css/bootstrap-theme.flatly.css">
   <link rel="stylesheet" type="text/css" href="libs/select2/select2.css">
   <link rel="stylesheet" type="text/css" href="libs/select2/select2-bootstrap.css">
@@ -22,8 +22,6 @@
   <link rel="stylesheet" type="text/css" href="css/videojs-sublime-skin.css">
   <link rel="stylesheet" type="text/css" href="video.css">
 
-
-  <script type="text/javascript" src="js/notifications.js"></script>
   <script type="text/javascript" src="js/dispatcher.js"></script>
   <script type="text/javascript" src="libs/mousetrap.min.js"></script>
   <script type="text/javascript" src="libs/handlebars.min.js"></script>
@@ -120,7 +118,6 @@
 
         <!-- {{> field this field=this seq=../seq type=field.dtype}} -->
 
-        <script type="text/javascript" src="js/video-notifications.js"></script>
         <script type="text/javascript" src="js/video-event-list.js"></script>
         <script type="text/javascript" src="js/video.js"></script>
 
@@ -188,10 +185,9 @@ var initTimelineVisibility = function(){
     }
 
     var timecode = $("#timecode");
-    var notif = ArmaTools.Notifications;
-    var names = ArmaVideo.Notifications.names;
-    notif.register(names.currentTime, function(obj){
-      timecode.text(formatTime(obj.time) + "." + FormatNumberLength(Math.floor(obj.time*1000)%1000, 3));
+    videoDispatcher.register(function(obj){
+      if (obj.actionType == 'currentTime')
+      timecode.text(formatTime(obj.time) + "." + FormatNumberLength(Math.round(obj.time*1000)%1000, 3));
     });
 
     timeline.setAnimationTime(150);
