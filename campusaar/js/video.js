@@ -7,6 +7,7 @@ var videoDispatcher = new ArmaTools.Dispatcher();
 var Resizer = ArmaTools.Resizer;
 
 var currentDoc;
+var currentDocEditor;
 var noop = function(){};
 var endMovable = noop;
 
@@ -114,12 +115,14 @@ var showDocument = function(seq){
   setEditable(false);
   var documentEditor = createDocumentEditor(seq, models.segment);
   infoDiv.empty().append(documentEditor);
+  currentDocEditor = documentEditor;
+  return documentEditor;
   // $(".info-item").removeClass("selected");
   // $("#info-" + seq.id).addClass("selected");
 }
 
 var showDocumentById = function(seqId){
-  showDocument(globalSequences[seqId]);
+  return showDocument(globalSequences[seqId]);
 }
 
 var addDocument = function(seq, model){
@@ -165,11 +168,11 @@ var newDocument = function(trackId, model){
     'filename': "video.seq." + nextId + ".mp4",
   };
   addDocument(seq, model);
-  showDocument(seq);
+  var docEditor = showDocument(seq);
 
   // Edit title by default
   setTimeout(function () {
-   $("#seq-" + seq.id + "-title-btn").trigger("click");
+   docEditor.find("[data-field-id=title] .edit-btn").trigger("click");
   }, 200);
 }
 
@@ -209,8 +212,10 @@ function loadSequences(sequences) {
     var seq = globalSequences[eventId];
     seq.start = begin;
     seq.end = end;
-    $("#seq-" + seq.id + "-start").text(formatTime(seq.start));
-    $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
+    if (currentDocEditor && (eventId == currentDoc.id)){
+      currentDocEditor.find("[data-field-id=start] .document-field").text(formatTime(seq.start));
+      currentDocEditor.find("[data-field-id=end] .document-field").text(formatTime(seq.end));
+    }
   };
 
 
@@ -295,46 +300,6 @@ function loadSequences(sequences) {
 
   updateSequenceCount(sequenceCnt());
 }
-
-
-// var onChangeTime = function(seq, start, end){
-//   seq.start =start;
-//   seq.end = end;
-//   var seqEl = $("#seq-" + seq.id);
-//   seqEl.find("[data-timecode-type=begin]").text(formatTime(seq.start));
-//   seqEl.find("[data-timecode-type=end]").text(formatTime(seq.end));
-//   $("#info-" + seq.id + "-start").text(formatTime(seq.start));
-//   $("#info-" + seq.id + "-end").text(formatTime(seq.end));
-//   // refreshPopcorn(seq);
-
-//   // var duration = seq.end - seq.start;
-//   // var start = seq.start*100/videoDuration;
-//   // var width = duration*100/videoDuration;
-//   // timeline_entry.css("left", start + '%').css("width", width + '%');
-//   onOrderChanged();
-// }
-
-// var startMovable = function(){
-//   var seq = currentDoc;
-//   var elem = $('#timeline-' + seq.id).get()[0];
-//   console.log(elem);
-//   var update = function(elem){
-//     var start = parseFloat(elem.style.left) / 100.0;
-//     var length = parseFloat(elem.style.width) / 100.0;
-//     onChangeTime(seq, Math.round(start*videoDuration), Math.round((start+length)*videoDuration));
-//   }
-//   movableInfo = Resizer.makeMovableAndResizable(elem, {
-//     usePercentage: true,
-//     onMoved: update,
-//     onResized: update,
-//     onFinished: function(elem){
-//       update(elem);
-//     }
-//   });
-//   endMovable = function(){
-//     movableInfo.end();
-//   }
-// }
 
 var nextField = function(el, usePrev){
   if(usePrev) { 

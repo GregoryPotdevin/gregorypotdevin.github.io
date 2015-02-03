@@ -5,11 +5,9 @@
 
 	<title>CampusAAR video demo</title>
 
-  <!-- // <script src="http://fb.me/react-0.12.2.js"></script> -->
   <script src="http://fb.me/react-with-addons-0.12.2.js"></script>
   <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
 
-  <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"> -->
   <link id="stylesheet-bootstrap" rel="stylesheet" type="text/css" href="css/bootstrap-theme.flatly.css">
   <link rel="stylesheet" type="text/css" href="libs/select2/select2.css">
   <link rel="stylesheet" type="text/css" href="libs/select2/select2-bootstrap.css">
@@ -113,10 +111,10 @@
 
         <!-- {{> field this field=this seq=../seq type=field.dtype}} -->
 
-        <script type="text/javascript" src="js/video-event-list.js"></script>
-        <script type="text/javascript" src="js/document-editor.js"></script>
-        <script type="text/javascript" src="js/react-video-event-list.js"></script>
-        <script type="text/javascript" src="js/video.js"></script>
+  <script type="text/javascript" src="js/video-event-list.js"></script>
+  <script type="text/javascript" src="js/document-editor.js"></script>
+  <script type="text/javascript" src="js/react-video-event-list.js"></script>
+  <script type="text/javascript" src="js/video.js"></script>
 
 
 	<script type="text/javascript">//<![CDATA[ 
@@ -172,25 +170,8 @@
     miniTrack.setClickable(true);
 
     addTrack();
-      // timeline.addTrack(2, "Layer 2");
 
-    // timeline.addTrackEvents(1, [{
-    //   id: 1, 
-    //   title: "Test...", 
-    //   begin: 0.10, 
-    //   end: 0.25,
-    //   type: "alert"
-    // },{
-    //   id: 2, 
-    //   title: "Test2 Longer test to see overflow", 
-    //   begin: 0.35, 
-    //   end: 0.45,
-    //   type: "info"
-    // },
-    // ]);
-
-  timeline.setAnimationTime(150);
-    // timeline.addTrackEvent(2, 3, "Test3, autre track", 0.05, 0.55);
+    timeline.setAnimationTime(150);
 
     $("#new-layer").click(addTrack);
 
