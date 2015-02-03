@@ -298,3 +298,10 @@ html[dir="ltr"] .butter-tray {
   transition: width .1s ease;
 }
 
+.form-horizontal .has-feedback .form-control-feedback {
+  right: 0px;
+}
+
+.form .clearer {
+  pointer-events: auto;
+}

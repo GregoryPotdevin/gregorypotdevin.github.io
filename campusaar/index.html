@@ -5,7 +5,7 @@
 
 	<title>CampusAAR video demo</title>
 
-  <script src="http://fb.me/react-with-addons-0.12.2.js"></script>
+  <!-- // <script src="http://fb.me/react-with-addons-0.12.2.js"></script> -->
   <!-- // <script src="http://fb.me/JSXTransformer-0.12.2.js"></script> -->
 
   <link id="stylesheet-bootstrap" rel="stylesheet" type="text/css" href="css/bootstrap-theme.flatly.css">
@@ -27,7 +27,6 @@
   <script type="text/javascript" src="libs/jquery.min.js"></script>
   <script type="text/javascript" src="libs/jquery-migrate-1.2.1.js"></script>
   <script type="text/javascript">jQuery.migrateMute = true;</script>
-  <script type="text/javascript" src="libs/popcorn-complete.js"></script>
   <script type="text/javascript" src="libs/bootstrap/bootstrap.min.js"></script>
   <script type="text/javascript" src="libs/bootstrap/bootstrap-list-filter.js"></script>
   <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"></script>
@@ -113,7 +112,7 @@
 
   <script type="text/javascript" src="js/video-event-list.js"></script>
   <script type="text/javascript" src="js/document-editor.js"></script>
-  <script type="text/javascript" src="js/react-video-event-list.js"></script>
+  <!-- // <script type="text/javascript" src="js/react-video-event-list.js"></script> -->
   <script type="text/javascript" src="js/video.js"></script>
 
 
@@ -175,11 +174,11 @@
 
     $("#new-layer").click(addTrack);
 
-  React.render(
-    // <VideoEventList />,
-    React.createElement(VideoEventList, null),
-    document.getElementById('react-sequences')
-  );
+  // React.render(
+  //   // <VideoEventList />,
+  //   React.createElement(VideoEventList, null),
+  //   document.getElementById('react-sequences')
+  // );
 
   loadSequences([
   {
@@ -274,7 +273,7 @@
         </ul>
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
-  </nav>  
+  </nav>
   <div class="fluid-container">
     <div id="affix-container" class="col-md-4" >
       <div id="sidebar-video" data-spy="affix" data-offset-top="60">
@@ -283,7 +282,7 @@
           <h3 class="panel-title">Video</h3>
         </div>
         <div class="panel-body video-container">
-          <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls=""></video>
+          <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls="" autoplay></video>
             <!-- 
             <video id="video-frame" class=" video-js vjs-sublime-skin vjs-big-play-centered"
               controls preload="auto"
@@ -308,8 +307,8 @@
       </div>
     </div>
     <form class="form form-horizontal">
-      <div class="has-feeback">
-        <input id="sequence-filter" type="text" class="form-control form-control-inline has-clear" placeholder="Filter">
+      <div class="has-feedback">
+        <input id="sequence-filter" type="text" class="form-control has-clear" placeholder="Filter">
         <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
       </div>
     </form>

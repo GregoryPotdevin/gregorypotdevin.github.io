@@ -127,7 +127,6 @@ var showDocumentById = function(seqId){
 
 var addDocument = function(seq, model){
   var video = $("#video-frame");
-  var pop = Popcorn("#video-frame");
 
   var info = $("#info");
 
@@ -236,28 +235,6 @@ function loadSequences(sequences) {
   });
 
   var video = $("#video-frame");
-  var pop = Popcorn("#video-frame");
-
-  // Create your plugin
-  Popcorn.plugin( "sequences", {
-    _setup: function( options ) {
-      // console.log("Popcorn.sequence setup");
-      // var target = Popcorn.dom.find( options.target );
-
-      // options._list_container = document.createElement( "div" );
-      // options._list_container.style.display = "none";
-      // options._list_container.innerHTML  = options.text;
-
-      // target.appendChild( options._container );
-    },
-
-    start: function(event, options) {
-      // console.log("Start " + options);
-    },
-    end:   function(event, options) {
-      // console.log("End " + options);
-    }
-  });
 
   var videoStartTime = 0;
   var params = $.deparam.fragment();
@@ -292,7 +269,7 @@ function loadSequences(sequences) {
   //   $('[data-toggle="tooltip"]').tooltip()
   // })
 
-  pop.play();
+  // pop.play();
   var params = $.deparam.fragment();
   if ("start" in params){
     setVideoTime(params.start);
@@ -426,7 +403,7 @@ var Filter = function(){
       }
     }
     return true;
-  };
+  };  
 
   var options = {
     'delay':150,
@@ -440,6 +417,15 @@ var Filter = function(){
   var init = function(){
     $('#sequences').btsListFilter('#sequence-filter', options);
     // $('#video-timeline-items').btsListFilter('#sequence-filter', options);
+
+    $(".has-clear").keyup(function () {
+      var t = $(this);
+      t.next('.clearer').toggle(Boolean(t.val()));
+    });
+
+    $(".clearer").hide($(this).prev('input').val());
+
+    $(".clearer").click(clear);
   };
 
   var clear = function(e){
@@ -497,19 +483,6 @@ $(document).ready(function(){
       setEditable(true);
     }, 500);
   }
-
-  $(".has-clear").keyup(function () {
-    var t = $(this);
-    t.next('span').toggle(Boolean(t.val()));
-  });
-
-  $(".clearer").hide($(this).prev('input').val());
-
-  $(".clearer").click(function () {
-    var el = $(this);
-    el.prev('input').val('').focus();
-    el.hide();
-  });
 
   $(".metadata-pane-btn").click(function(){
     var el = $(this);
