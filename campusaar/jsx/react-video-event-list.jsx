@@ -6,7 +6,7 @@ var formatTime = function(seconds) {
   return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
 }
 
-var VideoEvent = React.createClass({displayName: "VideoEvent",
+var VideoEvent = React.createClass({
   handleClick: function(){
     this.props.onClick(this.props.data);
   },
@@ -26,27 +26,27 @@ var VideoEvent = React.createClass({displayName: "VideoEvent",
       !this.props.isActive ? 
       null : 
       (
-        React.createElement("div", {className: "mini-commands"}, 
-          React.createElement("div", {className: "btn-group-xs pull-left", "data-toggle": "buttons"}, 
-            React.createElement("label", {className: "btn btn-warning active", style: {marginRight: "4px"}}, 
-              React.createElement("input", {type: "checkbox", autoComplete: "off", checked: true, onChange: onChange}), React.createElement("span", {className: "glyphicon glyphicon-repeat"})
-            )
-          ), 
-          React.createElement("div", {className: "progress", style: {verticalAlign: "middle", marginBottom: "4px"}}, 
-            React.createElement("div", {className: "progress-bar progress-bar-info", role: "progressbar", style: {width: (this.props.progress*100) + "0%"}}
-            )
-          )
-        )
+        <div className="mini-commands">
+          <div className="btn-group-xs pull-left" data-toggle="buttons">
+            <label className="btn btn-warning active" style={{marginRight: "4px" }}>
+              <input type="checkbox" autoComplete="off" checked onChange={onChange} /><span className="glyphicon glyphicon-repeat"></span>
+            </label>
+          </div>
+          <div className="progress" style={{verticalAlign: "middle", marginBottom: "4px"}} >
+            <div className="progress-bar progress-bar-info" role="progressbar" style={{width: (this.props.progress*100) + "0%" }} >
+            </div>
+          </div>
+        </div>
       );
     return (
-      React.createElement("a", {href: "#", className: classes, onClick: this.handleClick}, 
-        React.createElement("h5", {className: "list-group-item-heading"}, data.title), 
-        React.createElement("div", {className: "clearfix"}, 
-          React.createElement("span", {className: "badge pull-left", "data-timecode-type": "begin", style: {marginRight: "4px"}}, formatTime(data.begin)), 
-          React.createElement("span", {className: "badge pull-right", "data-timecode-type": "end", style: {marginLeft: "4px"}}, formatTime(data.end)), 
-          commands
-        )
-      )
+      <a href="#" className={classes} onClick={this.handleClick}>
+        <h5 className="list-group-item-heading">{data.title}</h5>
+        <div className="clearfix">
+          <span className="badge pull-left"  data-timecode-type="begin" style={{marginRight: "4px" }} >{formatTime(data.begin)}</span>
+          <span className="badge pull-right" data-timecode-type="end"   style={{marginLeft: "4px" }}  >{formatTime(data.end)}</span>
+          {commands}
+        </div>
+      </a>
     );
   }
 });
@@ -125,17 +125,17 @@ var VideoEventList = function(){
       var state = this.state;
       var videoNodes = this.state.data.map(function (evt) {
         return (
-          React.createElement(VideoEvent, {key: evt.eventId, 
-                      data: evt, 
-                  isActive: (evt.begin <= state.time) && (state.time < evt.end), 
-                  progress: this.ratio(state.time, evt.begin, evt.end), 
-                   onClick: onClick})
+          <VideoEvent  key={evt.eventId}
+                      data={evt} 
+                  isActive={(evt.begin <= state.time) && (state.time < evt.end)} 
+                  progress={this.ratio(state.time, evt.begin, evt.end)}
+                   onClick={onClick}/>
         );
       }.bind(this));
       return (
-        React.createElement("div", {id: "react-sequences", className: "list-group collapse in"}, 
-          videoNodes
-        )
+        <div id="react-sequences" className="list-group collapse in">
+          {videoNodes}
+        </div>
       );
     }
   });

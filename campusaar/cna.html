@@ -70,55 +70,50 @@
       </div>
     </a>
   </script>
-<!--  
-        <table class="table table-bordered table-striped table-info" style="clear: both">
-           {{#each fields}}
-           {{renderField this ../seq}}
-         {{/each}}
-         {{renderFields fields ../seq}} -->
-         <script id="sequence-info-template" type="text/x-handlebars-template">
-          <div role="tabpanel" class="tab-pane {{#if isActive}}active{{/if}}" id="info-{{seq.id}}-{{tab.id}}">
-            <div>
-              <table class="table table-striped table-info" style="clear: both">
-                <tbody>
-                  {{#each fields}}
-                  {{#if header}}
-                </tbody>
-              </table>
-            </div>
-            <div class="document-heading collapsable">
-              <h4><a class="nounderline" data-toggle="collapse" href="#header-{{../../seq.id}}-{{header}}" aria-expanded="true" aria-controls="header-{{../../seq.id}}-{{header}}">{{header}}</a></h4>
-            </div>
-            <div id="header-{{../../seq.id}}-{{header}}" class="collapse in">
-              <table class="table table-striped table-info" style="clear: both">
-                <tbody>
-                  {{/if}}
-                  {{renderField this ../seq}}
-                  {{/each}}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </script>
+  <script id="sequence-info-template" type="text/x-handlebars-template">
+  <div role="tabpanel" class="tab-pane {{#if isActive}}active{{/if}}" id="info-{{tab.id}}">
+    <div>
+      <table class="table table-striped table-info" style="clear: both">
+        <tbody>
+          {{#each fields}}
+          {{#if header}}
+        </tbody>
+      </table>
+    </div>
+    <div class="document-heading collapsable">
+      <h4><a class="nounderline" data-toggle="collapse" href="#header-{{../../seq.id}}-{{header}}" aria-expanded="true" aria-controls="header-{{../../seq.id}}-{{header}}">{{header}}</a></h4>
+    </div>
+    <div id="header-{{../../seq.id}}-{{header}}" class="collapse in">
+      <table class="table table-striped table-info" style="clear: both">
+        <tbody>
+          {{/if}}
+          {{renderField this ../seq}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </script>
 
-        <script id="sequence-info-field-template" type="text/x-handlebars-template">
-          <tr>
-            <td width="15%">{{field.label}}</td>
-            <td width="85%">
-              <p id="seq-{{seq.id}}-{{field.id}}" style="float: left;" data-type="{{type.data_type}}" data-title={{field.label}}>
-                {{content seq field}}
-              </p>
-              {{#if field.editable}}
-              <span id="seq-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
-              class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
-              {{/if}}
-            </td>
-          </tr>
-        </script>
+  <script id="sequence-info-field-template" type="text/x-handlebars-template">
+    <tr data-field-id="{{field.id}}">
+      <td width="15%">{{field.label}}</td>
+      <td width="85%">
+        {{#if field.editable}}
+        <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+        class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+        {{/if}}
+        <p class="document-field" data-type="{{type.data_type}}" data-title="{{field.label}}">
+          {{content seq field}}
+        </p>
+      </td>
+    </tr>
+  </script>
 
         <!-- {{> field this field=this seq=../seq type=field.dtype}} -->
 
         <script type="text/javascript" src="js/video-event-list.js"></script>
+        <script type="text/javascript" src="js/document-editor.js"></script>
         <script type="text/javascript" src="js/video.js"></script>
 
 
@@ -166,7 +161,7 @@ var initTimelineVisibility = function(){
   }
 
 
-  $(window).load(function(){
+  $(document).ready(function(){
     var timeline = VideoTimeline.timeline;
 
     VideoTimeline.viewport.createViewport(".vt-sub-bar .vt-mini-scrollbar-container");
@@ -407,7 +402,8 @@ initTimelineVisibility();
         <div id="metadata-video"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
         <div id="metadata-layer"   role="tabpanel" class="tab-pane metadata-pane manual-tab-pane"></div>
         <div id="metadata-segment" role="tabpanel" class="tab-pane metadata-pane manual-tab-pane selected" >
-          <div id="info">
+          <div id="info" class="info-item">
+
           </div>
         </div>
       </div>
@@ -418,7 +414,6 @@ initTimelineVisibility();
 </div>
 </div>
 </div>
-<script type="text/jsx;harmony=true" src="js/react-video-event-list.js"></script>
 </body>
 
 </html>

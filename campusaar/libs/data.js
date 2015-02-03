@@ -71,14 +71,8 @@ var segmentModel = {
       'type': 'number'
     },
     {
-      'id': 'region', 
-      'header': 'Geography',
-      'label': 'Région',
-      'tab': 'info',
-      'type': 'text'
-    },
-    {
       'id': 'continent', 
+      'header': 'Geography',
       'label': 'Continent',
       'tab': 'info',
       'type': 'list', 
@@ -92,6 +86,12 @@ var segmentModel = {
       'type': 'list', 
       'list_type': 'country',
       'multi_value': false
+    },
+    {
+      'id': 'region', 
+      'label': 'Région',
+      'tab': 'info',
+      'type': 'text'
     },
     {
       'id': 'city', 
