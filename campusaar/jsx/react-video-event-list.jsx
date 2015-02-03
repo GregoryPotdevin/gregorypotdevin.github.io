@@ -9,6 +9,8 @@ var formatTime = function(seconds) {
 var VideoEvent = React.createClass({
   handleClick: function(){
     this.props.onClick(this.props.data);
+    e.stopPropagation();
+    e.preventDefault();
   },
   shouldComponentUpdate: function(nextProps, nextState){
     return JSON.stringify(this.props) !== JSON.stringify(nextProps) ;

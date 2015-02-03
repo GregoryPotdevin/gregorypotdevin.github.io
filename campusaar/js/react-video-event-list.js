@@ -7,7 +7,9 @@ var formatTime = function(seconds) {
 }
 
 var VideoEvent = React.createClass({displayName: "VideoEvent",
-  handleClick: function(){
+  handleClick: function(e){
+    e.stopPropagation();
+    e.preventDefault();
     this.props.onClick(this.props.data);
   },
   shouldComponentUpdate: function(nextProps, nextState){
