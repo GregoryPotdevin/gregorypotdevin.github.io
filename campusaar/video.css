@@ -305,3 +305,7 @@ html[dir="ltr"] .butter-tray {
 .form .clearer {
   pointer-events: auto;
 }
+
+img.document-field {
+  width: 320px;
+}

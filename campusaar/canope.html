@@ -44,7 +44,7 @@
   <script type="text/javascript" src="video-timeline/js/resizer.js"></script>
   <script type="text/javascript" src="video-timeline/js/timeline.js"></script>
 
-  <script type="text/javascript" src="json/data-cna.js"></script>
+  <script type="text/javascript" src="json/data-canope.js"></script>
 
   <script id="sequence-item-template" type="text/x-handlebars-template">
     <a href="#" id="seq-{{id}}" class="list-group-item sequence-item" data-event-id="{{id}}">
@@ -95,13 +95,19 @@
     <tr data-field-id="{{field.id}}">
       <td width="15%">{{field.label}}</td>
       <td width="85%">
-        {{#if field.editable}}
-        <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
-        class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+        {{#if field.isImage}}
+          <img class="document-field" src="{{content seq field}}"/>
+          <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+          class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+        {{else}}
+          {{#if field.editable}}
+          <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+          class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+          {{/if}}
+          <p class="document-field" data-type="{{type.data_type}}" data-title="{{field.label}}">
+            {{content seq field}}
+          </p>
         {{/if}}
-        <p class="document-field" data-type="{{type.data_type}}" data-title="{{field.label}}">
-          {{content seq field}}
-        </p>
       </td>
     </tr>
   </script>
@@ -198,8 +204,8 @@ loadSequences([
   "start": 0,
   "end": 480,
   "title": "Segment 1 - introduction",
-  "filename": "video.seq.1.mp4",
-  "author": "Stephanie Lemoine"
+  "author": "Stephanie Lemoine",
+  "thumbnail": defaultThumbnail,
 },
 {
   "trackId": 1,
@@ -207,8 +213,8 @@ loadSequences([
   "start": 600,
   "end": 1000,
   "title": "Segment 2 - contenu",
-  "filename": "video.seq.2.mp4",
-  "author": "Stephanie Lemoine"
+  "author": "Stephanie Lemoine",
+  "thumbnail": defaultThumbnail,
 },
 {
   "trackId": 1,
@@ -216,8 +222,8 @@ loadSequences([
   "start": 1200,
   "end": 1800,
   "title": "Segment 3 - retour d'expérience",
-  "filename": "video.seq.3.mp4",
-  "author": "Gregory Potdevin"
+  "author": "Gregory Potdevin",
+  "thumbnail": defaultThumbnail,
 },
 ]);
 initTimelineVisibility();
@@ -256,7 +262,7 @@ initTimelineVisibility();
             <h3 class="panel-title">Video</h3>
           </div>
           <div class="panel-body video-container" style="position:relative;">
-            <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls="" autoplay></video>
+            <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls="" autoplay crossorigin="anonymous"></video>
             <div id="timecode" style="position:absolute; top:0; left:0; z-index:1; padding:4px; color: white; font-size: 20px;">00:00.000</div>
             <div style="position:absolute; top:0; right:0; z-index:1; ">
               <img src="images/canope_watermark.png" style="padding: 8px; opacity: 1;"/>
@@ -283,6 +289,8 @@ initTimelineVisibility();
             </div>
           </div>
         </div>
+        <!-- <canvas></canvas> -->
+        <canvas style="display: none;"></canvas>
       </div>
 <!--       <form class="form form-horizontal">
         <div class="has-feeback">
@@ -304,7 +312,19 @@ initTimelineVisibility();
           </a>
         </h3>
       </div>
-      <div id="sequences" class="list-group collapse in"></div>
+      <div id="sequences" class="list-group collapse in">
+        
+    <!-- FILTER -->
+    <div>
+    <form class="form form-horizontal">
+      <div class="has-feedback">
+        <input id="sequence-filter" type="text" class="form-control has-clear" placeholder="Filtrer">
+        <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+      </div>
+    </form>
+    </div>
+
+      </div>
     </div>
   </div>
   <div class="col-md-8">

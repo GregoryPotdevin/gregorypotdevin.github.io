@@ -69,12 +69,41 @@ var DocumentEditor = function(){
       'display':   function(v){return v;},
       'extract':   function(v){return v;},
       'validator': function(v){return '';}
+    }, 
+    'thumbnail': {
+      'name': 'thumbnail', 
+      // 'data_type': 'select2', 
+      'icon': 'glyphicon-film',
+      'display':   function(v){return v;},
+      'extract':   function(v){return v;},
+      'validator': function(v){return '';}
     }
   }
 
 
   var isEditable = false;
 
+  function generateThumbnail(video) {     
+      //generate thumbnail URL data
+      console.log("generateThumbnail");
+      var w = video.videoWidth;
+      var h = video.videoHeight;
+      var canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      var context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, w, h);
+      var dataURL = canvas.toDataURL();
+      console.log(dataURL);
+      return dataURL;
+
+      // //create img
+      // var img = document.createElement('img');
+      // img.setAttribute('src', dataURL);
+
+      // //append img in container div
+      // document.getElementById('thumbnails').appendChild(img);
+  }
 
   function mkEditable(el, field, seq, callback){
     if (field.hasOwnProperty('editable') && !field.editable){
@@ -96,6 +125,16 @@ var DocumentEditor = function(){
         var video = $('#video-frame');
         documentField.text(formatTime(video[0].currentTime));
         seq[field.id] = video[0].currentTime;
+        if (callback) callback(field, seq);
+      });
+    } else if (type.name == "thumbnail"){
+      var video = $('#video-frame')[0];
+      editBtn.click(function(e){    
+        e.stopPropagation();
+        var img = generateThumbnail(video);
+        documentField.attr('src', img);
+        documentField.fadeIn();
+        seq[field.id] = img;
         if (callback) callback(field, seq);
       });
     } else if ((data_type == "text") || (data_type == "select2") || (data_type == "summernote")){

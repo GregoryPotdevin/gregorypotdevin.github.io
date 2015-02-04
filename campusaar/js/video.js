@@ -106,7 +106,7 @@ var templates = function(){
 
 var videoDuration = 2486; // TODO : fixme
 var nextId = 1;
-
+var currentTab;
 
 
 var showDocument = function(seq){
@@ -116,6 +116,14 @@ var showDocument = function(seq){
   var documentEditor = DocumentEditor.createDocumentEditor(seq, models.segment);
   infoDiv.empty().append(documentEditor);
   currentDocEditor = documentEditor;
+  if (currentTab){
+    currentDocEditor.find('a[href="' + currentTab + '"]').tab('show');
+  }
+  currentDocEditor.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    currentTab = $(e.target).attr("href");
+    // e.target // newly activated tab
+    // e.relatedTarget // previous active tab
+  });
   return documentEditor;
   // $(".info-item").removeClass("selected");
   // $("#info-" + seq.id).addClass("selected");

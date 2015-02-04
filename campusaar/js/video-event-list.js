@@ -54,7 +54,11 @@ ArmaVideo.EventList = function(){
     urlHash = $.param({ start: seq.start });
     sequence.fragment( urlHash, 2 );
 
-    sequence.click(function(){onClick(eventId);});
+    sequence.click(function(e){
+      e.stopPropagation();
+      e.preventDefault();
+      onClick(eventId);
+    });
 
     view.list.append(sequence);
 
