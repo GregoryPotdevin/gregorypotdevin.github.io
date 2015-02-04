@@ -65,7 +65,7 @@ var templates = function(){
     return formatTime(seq);
   });
   Handlebars.registerHelper('content', function(seq, field) {
-    return dataType[field.type].display(seq[field.id]);
+    return DocumentEditor.dataType[field.type].display(seq[field.id]);
   });
   Handlebars.registerHelper('debug', function(obj) {
     return console.log(obj);
@@ -113,7 +113,7 @@ var showDocument = function(seq){
   currentDoc = seq;
   var infoDiv = $("#info");
   setEditable(false);
-  var documentEditor = createDocumentEditor(seq, models.segment);
+  var documentEditor = DocumentEditor.createDocumentEditor(seq, models.segment);
   infoDiv.empty().append(documentEditor);
   currentDocEditor = documentEditor;
   return documentEditor;
