@@ -2,7 +2,7 @@
   'use strict';
 
   Darkroom.plugins['flip'] = Darkroom.Plugin.extend({
-    initialize: function InitDarkroomRotatePlugin() {
+    initialize: function InitDarkroomFlipPlugin() {
       var buttonGroup = this.darkroom.toolbar.createButtonGroup();
 
       this.leftButton = buttonGroup.createButton({
