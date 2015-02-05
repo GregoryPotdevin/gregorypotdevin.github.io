@@ -120,7 +120,8 @@
 
     var button = document.createElement('button');
     button.className = 'darkroom-button darkroom-button-' + options.type;
-    button.innerHTML = '<i class="darkroom-icon-' + options.image + '"></i>';
+    var clazz = (options.image.indexOf("glyphicon") >= 0) ? options.image : ('darkroom-icon-' + options.image);
+    button.innerHTML = '<i class="' + clazz + '"></i>';
     this.element.appendChild(button);
 
     var button = new Button(button);

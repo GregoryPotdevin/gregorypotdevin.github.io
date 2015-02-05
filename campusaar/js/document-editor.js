@@ -163,9 +163,8 @@ var DocumentEditor = function(){
             }); 
             $("#modal-btn").unbind("click").click(function(e){
               e.stopPropagation();
-              var canvas = $("#img-modal").find("canvas").first()[0];
-              var dataURL = canvas.toDataURL();
-              console.log(dataURL);
+              // var canvas = $("#img-modal").find("canvas").first()[0];
+              var dataURL = darkroom.snapshotImage();//canvas.toDataURL();
               documentField.attr('src', dataURL);
               seq[field.id] = dataURL;
               $("#img-modal").modal('hide');
