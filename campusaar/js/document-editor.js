@@ -142,34 +142,44 @@ var DocumentEditor = function(){
       });
       editBtn.click(function(e){    
         e.stopPropagation();
-        $('#img-modal figure img').attr('src', seq[field.id]);
-        darkroom = new Darkroom('#img-modal figure img', {
-          save: false,
-          crop: {
-            minHeight: 50,
-            maxHeight: 50,
-            ratio: video.videoWidth/video.videoHeight
-          }
-        });        
-
-        $("#modal-btn").unbind("click").click(function(e){
-          e.stopPropagation();
-          var canvas = $("#img-modal").find("canvas").first()[0];
-          var dataURL = canvas.toDataURL();
-          console.log(dataURL);
-          documentField.attr('src', dataURL);
-          seq[field.id] = dataURL;
-          $("#img-modal").modal('hide');
-        })
-
+        var img = $('#img-modal figure img');
+        img.attr('src', seq[field.id]);
+        var darkroom;
         var modal = $('#img-modal');
-        modal.unbind('hidden.bs.modal');
-        modal.on('hidden.bs.modal', function (e) {
-          if (darkroom){
-            darkroom.selfDestroy();
-            darkroom = null;
+        var load_darkroom = function()
+        {
+          console.log(img[0].complete);
+          if(!img[0].complete){
+            setTimeout(load_darkroom,50); 
+          } else {
+            img.attr("crossorigin", "anonymous"); // Firefox fails to load base64 data if crossorigin is set by default...
+            darkroom = new Darkroom('#img-modal figure img', {
+              save: false,
+              crop: {
+                minHeight: 50,
+                maxHeight: 50,
+                ratio: video.videoWidth/video.videoHeight
+              }
+            }); 
+            $("#modal-btn").unbind("click").click(function(e){
+              e.stopPropagation();
+              var canvas = $("#img-modal").find("canvas").first()[0];
+              var dataURL = canvas.toDataURL();
+              console.log(dataURL);
+              documentField.attr('src', dataURL);
+              seq[field.id] = dataURL;
+              $("#img-modal").modal('hide');
+            });
+            modal.unbind('hidden.bs.modal');
+            modal.on('hidden.bs.modal', function (e) {
+              if (darkroom){
+                darkroom.selfDestroy();
+                darkroom = null;
+              }
+            });
           }
-        });
+        }
+        setTimeout(load_darkroom,100); 
         modal.modal('show');
       });
 
