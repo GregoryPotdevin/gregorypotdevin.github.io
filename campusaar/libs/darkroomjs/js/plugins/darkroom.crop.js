@@ -393,16 +393,24 @@
     },
 
     toggleCrop: function() {
-      if (!this.hasFocus())
+      this.closePopovers();
+      if (!this.hasFocus()){
         this.requireFocus();
+      }
       else
         this.releaseFocus();
+    },
+
+    closePopovers: function(){
+      $(this.cropButton.element).closest("ul").find(".popover").parent().find("button").popover('hide');
     },
 
     cropCurrentZone: function() {
       if (!this.hasFocus()) {
         return;
       }
+
+      this.closePopovers();
 
       // Avoid croping empty zone
       if (this.cropZone.width < 1 && this.cropZone.height < 1)
@@ -507,6 +515,7 @@
       if (undefined === this.cropZone)
         return;
 
+      this.closePopovers();
       this.cropZone.remove();
       this.cropZone = undefined;
 

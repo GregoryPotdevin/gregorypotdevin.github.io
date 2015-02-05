@@ -42,6 +42,7 @@
       var darkroom = this.darkroom;
       var image = darkroom.image;
       image.filters[0] = new fabric.Image.filters.Brightness({brightness: this.brightness});
+      image.filters[0]['brightness'] = this.brightness;
     },
 
     applyBrightness: function brightness(value){
