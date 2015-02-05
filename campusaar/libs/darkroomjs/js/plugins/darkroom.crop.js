@@ -412,6 +412,11 @@
       var darkroom = this.darkroom;
       var canvas = darkroom.canvas;
 
+      // Remove filters before rendering
+      var filters = darkroom.image.filters;
+      darkroom.image.filters = [];
+      darkroom.image.applyFilters(canvas.renderAll.bind(canvas));
+
       // Hide crop rectangle to avoid snapshot it with the image
       this.cropZone.visible = false;
 
@@ -447,7 +452,10 @@
         // Add image
         _this.darkroom.image.remove();
         _this.darkroom.image = imgInstance;
+        imgInstance .filters = filters;
         canvas.add(imgInstance);
+
+        imgInstance.applyFilters(canvas.renderAll.bind(canvas));
 
         darkroom.dispatchEvent('image:change');
       };
