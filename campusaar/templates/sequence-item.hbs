@@ -1,0 +1,18 @@
+<a href="#" id="seq-{{id}}" class="list-group-item sequence-item" data-event-id="{{id}}">
+  <h5 class="list-group-item-heading">{{title}}</h5>
+  <div class="clearfix">
+    <span class="badge pull-left" data-timecode-type="begin" style="margin-right: 4px;">{{timecode begin}}</span>
+    <span class="badge pull-right" data-timecode-type="end"   style="margin-left: 4px;">{{timecode end}}</span>
+    <div class="mini-commands">
+      <div class="btn-group-xs pull-left" data-toggle="buttons">
+        <label class="btn btn-warning active" style="margin-right: 4px;">
+          <input type="checkbox" autocomplete="off" checked><span class="glyphicon glyphicon-repeat"></span>
+        </label>
+      </div>
+      <div class="progress" style="vertical-align: middle; margin-bottom: 4px;">
+        <div class="progress-bar progress-bar-info" role="progressbar" data-seq-id="{{id}}" style="width: 00%;">
+        </div>
+      </div>
+    </div>
+  </div>
+</a>

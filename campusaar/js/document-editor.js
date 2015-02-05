@@ -117,7 +117,8 @@ var DocumentEditor = function(){
       seq[field.id] = type.extract(newValue);
       if (callback) callback(field, seq);
     }
-    var editBtn = el.find(".edit-btn");
+    var editBtns = el.find('.edit-btn');
+    var editBtn = editBtns.filter('[data-btn-type="edit"]');
     var documentField = el.find(".document-field");
     if (type.name == "timecode"){
       editBtn.click(function(e){    
@@ -129,14 +130,49 @@ var DocumentEditor = function(){
       });
     } else if (type.name == "thumbnail"){
       var video = $('#video-frame')[0];
-      editBtn.click(function(e){    
+      var snapshotBtn = editBtns.filter('[data-btn-type="snapshot"]');
+      var darkroom;
+      console.log(snapshotBtn);
+      snapshotBtn.click(function(e){    
         e.stopPropagation();
         var img = generateThumbnail(video);
         documentField.attr('src', img);
-        documentField.fadeIn();
         seq[field.id] = img;
         if (callback) callback(field, seq);
       });
+      editBtn.click(function(e){    
+        e.stopPropagation();
+        $('#img-modal figure img').attr('src', seq[field.id]);
+        darkroom = new Darkroom('#img-modal figure img', {
+          save: false,
+          crop: {
+            minHeight: 50,
+            maxHeight: 50,
+            ratio: video.videoWidth/video.videoHeight
+          }
+        });        
+
+        $("#modal-btn").unbind("click").click(function(e){
+          e.stopPropagation();
+          var canvas = $("#img-modal").find("canvas").first()[0];
+          var dataURL = canvas.toDataURL();
+          console.log(dataURL);
+          documentField.attr('src', dataURL);
+          seq[field.id] = dataURL;
+          $("#img-modal").modal('hide');
+        })
+
+        var modal = $('#img-modal');
+        modal.unbind('hidden.bs.modal');
+        modal.on('hidden.bs.modal', function (e) {
+          if (darkroom){
+            darkroom.selfDestroy();
+            darkroom = null;
+          }
+        });
+        modal.modal('show');
+      });
+
     } else if ((data_type == "text") || (data_type == "select2") || (data_type == "summernote")){
       if (data_type == "select2"){
         if (!dataLists.hasOwnProperty(field.list_type)){
@@ -206,7 +242,7 @@ var DocumentEditor = function(){
         });
       });
     }
-    editBtn.hide();
+    editBtns.hide();
   }
 
   var addTabSupport = function(el){

@@ -19,6 +19,15 @@
   <link rel="stylesheet" type="text/css" href="video.css">
   <link rel="stylesheet" type="text/css" href="css/canope.css">
 
+  <link rel="stylesheet" type="text/css" href="libs/darkroomjs/css/darkroom.min.css">
+
+  <script type="text/javascript" src="libs/fabric.js"></script>
+  <script type="text/javascript" src="libs/darkroomjs/js/darkroom.js"></script>
+  <script type="text/javascript" src="libs/darkroomjs/js/plugins/darkroom.crop.js"></script>
+  <script type="text/javascript" src="libs/darkroomjs/js/plugins/darkroom.history.js"></script>
+  <script type="text/javascript" src="libs/darkroomjs/js/plugins/darkroom.rotate.js"></script>
+  <!-- // <script type="text/javascript" src="libs/darkroomjs/js/plugins/darkroom.save.js"></script> -->
+
   <script type="text/javascript" src="js/dispatcher.js"></script>
   <script type="text/javascript" src="libs/mousetrap.min.js"></script>
   <script type="text/javascript" src="libs/handlebars.min.js"></script>
@@ -97,12 +106,16 @@
       <td width="85%">
         {{#if field.isImage}}
           <img class="document-field" src="{{content seq field}}"/>
-          <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
-          class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+          <div class="pull-right">
+            <span id="document-{{seq.id}}-{{field.id}}-img-btn" aria-hidden="true"
+            class="edit edit-btn glyphicon glyphicon-pencil" data-btn-type="edit"></span>
+            <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+            class="edit edit-btn glyphicon {{type.icon}}" data-btn-type="snapshot"></span>
+          </div>
         {{else}}
           {{#if field.editable}}
           <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
-          class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+          class="edit edit-btn glyphicon pull-right {{type.icon}}" data-btn-type="edit"></span>
           {{/if}}
           <p class="document-field" data-type="{{type.data_type}}" data-title="{{field.label}}">
             {{content seq field}}
@@ -401,10 +414,46 @@ initTimelineVisibility();
     </div>
 
 
+
+
+
   </div>
 </div>
 </div>
-</div>
+
+    <!-- MODAL -->
+    <div id="img-modal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+            <h4 class="modal-title">Edition d'images</h4>
+          </div>
+          <div class="modal-body">
+            <figure class="image-container target">
+
+              <img crossorigin="anonymous"/>
+
+<!--               <figcaption class="image-meta">
+                <a target="_blank" href="http://www.flickr.com/photos/bentorode/5176910387/">
+                  ©
+                  <strong class="image-meta-title">DomoKun</strong>
+                  by
+                  <em class="image-meta-author">Ben Torode</em>
+                </a>
+              </figcaption> -->
+            </figure>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+            <button id="modal-btn" type="button" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
 </body>
 
 </html>

@@ -111,6 +111,7 @@ html {
 
 .edit-btn {
     cursor: pointer;
+    padding: 4px;
 }
 
 .table-info tbody>tr>td {
@@ -308,4 +309,20 @@ html[dir="ltr"] .butter-tray {
 
 img.document-field {
   width: 320px;
+}
+
+.modal-backdrop {
+    z-index: 1020;
+}
+
+.modal-dialog {
+    z-index: 1050;
+}
+
+/*.modal.modal-wide .modal-dialog {
+  width: 90%;
+}*/
+
+.image-container.target {
+  margin-top: 40px;
 }

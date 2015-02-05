@@ -1,0 +1,18 @@
+<tr data-field-id="{{field.id}}">
+  <td width="15%">{{field.label}}</td>
+  <td width="85%">
+    {{#if field.isImage}}
+      <img class="document-field" src="{{content seq field}}"/>
+      <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+      class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+    {{else}}
+      {{#if field.editable}}
+      <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+      class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+      {{/if}}
+      <p class="document-field" data-type="{{type.data_type}}" data-title="{{field.label}}">
+        {{content seq field}}
+      </p>
+    {{/if}}
+  </td>
+</tr>
