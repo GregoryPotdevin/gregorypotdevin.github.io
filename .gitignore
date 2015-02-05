@@ -9,3 +9,5 @@ campusaar/video-timeline/.svn/wc.db
 *.svn-base
 
 campusaar/libs/Flux.js
+
+campusaar/libs/jquery.facedetection.js
