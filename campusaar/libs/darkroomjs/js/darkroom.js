@@ -83,6 +83,8 @@
 
   // Attach the plugin class into the main namespace.
   Darkroom.Plugin = Plugin;
+  Darkroom.buttonFactory;
+  Darkroom.buttonGroupFactory;
 
   // UI elements
   // -----------
@@ -94,8 +96,15 @@
   }
 
   Toolbar.prototype.createButtonGroup = function(options) {
-    var buttonGroup = document.createElement('li');
-    buttonGroup.className = 'darkroom-button-group';
+    var buttonGroup;
+
+    if (Darkroom.buttonGroupFactory){
+      buttonGroup = Darkroom.buttonGroupFactory(options);
+    } else {
+      buttonGroup = document.createElement('li');
+      buttonGroup.className = 'darkroom-button-group';
+    }
+    
     /*buttonGroup.innerHTML = '<ul></ul>';*/
     this.actionsElement.appendChild(buttonGroup);
 
@@ -118,11 +127,16 @@
 
     options = extend(options, defaults);
 
-    var button = document.createElement('button');
-    button.className = 'darkroom-button darkroom-button-' + options.type;
-    var clazz = (options.image.indexOf("glyphicon") >= 0) ? options.image : ('darkroom-icon-' + options.image);
-    button.innerHTML = '<i class="' + clazz + '"></i>';
-    this.element.appendChild(button);
+    var button;
+    if (Darkroom.buttonFactory){
+      button = Darkroom.buttonFactory(options);
+    } else {
+      button = document.createElement('button');
+      button.className = 'darkroom-button darkroom-button-' + options.type;
+      var clazz = (options.image.indexOf("glyphicon") >= 0) ? options.image : ('darkroom-icon-' + options.image);
+      button.innerHTML = '<i class="' + clazz + '"></i>';
+    }
+    this.element.appendChild(button);      
 
     var button = new Button(button);
     button.hide(options.hide);
@@ -225,6 +239,9 @@
       var plugins = plugins || Darkroom.plugins;
 
       var image = new Image();
+      Darkroom.buttonFactory = options.buttonFactory;
+      Darkroom.buttonGroupFactory = options.buttonGroupFactory;
+      Darkroom.toolbarFactory = options.toolbarFactory;
 
       image.onload = function() {
         _this
@@ -243,9 +260,15 @@
 
     initDOM: function(element) {
       // Create toolbar element
-      var toolbar = document.createElement('div');
-      toolbar.className = 'darkroom-toolbar';
-      toolbar.innerHTML = '<ul class="darkroom-toolbar-actions"></ul>';
+
+      var toolbar;
+      if (Darkroom.toolbarFactory){
+        toolbar = Darkroom.toolbarFactory();
+      } else {
+        toolbar = document.createElement('div');
+        toolbar.className = 'darkroom-toolbar';
+        toolbar.innerHTML = '<ul class="darkroom-toolbar-actions"></ul>';
+      }
 
       // Create canvas element
       var canvas = document.createElement('canvas');

@@ -29,10 +29,19 @@
   background-color: #006978;
 }
 
-.btn-info {
+.btn-info, .btn-info:hover, .btn-info:focus {
   background-color: #006978;
   border-color: #006978;
 }
+
+.btn-info.disabled, .btn-info[disabled], fieldset[disabled] .btn-info, .btn-info.disabled:hover, .btn-info[disabled]:hover, fieldset[disabled] .btn-info:hover, .btn-info.disabled:focus, .btn-info[disabled]:focus, fieldset[disabled] .btn-info:focus, .btn-info.disabled:active, .btn-info[disabled]:active, fieldset[disabled] .btn-info:active, .btn-info.disabled.active, .btn-info[disabled].active, fieldset[disabled] .btn-info.active {
+/*  background-color: #3498db;
+  border-color: #258cd1;*/
+  background-color: #006978;
+  border-color: #006978;
+  opacity: 0.5;
+}
+
 
 .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
   background-color: #d4d4d4;
@@ -69,4 +78,23 @@
   border-bottom: 1px solid #cccccc;
 }
 
+.btn-toolbar.darkroom-toolbar-actions {
+  margin-bottom: 8px;
+}
 
+.darkroom-image-container {
+  border: 1px solid #aaaaaa;
+  background-color: #eeeeee;
+}
+
+.btn.darkroom-button-hidden {
+  display: none;
+}
+
+.popover-content input {
+  width: 100px;
+}
+
+.canvas-container {
+  margin: auto;
+}

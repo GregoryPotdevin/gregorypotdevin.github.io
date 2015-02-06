@@ -105,6 +105,41 @@ var DocumentEditor = function(){
       // document.getElementById('thumbnails').appendChild(img);
   }
 
+  function createDarkroom(ratio){
+    return new Darkroom('#img-modal figure img', {
+      save: false,
+      crop: {
+        minHeight: 50,
+        maxHeight: 50,
+        ratio: ratio,
+      },
+      buttonFactory: function(options){
+        var button = document.createElement('button');
+        console.log(options.type);
+        switch(options.type){
+          case "default": button.className = 'btn btn-info'; break;
+          case "success": button.className = 'btn btn-success'; break;
+          case "danger": button.className = 'btn btn-danger'; break;
+        }
+        //options.type
+        var clazz = (options.image.indexOf("glyphicon") >= 0) ? options.image : ('darkroom-icon-' + options.image);
+        button.innerHTML = '<i class="' + clazz + '"></i>'; 
+        return button;
+      },
+      buttonGroupFactory: function(options){
+        var buttonGroup = document.createElement('div');
+        buttonGroup.className = 'btn-group btn-group-lg';
+        return buttonGroup;
+      },
+      toolbarFactory: function(options){
+        var toolbar = document.createElement('div');
+        // toolbar.className = 'btn-toolbar';
+        toolbar.innerHTML = '<div class="btn-toolbar darkroom-toolbar-actions"></div>';
+        return toolbar;
+      }
+    });
+  }
+
   function mkEditable(el, field, seq, callback){
     if (field.hasOwnProperty('editable') && !field.editable){
       return;
@@ -153,14 +188,7 @@ var DocumentEditor = function(){
             setTimeout(load_darkroom,50); 
           } else {
             img.attr("crossorigin", "anonymous"); // Firefox fails to load base64 data if crossorigin is set by default...
-            darkroom = new Darkroom('#img-modal figure img', {
-              save: false,
-              crop: {
-                minHeight: 50,
-                maxHeight: 50,
-                ratio: video.videoWidth/video.videoHeight
-              }
-            }); 
+            darkroom = createDarkroom();//video.videoWidth/video.videoHeight); 
             $("#modal-btn").unbind("click").click(function(e){
               e.stopPropagation();
               // var canvas = $("#img-modal").find("canvas").first()[0];

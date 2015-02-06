@@ -402,7 +402,7 @@
     },
 
     closePopovers: function(){
-      $(this.cropButton.element).closest("ul").find(".popover").parent().find("button").popover('hide');
+      $(this.cropButton.element).closest(".darkroom-container").find(".popover").parent().find("button").popover('hide');
     },
 
     cropCurrentZone: function() {
