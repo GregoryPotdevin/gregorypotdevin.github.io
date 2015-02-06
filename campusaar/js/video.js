@@ -362,7 +362,7 @@ function getUrlParameter(sParam)
         var sParameterName = sURLVariables[i].split('=');
         if (sParameterName[0] == sParam) 
         {
-            return sParameterName[1];
+            return sParameterName[1] || "true";
         }
     }
 }  
@@ -486,6 +486,11 @@ $(document).ready(function(){
     }
   });
 
+  var tab = getUrlParameter('tab');
+  if (tab){
+    currentTab = '#' + tab;
+  }
+  console.log("getUrlParameter('edit')", getUrlParameter('edit'));
   if (getUrlParameter('edit') == "true"){
     setTimeout(function(){
       setEditable(true);
