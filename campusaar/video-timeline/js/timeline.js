@@ -138,11 +138,11 @@ VideoTimeline.canvas = function(){
     ctx.translate(0.5, 0.5);
     ctx.scale(SCALE, SCALE);
     var canShowText = true;
-    canShowText &= !drawLines(ctx, begin, end, 1, 0.1, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 5, 0.15, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 10, 0.25, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 30, 0.35, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 60, 0.55, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 1, 0.15, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 5, 0.25, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 10, 0.35, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 30, 0.45, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 60, 0.6, canShowText);
     canShowText &= !drawLines(ctx, begin, end, 300, 0.75, canShowText);
     // ctx.fillStyle = "#fff";
     // ctx.fillRect(0, 0, canvas.);
