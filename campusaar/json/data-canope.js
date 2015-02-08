@@ -11,7 +11,7 @@ var segmentModel = {
       'required': true
     },
     {
-      'id': 'parentId', 
+      'id': 'trackId', 
       'label': 'Layer Id', 
       'tab': 'info',
       'type': 'number', 
