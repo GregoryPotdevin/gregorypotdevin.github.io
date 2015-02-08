@@ -438,28 +438,44 @@ var Filter = function(){
     return false;
   }
 
-  var itemFilter = function(item, val){
-    //val = val.replace(new RegExp("^[.]$|[\[\]|()*]",'g'),'');
-    //val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  var applyFilter = function(seq, val){
     if (val == ''){
       return true;
     }
-    var regSearch = new RegExp(val,'i');
-    var seq = globalSequences[$(item).attr("data-event-id")];
-
     for(var v in val){
       if (!seqContains(seq, val[v])){
         return false;
       }
     }
     return true;
+  }
+
+  var itemFilter = function(item, val){
+    //val = val.replace(new RegExp("^[.]$|[\[\]|()*]",'g'),'');
+    //val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    return applyFilter(globalSequences[$(item).attr("data-event-id")], val);
   };  
+
+  var onFilter = function(cnt){
+    updateSequenceCount(cnt);
+    // Filter timeline
+    var filter = filterBuilder($('#sequence-filter').val());
+    var validIds = [];
+    for(id in globalSequences){
+      if (globalSequences.hasOwnProperty(id)){
+        if (applyFilter(globalSequences[id], filter)){
+          validIds.push(id);
+        }
+      }
+    }
+    VideoTimeline.timeline.filter(validIds);
+  }
 
   var options = {
     'delay':150,
     'filterBuilder': filterBuilder,
     'itemFilter': itemFilter, 
-    'onFilter': updateSequenceCount,
+    'onFilter': onFilter,
     'resetOnBlur': false,
     'itemEl': '.sequence-item,.timeline-item'
   };

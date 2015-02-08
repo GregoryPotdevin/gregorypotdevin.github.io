@@ -100,8 +100,17 @@
   position: absolute;
   overflow: hidden;
   box-sizing: content-box;
+  opacity: 1;
+  -webkit-transition: opacity .3s ease;
+  -moz-transition: opacity .3s ease;
+  -o-transition: opacity .3s ease;
+  -ms-transition: opacity .3s ease;
+  transition: opacity .3s ease;
 }
 
+.vt-track-event.filtered-out {
+  opacity: 0.2;
+}
 
 .vt-track-event.vt-type {
   border-top-width: 3px;
@@ -291,6 +300,16 @@ box-sizing: content-box;
   position: absolute;
   z-index: 1;
   display: block;
+  opacity: 1;
+  -webkit-transition: opacity .3s ease;
+  -moz-transition: opacity .3s ease;
+  -o-transition: opacity .3s ease;
+  -ms-transition: opacity .3s ease;
+  transition: opacity .3s ease;
+}
+
+.vt-mini-scrollbar-trackevent.filtered-out {
+  opacity: 0.2;
 }
 
 .vt-viewport {

@@ -190,6 +190,19 @@ VideoTimeline.timeline = function(){
     return pad(min, 2) + ":" + pad(sec, 2) + "." + pad(csec, 2);
   }
 
+  var filterEvents = function(events, validIds){
+    for(eventId in events){
+      if (events.hasOwnProperty(eventId)){
+        trackEvent = events[eventId];
+        if (validIds.indexOf(eventId) != -1){
+          trackEvent.removeClass("filtered-out");
+        } else {
+          trackEvent.addClass("filtered-out");
+        }
+      }
+    }
+  }
+
   var createMiniTracks = function(parentSelector){
     var tracks = {};
     var parent = $(parentSelector);
@@ -263,6 +276,14 @@ VideoTimeline.timeline = function(){
       timeMarker[0].style.left = (ratio*100) + '%';
     }
 
+    var filter = function(validIds){
+      for(trackId in tracks){
+        if(tracks.hasOwnProperty(trackId)){
+          filterEvents(tracks[trackId].events, validIds);
+        }
+      }
+    }
+
     var miniT = {
       setTimeRatio: setTimeRatio,
       addTrack: addTrack,
@@ -272,6 +293,7 @@ VideoTimeline.timeline = function(){
       deleteEvent: deleteEvent,
       setOnEventClick: function(f) {onEventClick = f;},
       setClickable: function(b) {isClickable = b;},
+      filter: filter,
     };
     miniTracks.push(miniT);
 
@@ -656,6 +678,18 @@ VideoTimeline.timeline = function(){
     }
   }
 
+  var filter = function(validIds){
+    miniTracks.forEach(function(miniTrack){
+      miniTrack.filter(validIds);
+    })
+    for (trackId in trackView){
+      if (trackView.hasOwnProperty(trackId)){
+        var tv = trackView[trackId];
+        filterEvents(tv.events, validIds);
+      }
+    }
+  }
+
   return {
     init: init,
     createMiniTracks : createMiniTracks,
@@ -672,6 +706,7 @@ VideoTimeline.timeline = function(){
     timeRatio : timeRatio,
     setViewport: setViewport,
     setViewportRatio: setViewportRatio,
+    filter: filter,
   }
 
 }();
