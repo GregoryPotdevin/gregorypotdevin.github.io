@@ -2,7 +2,86 @@
 
 var VideoTimeline = VideoTimeline || {};
 
+VideoTimeline.canvas = function(){
 
+  var drawLine = function(ctx, x, height, color){
+    ctx.beginPath();
+    ctx.strokeStyle=color;
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,height);
+    ctx.stroke();
+  }
+
+  var colorFor = function(width){
+    if (width > 30){
+      return "#000";
+    } else if (width > 10){
+      return "#666";
+    } else if (width > 5){
+      return "#888";
+    }
+    return "FFF"; 
+  }
+
+  var heightFor = function(width){
+    // if (width > 30){
+    //   return 8;
+    // } else if (width > 10){
+    //   return 6;
+    // } else if (width > 5){
+    //   return 4;
+    // }
+    // return 2; 
+    if (width > 30){
+      return 0.7;
+    } else if (width > 10){
+      return 0.5;
+    } else if (width > 5){
+      return 0.3;
+    }
+    return 0.1; 
+  }
+
+  var drawLines = function(ctx, begin, end, duration, height){
+    var w = ctx.canvas.width;
+    var minW = w / ((end-begin)/duration);
+    if ((minW < 5) || isNaN(minW)){
+      return;
+    }
+    var color = colorFor(minW);
+    var height = ctx.canvas.height*height;//heightFor(minW);
+    // console.log(minW);
+    var start = (Math.floor(begin/duration)*duration);
+    for(var m=start; m<=end; m+=duration){
+      var x = (m-begin) * w / (end-begin);
+      drawLine(ctx, x, height, color);
+    }
+  }
+
+  var draw = function(canvas, begin, end){
+    // console.log("draw");
+    var ctx = ctx = canvas.getContext('2d');
+    var style = window.getComputedStyle(canvas);
+    var w = Math.round(parseFloat(style.width));
+    var h = Math.round(parseFloat(style.height));
+    canvas.width = parseFloat(style.width);
+    canvas.height = parseFloat(style.height);
+    ctx.clearRect( 0, 0, w, h);
+    // console.log(w, h);
+    drawLines(ctx, begin, end, 1, 0.15);
+    drawLines(ctx, begin, end, 5, 0.2);
+    drawLines(ctx, begin, end, 10, 0.3);
+    drawLines(ctx, begin, end, 30, 0.4);
+    drawLines(ctx, begin, end, 60, 0.6);
+    drawLines(ctx, begin, end, 300, 0.9);
+    // ctx.fillStyle = "#fff";
+    // ctx.fillRect(0, 0, canvas.);
+  }
+
+  return {
+    draw: draw,
+  };
+}();
 
 VideoTimeline.timeline = function(){
   var root;
@@ -18,6 +97,27 @@ VideoTimeline.timeline = function(){
   var keyEnd = "end";
   var _timeRatio = 0;
   var dispatcher;
+  var videoTimes;
+  var progressBars;
+  var progressContainer;
+
+
+  var pad = function(num, length) {
+    var r = "" + num;
+    while (r.length < length) {
+      r = "0" + r;
+    }
+    return r;
+  }
+
+  var formatTime = function(seconds) {
+    var t = Math.round(seconds*100)/100; // Realign centiseconds
+    seconds = Math.floor(t);
+    var min = Math.floor(seconds / 60);
+    var sec = seconds % 60;
+    var csec = Math.floor(t*100)%100;
+    return pad(min, 2) + ":" + pad(sec, 2) + "." + pad(csec, 2);
+  }
 
   var createMiniTracks = function(parentSelector){
     var tracks = {};
@@ -122,6 +222,11 @@ VideoTimeline.timeline = function(){
       viewport.viewport.width = widthRatio;
       tracks[0].style.left = -(leftRatio*100) + '%';
       tracks[0].style.width = (100/widthRatio) + '%';
+      if (progressContainer && progressContainer.size() > 0){
+        progressContainer[0].style.left = -(leftRatio*100) + '%';
+        progressContainer[0].style.width = (100/widthRatio) + '%';
+      }
+      drawCanvas();
     }
   }
 
@@ -141,6 +246,14 @@ VideoTimeline.timeline = function(){
     viewport.refreshHandlePosition();
   }
 
+  var drawCanvas = function(){
+    if (canvas){
+      var begin = viewport.viewport.left * videoDuration;
+      var duration = viewport.viewport.width * videoDuration;
+      VideoTimeline.canvas.draw(canvas, begin, begin+duration);
+    }
+  }
+
   var init = function(timeline, videoDispatcher){
     root = $(timeline);
     tracks = root.find(".vt-tracks");
@@ -150,6 +263,12 @@ VideoTimeline.timeline = function(){
 
     timeMarker = $('<span class="vt-timeline-marker" style="left: 0%;"></span>');
     timeMarker.appendTo(tracks);
+
+    videoTimes = root.find(".vt-video-time");
+    progressBars = root.find(".progress-bar");
+    progressContainer = root.find(".vt-timeline-progress");
+
+    canvas = root.find("canvas")[0];
 
     var outerElement = root.find(".vt-tracks-shadow")[0];
     var scrollable = tracks[0];
@@ -177,7 +296,18 @@ VideoTimeline.timeline = function(){
     if (dispatcher){
       dispatcher.register(function(obj){
         switch(obj.actionType){
-          case "currentTime": timeRatio(obj.time/obj.duration); break;
+          case "currentTime": {
+            videoDuration = obj.duration;
+            if (videoTimes){
+              videoTimes.text(formatTime(obj.time));
+            }
+            if (progressBars){
+              progressBars.css("width", ((obj.time/obj.duration)*100) + "%");
+            }
+            drawCanvas();
+            timeRatio(obj.time/obj.duration); 
+            break;
+          }  
           case "onEventAdded": addTrackEvent(obj.trackId, obj.eventId, obj.title, obj.begin/videoDuration, obj.end/videoDuration); break;
           case "updateEventTitle": setTrackEventTitle(obj.trackId, obj.eventId, obj.title); break;
           case "updateEventTimecodes": if (obj.sender != "timeline") setTrackEventBeginEnd(obj.trackId, obj.eventId, obj.begin, obj.end);break;
@@ -368,6 +498,11 @@ VideoTimeline.timeline = function(){
       _timeRatio = ratio;
       timeMarker[0].style.left = (ratio*100) + '%';
       miniTracks.forEach(function(mt){mt.setTimeRatio(ratio);});
+
+      var marker = progressContainer.find(".timeline-marker");
+      if (marker.size() > 0){
+        marker[0].style.left = (ratio*100) + '%';
+      }
     }
   }
 

@@ -326,3 +326,12 @@ img.document-field {
 .image-container.target {
   margin-top: 40px;
 }
+
+.vt-container .progress {
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 10px;
+}
+
+
+

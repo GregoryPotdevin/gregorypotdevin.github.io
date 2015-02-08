@@ -11,6 +11,46 @@ var currentDocEditor;
 var noop = function(){};
 var endMovable = noop;
 
+
+var SegmentStore = function(){
+
+  var dispatcher = new ArmaTools.Dispatcher();
+  var segments = [];
+  var segmentMap = {};
+
+  var init = function(){
+    videoDispatcher.register(function(obj){
+      switch(obj.actionType){
+        case "onEventClick": onEventClick(obj); break;
+        case "updateEventTimecodes": updateMetadataEventTimecodes(obj.eventId, obj.begin, obj.end);
+        default: break;
+      }
+
+    })
+  }
+
+  var register = function(callback){
+    return dispatcher.register(callback);
+  }
+
+  var unregister = function(key){
+    return dispatcher.unregister(key);
+  }
+
+  var get = function(key){
+    return segmentMap[key];
+  }
+
+
+  return {
+    init: init,
+    segments: segments,
+    get: get,
+    register: register,
+    unregister: unregister,
+  }
+}();
+
 var globalSequences = {};
 
 var sequenceCnt = function(){
@@ -262,13 +302,12 @@ function loadSequences(sequences) {
     showDocument(sequences[0]);
   }
 
-  var marker = $("#video-timeline-marker");
   // video[0].addEventListener( "timeupdate", function( e ) {
   //     VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
   // }, false );
   var autoUpdateTime = function(){
     videoDispatcher.dispatch({actionType: "currentTime", time: video[0].currentTime, duration: video[0].duration});
-    VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
+    // VideoTimeline.timeline.timeRatio(video[0].currentTime/video[0].duration);
     setTimeout(autoUpdateTime, 50);
   }
   autoUpdateTime();

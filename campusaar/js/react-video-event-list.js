@@ -7,10 +7,10 @@ var formatTime = function(seconds) {
 }
 
 var VideoEvent = React.createClass({displayName: "VideoEvent",
-  handleClick: function(e){
+  handleClick: function(){
+    this.props.onClick(this.props.data);
     e.stopPropagation();
     e.preventDefault();
-    this.props.onClick(this.props.data);
   },
   shouldComponentUpdate: function(nextProps, nextState){
     return JSON.stringify(this.props) !== JSON.stringify(nextProps) ;
@@ -75,31 +75,36 @@ var VideoEventList = function(){
       if (r > 1) return 1;
       return r;
     },
+    componentWillUnmount: function(){
+      console.log("kill" + this.videoKey);
+      videoDispatcher.unregister(this.videoKey);
+    },
     initDispatcher: function(){
       var refresh = function(){
         this.setState({data: this.state.data});
       }.bind(this);
-      videoDispatcher.register(function(obj){
+      this.videoKey = videoDispatcher.register(function(obj){
+        // console.log("dispatch");
         switch(obj.actionType){
           case "currentTime": this.setState({time: obj.time}); break;
-          case "onEventAdded": 
-            var evt = {trackId: obj.trackId, eventId: obj.eventId, title: obj.title, begin: obj.begin, end: obj.end};
-            this.state.data.push(evt);
-            this.state.events[obj.eventId] = evt;
-            this.sortData();
-            this.setState({data: this.state.data, events: this.state.events});
-            break;
-          case "updateEventTitle": 
-            this.state.events[obj.eventId].title = obj.title;
-            refresh();
-            break;
-          case "updateEventTimecodes": 
-            var evt = this.state.events[obj.eventId];
-            evt.begin = obj.begin;
-            evt.end = obj.end;
-            this.sortData();
-            refresh();
-            break;
+          // case "onEventAdded": 
+          //   var evt = {trackId: obj.trackId, eventId: obj.eventId, title: obj.title, begin: obj.begin, end: obj.end};
+          //   this.state.data.push(evt);
+          //   this.state.events[obj.eventId] = evt;
+          //   this.sortData();
+          //   this.setState({data: this.state.data, events: this.state.events});
+          //   break;
+          // case "updateEventTitle": 
+          //   this.state.events[obj.eventId].title = obj.title;
+          //   refresh();
+          //   break;
+          // case "updateEventTimecodes": 
+          //   var evt = this.state.events[obj.eventId];
+          //   evt.begin = obj.begin;
+          //   evt.end = obj.end;
+          //   this.sortData();
+          //   refresh();
+          //   break;
           default: break;
         }
       }.bind(this));
@@ -135,9 +140,24 @@ var VideoEventList = function(){
         );
       }.bind(this));
       return (
-        React.createElement("div", {id: "react-sequences", className: "list-group collapse in"}, 
+      React.createElement("div", {className: "panel panel-info"}, 
+        React.createElement("div", {className: "panel-heading collapsable"}, 
+          React.createElement("h3", {className: "panel-title"}, 
+            React.createElement("a", {className: "nounderline", "data-toggle": "collapse", href: "#react-sequence-list"}, 
+              "Sequences ", React.createElement("div", {id: "sequence-cnt", className: "badge"}, React.createElement("span", {className: "glyphicon glyphicon-remove"}))
+            )
+          )
+        ), 
+        React.createElement("div", {id: "react-sequence-list", className: "list-group collapse in"}, 
+          React.createElement("form", {className: "form form-horizontal"}, 
+            React.createElement("div", {className: "has-feedback"}, 
+              React.createElement("input", {type: "text", className: "form-control has-clear", placeholder: "Filter"}), 
+              React.createElement("span", {className: "clearer glyphicon glyphicon-remove-circle form-control-feedback"})
+            )
+          ), 
           videoNodes
         )
+      )
       );
     }
   });

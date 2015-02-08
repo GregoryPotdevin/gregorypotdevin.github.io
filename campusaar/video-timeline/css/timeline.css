@@ -217,11 +217,11 @@ box-sizing: content-box;
 }
 
 .vt-handle-parent:hover .vt-left-handle {
-  left: 0px;
+  left: -2px;
 }
 
 .vt-handle-parent:hover .vt-right-handle {
-  right: 0px;
+  right: -2px;
 }
 
 .vt-mini-scrollbar-container {
@@ -399,4 +399,71 @@ box-sizing: content-box;
   height: 100%;
   background-color: #d9534f;
   z-index: 2;
+}
+
+
+
+.vt-timeline-wrapper {
+  position: relative;
+  padding-left: 130px;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+  /*background: #ffffff;*/
+  /*
+  background: #f4f5f5;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.2);*/
+}
+
+.vt-timeline-wrapper-helper {
+  background: #ffffff;
+  width: 100%;
+  /*height: 100%;*/
+
+  height: 30px;
+  /*padding-top:4px;*/
+
+  overflow: hidden;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ffffff;
+  /*box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.2);*/
+  /*box-sizing: content-box;*/
+}
+
+.vt-timeline .vt-left-pane {
+  background-color: #ffffff;
+  display: table;
+  /* height: 100%; */
+  text-align: center;
+  height: 30px;
+}
+
+.vt-video-time {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 18px;
+}
+
+.vt-timeline .progress-bar {
+  -webkit-transition-duration: 0s;
+  -o-transition-duration: 0s;
+  transition-duration: 0s;
+}
+
+.vt-timeline-progress {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.vt-timeline-canvas {
+  width: 100%; 
+  height: 18px; 
+  position: absolute; 
+  top: 10px;
 }

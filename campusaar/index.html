@@ -5,7 +5,7 @@
 
 	<title>CampusAAR video demo</title>
 
-  <!-- // <script src="http://fb.me/react-with-addons-0.12.2.js"></script> -->
+  <script src="http://fb.me/react-with-addons-0.12.2.js"></script>
   <!-- // <script src="http://fb.me/JSXTransformer-0.12.2.js"></script> -->
 
   <link id="stylesheet-bootstrap" rel="stylesheet" type="text/css" href="css/bootstrap-theme.flatly.css">
@@ -112,7 +112,7 @@
 
   <script type="text/javascript" src="js/video-event-list.js"></script>
   <script type="text/javascript" src="js/document-editor.js"></script>
-  <!-- // <script type="text/javascript" src="js/react-video-event-list.js"></script> -->
+  <script id="react-test" type="text/javascript" src="js/react-video-event-list.js"></script>
   <script type="text/javascript" src="js/video.js"></script>
 
 
@@ -173,12 +173,39 @@
     timeline.setAnimationTime(150);
 
     $("#new-layer").click(addTrack);
+    // var reactList;
+    // var autoreload = function(){
+    //     (function(d, s, id){
+    //         var js, fjs = d.getElementsByTagName(s)[0];
+    //         // if (d.getElementById(id)){ return; }
+    //         js = d.createElement(s); js.id = id;
+    //         js.onload = function(){
+    //             // remote script has loaded
+    //             React.unmountComponentAtNode(document.getElementById('react-sequences'));
+    //             // console.log(reactList);
+    //             // if (reactList) reactList.destroy();
+    //             // console.log("render");
+    //             reactList = React.createElement(VideoEventList, null);
+    //           React.render(
+    //             // <VideoEventList />,
+    //             reactList,
+    //             document.getElementById('react-sequences')
+    //           );
 
-  // React.render(
-  //   // <VideoEventList />,
-  //   React.createElement(VideoEventList, null),
-  //   document.getElementById('react-sequences')
-  // );
+    //           setTimeout(autoreload, 1000);
+    //         };
+    //         js.src = "js/react-video-event-list.js";
+    //         fjs.parentNode.insertBefore(js, fjs);
+    //         $(fjs).remove();
+    //     }(document, 'script', 'react-test'));
+    // }
+    // autoreload();
+
+  React.render(
+    // <VideoEventList />,
+    React.createElement(VideoEventList, null),
+    document.getElementById('react-sequences')
+  );
 
   loadSequences([
   {
@@ -306,12 +333,6 @@
         </div>
       </div>
     </div>
-    <form class="form form-horizontal">
-      <div class="has-feedback">
-        <input id="sequence-filter" type="text" class="form-control has-clear" placeholder="Filter">
-        <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
-      </div>
-    </form>
     <div id="react-sequences"></div>
     <canvas></canvas>
     <div id="thumbnails"></div>
@@ -326,7 +347,14 @@
         </a>
       </h3>
     </div>
-    <div id="sequences" class="list-group collapse in"></div>
+    <div id="sequences" class="list-group collapse in">
+      <form class="form form-horizontal">
+        <div class="has-feedback">
+          <input id="sequence-filter" type="text" class="form-control has-clear" placeholder="Filter">
+          <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+        </div>
+      </form>
+    </div>
   </div>
   <div class="panel panel-primary">
     <div class="panel-heading">

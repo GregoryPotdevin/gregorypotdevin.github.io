@@ -75,31 +75,36 @@ var VideoEventList = function(){
       if (r > 1) return 1;
       return r;
     },
+    componentWillUnmount: function(){
+      console.log("kill" + this.videoKey);
+      videoDispatcher.unregister(this.videoKey);
+    },
     initDispatcher: function(){
       var refresh = function(){
         this.setState({data: this.state.data});
       }.bind(this);
-      videoDispatcher.register(function(obj){
+      this.videoKey = videoDispatcher.register(function(obj){
+        // console.log("dispatch");
         switch(obj.actionType){
           case "currentTime": this.setState({time: obj.time}); break;
-          case "onEventAdded": 
-            var evt = {trackId: obj.trackId, eventId: obj.eventId, title: obj.title, begin: obj.begin, end: obj.end};
-            this.state.data.push(evt);
-            this.state.events[obj.eventId] = evt;
-            this.sortData();
-            this.setState({data: this.state.data, events: this.state.events});
-            break;
-          case "updateEventTitle": 
-            this.state.events[obj.eventId].title = obj.title;
-            refresh();
-            break;
-          case "updateEventTimecodes": 
-            var evt = this.state.events[obj.eventId];
-            evt.begin = obj.begin;
-            evt.end = obj.end;
-            this.sortData();
-            refresh();
-            break;
+          // case "onEventAdded": 
+          //   var evt = {trackId: obj.trackId, eventId: obj.eventId, title: obj.title, begin: obj.begin, end: obj.end};
+          //   this.state.data.push(evt);
+          //   this.state.events[obj.eventId] = evt;
+          //   this.sortData();
+          //   this.setState({data: this.state.data, events: this.state.events});
+          //   break;
+          // case "updateEventTitle": 
+          //   this.state.events[obj.eventId].title = obj.title;
+          //   refresh();
+          //   break;
+          // case "updateEventTimecodes": 
+          //   var evt = this.state.events[obj.eventId];
+          //   evt.begin = obj.begin;
+          //   evt.end = obj.end;
+          //   this.sortData();
+          //   refresh();
+          //   break;
           default: break;
         }
       }.bind(this));
@@ -135,9 +140,24 @@ var VideoEventList = function(){
         );
       }.bind(this));
       return (
-        <div id="react-sequences" className="list-group collapse in">
+      <div className="panel panel-info">
+        <div className="panel-heading collapsable">
+          <h3 className="panel-title" >
+            <a className="nounderline" data-toggle="collapse" href="#react-sequence-list">
+              Sequences <div id="sequence-cnt" className="badge"><span className="glyphicon glyphicon-remove"></span></div>
+            </a>
+          </h3>
+        </div>
+        <div id="react-sequence-list" className="list-group collapse in">
+          <form className="form form-horizontal">
+            <div className="has-feedback"> 
+              <input type="text" className="form-control has-clear" placeholder="Filter" />
+              <span className="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+            </div>
+          </form>
           {videoNodes}
         </div>
+      </div>
       );
     }
   });
