@@ -3,24 +3,66 @@
 var VideoTimeline = VideoTimeline || {};
 
 VideoTimeline.canvas = function(){
+  var TEXT_SPACING = 40;
+  var SCALE = 1;
+
+  var pad = function(num, length) {
+    var r = "" + num;
+    while (r.length < length) {
+      r = "0" + r;
+    }
+    return r;
+  }
+
+  var formatTime = function(seconds) {
+    var t = Math.round(seconds*100)/100; // Realign centiseconds
+    seconds = Math.floor(t);
+    var min = Math.floor(seconds / 60);
+    var sec = seconds % 60;
+    return pad(min, 2) + ":" + pad(sec, 2);
+  }
 
   var drawLine = function(ctx, x, height, color){
+    x = Math.round(x);
+    height = Math.round(height);
     ctx.beginPath();
     ctx.strokeStyle=color;
-    ctx.moveTo(x,0);
-    ctx.lineTo(x,height);
+    ctx.moveTo(x/SCALE,0);
+    ctx.lineTo(x/SCALE,height/SCALE);
     ctx.stroke();
+  }
+
+  var drawText = function(ctx, txt, x, y, color){
+    ctx.font = (10/SCALE) + "px Monospace";
+    ctx.textAlign = "center";
+    x = Math.round(x);
+    y = Math.round(y);
+    ctx.fillText(txt, x/SCALE, y/SCALE);
+  }
+
+  var rgb = function(r, g, b){
+    return "rgb("+Math.round(r)+","+Math.round(g)+","+Math.round(b)+")";
+  }
+
+  var lerp = function(t, t0, t1, v0, v1){
+    if (t0 == t1){
+      return v0;
+    }
+    return v0 + (v1-v0) * (t-t0) / (t1-t0);
   }
 
   var colorFor = function(width){
     if (width > 30){
       return "#000";
-    } else if (width > 10){
+    } else if (width > 15){
       return "#666";
-    } else if (width > 5){
-      return "#888";
+    } else if (width >= 5) {
+      var v = lerp(width, 5, 15, 0xff, 0x66);
+      //console.log(rgb(v, v, v));
+      return rgb(v, v, v);
+    } else {
+      return rgb(255, 255, 255);
     }
-    return "FFF"; 
   }
 
   var heightFor = function(width){
@@ -42,7 +84,7 @@ VideoTimeline.canvas = function(){
     return 0.1; 
   }
 
-  var drawLines = function(ctx, begin, end, duration, height){
+  var drawLines = function(ctx, begin, end, duration, height, canShowText){
     var w = ctx.canvas.width;
     var minW = w / ((end-begin)/duration);
     if ((minW < 5) || isNaN(minW)){
@@ -52,28 +94,34 @@ VideoTimeline.canvas = function(){
     var height = ctx.canvas.height*height;//heightFor(minW);
     // console.log(minW);
     var start = (Math.floor(begin/duration)*duration);
+    var showText = minW >= TEXT_SPACING;
     for(var m=start; m<=end; m+=duration){
       var x = (m-begin) * w / (end-begin);
       drawLine(ctx, x, height, color);
+      if (showText && canShowText && (m != 0)){
+        drawText(ctx, formatTime(m), x, ctx.canvas.height*0.95, color);
+      }
     }
+    return showText;
   }
 
   var draw = function(canvas, begin, end){
     // console.log("draw");
     var ctx = ctx = canvas.getContext('2d');
-    var style = window.getComputedStyle(canvas);
-    var w = Math.round(parseFloat(style.width));
-    var h = Math.round(parseFloat(style.height));
-    canvas.width = parseFloat(style.width);
-    canvas.height = parseFloat(style.height);
-    ctx.clearRect( 0, 0, w, h);
-    // console.log(w, h);
-    drawLines(ctx, begin, end, 1, 0.15);
-    drawLines(ctx, begin, end, 5, 0.2);
-    drawLines(ctx, begin, end, 10, 0.3);
-    drawLines(ctx, begin, end, 30, 0.4);
-    drawLines(ctx, begin, end, 60, 0.6);
-    drawLines(ctx, begin, end, 300, 0.9);
+    var style = window.getComputedStyle(canvas); 
+    canvas.width = Math.round(parseFloat(style.width));
+    canvas.height = Math.round(parseFloat(style.height));
+    console.log(canvas.width, canvas.height);
+    ctx.clearRect( 0, 0, canvas.width, canvas.height);
+    ctx.translate(0.5, 0.5);
+    ctx.scale(SCALE, SCALE);
+    var canShowText = true;
+    canShowText &= !drawLines(ctx, begin, end, 1, 0.15, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 5, 0.2, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 10, 0.3, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 30, 0.4, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 60, 0.6, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 300, 0.8, canShowText);
     // ctx.fillStyle = "#fff";
     // ctx.fillRect(0, 0, canvas.);
   }
@@ -248,7 +296,7 @@ VideoTimeline.timeline = function(){
 
   var drawCanvas = function(){
     if (canvas){
-      var begin = viewport.viewport.left * videoDuration;
+      var begin = viewport.viewport.left * viewport.viewport.width * videoDuration;
       var duration = viewport.viewport.width * videoDuration;
       VideoTimeline.canvas.draw(canvas, begin, begin+duration);
     }
