@@ -33,7 +33,7 @@ VideoTimeline.canvas = function(){
   }
 
   var drawText = function(ctx, txt, x, y, color){
-    ctx.font = (10/SCALE) + "px Monospace";
+    ctx.font = "10px";
     ctx.textAlign = "center";
     x = Math.round(x);
     y = Math.round(y);
@@ -94,34 +94,56 @@ VideoTimeline.canvas = function(){
     var height = ctx.canvas.height*height;//heightFor(minW);
     // console.log(minW);
     var start = (Math.floor(begin/duration)*duration);
-    var showText = minW >= TEXT_SPACING;
+    var showText = minW >= TEXT_SPACING*SCALE;
     for(var m=start; m<=end; m+=duration){
       var x = (m-begin) * w / (end-begin);
       drawLine(ctx, x, height, color);
       if (showText && canShowText && (m != 0)){
-        drawText(ctx, formatTime(m), x, ctx.canvas.height*0.95, color);
+        drawText(ctx, formatTime(m), x, ctx.canvas.height*0.97, color);
       }
     }
     return showText;
   }
 
+  // var getContext = function(canvas){
+  //   // Output to Canvas, taking into account devices such as iPhone 4 with Retina Display
+  //   var canvas = $('#hidef')[0];
+  //   var ctx = canvas.getContext('2d');
+
+  //   if (window.devicePixelRatio) {
+  //       var hidefCanvasWidth = $(canvas).attr('width');
+  //       var hidefCanvasHeight = $(canvas).attr('height');
+  //       var hidefCanvasCssWidth = hidefCanvasWidth;
+  //       var hidefCanvasCssHeight = hidefCanvasHeight;
+
+  //       $(canvas).attr('width', hidefCanvasWidth * window.devicePixelRatio);
+  //       $(canvas).attr('height', hidefCanvasHeight * window.devicePixelRatio);
+  //       $(canvas).css('width', hidefCanvasCssWidth);
+  //       $(canvas).css('height', hidefCanvasCssHeight);
+  //       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  //   }       
+  //   return ctx;    
+  // }
+
   var draw = function(canvas, begin, end){
     // console.log("draw");
     var ctx = ctx = canvas.getContext('2d');
-    var style = window.getComputedStyle(canvas); 
-    canvas.width = Math.round(parseFloat(style.width));
-    canvas.height = Math.round(parseFloat(style.height));
+    var style = window.getComputedStyle(canvas);
+    SCALE = (window.devicePixelRatio) || 1;
+    canvas.width = Math.round(parseFloat(style.width))*SCALE;
+    canvas.height = Math.round(parseFloat(style.height))*SCALE;
     console.log(canvas.width, canvas.height);
+    // checkHdpi();
     ctx.clearRect( 0, 0, canvas.width, canvas.height);
     ctx.translate(0.5, 0.5);
     ctx.scale(SCALE, SCALE);
     var canShowText = true;
-    canShowText &= !drawLines(ctx, begin, end, 1, 0.15, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 5, 0.2, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 10, 0.3, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 30, 0.4, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 60, 0.6, canShowText);
-    canShowText &= !drawLines(ctx, begin, end, 300, 0.8, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 1, 0.1, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 5, 0.15, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 10, 0.25, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 30, 0.35, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 60, 0.55, canShowText);
+    canShowText &= !drawLines(ctx, begin, end, 300, 0.75, canShowText);
     // ctx.fillStyle = "#fff";
     // ctx.fillRect(0, 0, canvas.);
   }
