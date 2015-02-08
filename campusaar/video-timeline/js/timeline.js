@@ -132,7 +132,7 @@ VideoTimeline.canvas = function(){
     SCALE = (window.devicePixelRatio) || 1;
     canvas.width = Math.round(parseFloat(style.width))*SCALE;
     canvas.height = Math.round(parseFloat(style.height))*SCALE;
-    console.log(canvas.width, canvas.height);
+    // console.log(canvas.width, canvas.height);
     // checkHdpi();
     ctx.clearRect( 0, 0, canvas.width, canvas.height);
     ctx.translate(0.5, 0.5);
@@ -170,6 +170,7 @@ VideoTimeline.timeline = function(){
   var videoTimes;
   var progressBars;
   var progressContainer;
+  var timelineTooltip;
 
 
   var pad = function(num, length) {
@@ -324,6 +325,47 @@ VideoTimeline.timeline = function(){
     }
   }
 
+  var updatePopupTime = function(ratio){
+    if (ratio < 0) ratio = 0;
+    else if (ratio > 1) ratio = 1;
+    // console.log(formatTime(ratio*videoDuration));
+    if (timelineTooltip){
+      var begin = viewport.viewport.left * viewport.viewport.width;
+      var duration = viewport.viewport.width;
+      var leftRatio = (ratio-begin)/duration;
+
+      timelineTooltip.css("left", (leftRatio * 100) + "%");
+      timelineTooltip.text(formatTime(ratio*videoDuration));
+      timelineTooltip.addClass("visible");
+    }
+    // var begin = viewport.viewport.left * viewport.viewport.width * videoDuration;
+    // var length = viewport.viewport.width * videoDuration;
+    // console.log(ratio, formatTime(begin), formatTime(length), formatTime(begin + length*ratio));
+  }
+
+  var generateMouseTweaker = function(){
+    var leftButtonDown = false;
+    $(document).mousedown(function(e){
+        // Left mouse button was pressed, set flag
+        if(e.which === 1) leftButtonDown = true;
+    });
+    $(document).mouseup(function(e){
+        // Left mouse button was released, clear flag
+        if(e.which === 1) leftButtonDown = false;
+    });
+
+    return function tweakMouseMoveEvent(e){
+        // Check from jQuery UI for IE versions < 9
+        if ($.browser.msie && !e.button && !(document.documentMode >= 9)) {
+            leftButtonDown = false;
+        }
+
+        // If left button is not set, set which to 0
+        // This indicates no buttons pressed
+        if(e.which === 1 && !leftButtonDown) e.which = 0;
+    }
+  }
+
   var init = function(timeline, videoDispatcher){
     root = $(timeline);
     tracks = root.find(".vt-tracks");
@@ -339,6 +381,44 @@ VideoTimeline.timeline = function(){
     progressContainer = root.find(".vt-timeline-progress");
 
     canvas = root.find("canvas")[0];
+    timelineTooltip = root.find(".vt-timeline .vt-tooltip");
+
+    var mouseTweaker = generateMouseTweaker();
+
+    var onTimelineEvent = function(e){
+      // timeline-marker has a 1px width and captures the event... work around this issue (invalid offsetX)
+      if ($(e.target).hasClass("timeline-marker")){
+        return; // marker fails...
+      }
+      var xpos = e.offsetX==undefined?e.layerX:e.offsetX;
+      if(xpos==undefined) {
+        xpos = e.pageX-$(e.currentTarget).offset().left;
+      }  
+      var ratio = xpos/$(e.currentTarget).width();
+      if (ratio < 0) ratio = 0;
+      else if (ratio > 1) ratio = 1;
+      updatePopupTime(ratio);
+      // console.log(e.which);
+      if(e.which==1){
+        // if (videoDuration*ratio < 600) {
+          // console.log(ratio, videoDuration, ratio*videoDuration, xpos, e.currentTarget);
+        // }
+        dispatcher.dispatch({actionType: 'onClickTime', time: videoDuration*ratio});
+      }
+    }
+
+    // var timelineWrapper = root.find(".vt-timeline-wrapper");
+    progressContainer.mousemove(function(e){
+      mouseTweaker(e);
+      onTimelineEvent(e);
+    }).mouseleave(function(e){
+      timelineTooltip.removeClass("visible");
+    }).click(function(e){
+      e.stopPropagation();
+      e.which = 1;
+      onTimelineEvent(e);
+    })
+
 
     var outerElement = root.find(".vt-tracks-shadow")[0];
     var scrollable = tracks[0];

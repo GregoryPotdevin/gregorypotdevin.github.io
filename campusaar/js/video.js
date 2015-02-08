@@ -266,14 +266,6 @@ function loadSequences(sequences) {
   };
 
 
-  videoDispatcher.register(function(obj){
-    switch(obj.actionType){
-      case "onEventClick": onEventClick(obj); break;
-      case "updateEventTimecodes": updateMetadataEventTimecodes(obj.eventId, obj.begin, obj.end);
-      default: break;
-    }
-
-  })
 
   ArmaVideo.EventList.init("#sequences", videoDispatcher);
 
@@ -290,6 +282,17 @@ function loadSequences(sequences) {
     videoStartTime = parseInt(params.start);
     console.log("videoStartTime", videoStartTime);
   }
+
+
+  videoDispatcher.register(function(obj){
+    switch(obj.actionType){
+      case "onEventClick": onEventClick(obj); break;
+      case "updateEventTimecodes": updateMetadataEventTimecodes(obj.eventId, obj.begin, obj.end); break;
+      case "onClickTime": video[0].currentTime = obj.time; break;
+      default: break;
+    }
+
+  })
 
   $.each(sequences, function (idx, seq) {
     nextId = Math.max(seq.id, nextId);
