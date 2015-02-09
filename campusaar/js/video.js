@@ -149,6 +149,7 @@ var nextId = 1;
 var currentTab;
 
 
+
 var showDocument = function(seq){
   currentDoc = seq;
   var infoDiv = $("#info");
@@ -164,6 +165,7 @@ var showDocument = function(seq){
     // e.target // newly activated tab
     // e.relatedTarget // previous active tab
   });
+  $("#current-document-title").text(" - " + currentDoc.title);
   return documentEditor;
   // $(".info-item").removeClass("selected");
   // $("#info-" + seq.id).addClass("selected");
@@ -289,6 +291,7 @@ function loadSequences(sequences) {
       case "onEventClick": onEventClick(obj); break;
       case "updateEventTimecodes": updateMetadataEventTimecodes(obj.eventId, obj.begin, obj.end); break;
       case "onClickTime": video[0].currentTime = obj.time; break;
+      case "updateEventTitle": if (obj.eventId == currentDoc.id) $("#current-document-title").text(" - " + currentDoc.title); break;
       default: break;
     }
 

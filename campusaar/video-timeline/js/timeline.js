@@ -2,9 +2,7 @@
 
 var VideoTimeline = VideoTimeline || {};
 
-VideoTimeline.canvas = function(){
-  var TEXT_SPACING = 40;
-  var SCALE = 1;
+VideoTimeline.Tools = function(){
 
   var pad = function(num, length) {
     var r = "" + num;
@@ -12,15 +10,27 @@ VideoTimeline.canvas = function(){
       r = "0" + r;
     }
     return r;
-  }
+  }  
 
-  var formatTime = function(seconds) {
+  var formatTime = function(seconds, milliseconds) {
     var t = Math.round(seconds*100)/100; // Realign centiseconds
     seconds = Math.floor(t);
     var min = Math.floor(seconds / 60);
     var sec = seconds % 60;
-    return pad(min, 2) + ":" + pad(sec, 2);
+    var csec = Math.floor(t*100)%100;
+    return pad(min, 2) + ":" + pad(sec, 2) + (milliseconds ? ("." + pad(csec, 2)) : "");
   }
+
+  return {
+    formatTime: formatTime,
+  }
+}();
+
+
+VideoTimeline.Canvas = function(){
+  var TEXT_SPACING = 40;
+  var SCALE = 1;
+  var Tools = VideoTimeline.Tools;
 
   var drawLine = function(ctx, x, height, color){
     x = Math.round(x);
@@ -99,7 +109,7 @@ VideoTimeline.canvas = function(){
       var x = (m-begin) * w / (end-begin);
       drawLine(ctx, x, height, color);
       if (showText && canShowText && (m != 0)){
-        drawText(ctx, formatTime(m), x, ctx.canvas.height*0.97, color);
+        drawText(ctx, Tools.formatTime(m), x, ctx.canvas.height*0.97, color);
       }
     }
     return showText;
@@ -171,24 +181,7 @@ VideoTimeline.timeline = function(){
   var progressBars;
   var progressContainer;
   var timelineTooltip;
-
-
-  var pad = function(num, length) {
-    var r = "" + num;
-    while (r.length < length) {
-      r = "0" + r;
-    }
-    return r;
-  }
-
-  var formatTime = function(seconds) {
-    var t = Math.round(seconds*100)/100; // Realign centiseconds
-    seconds = Math.floor(t);
-    var min = Math.floor(seconds / 60);
-    var sec = seconds % 60;
-    var csec = Math.floor(t*100)%100;
-    return pad(min, 2) + ":" + pad(sec, 2) + "." + pad(csec, 2);
-  }
+  var Tools = VideoTimeline.Tools;
 
   var filterEvents = function(events, validIds){
     for(eventId in events){
@@ -343,7 +336,7 @@ VideoTimeline.timeline = function(){
     if (canvas){
       var begin = viewport.viewport.left * viewport.viewport.width * videoDuration;
       var duration = viewport.viewport.width * videoDuration;
-      VideoTimeline.canvas.draw(canvas, begin, begin+duration);
+      VideoTimeline.Canvas.draw(canvas, begin, begin+duration);
     }
   }
 
@@ -357,12 +350,9 @@ VideoTimeline.timeline = function(){
       var leftRatio = (ratio-begin)/duration;
 
       timelineTooltip.css("left", (leftRatio * 100) + "%");
-      timelineTooltip.text(formatTime(ratio*videoDuration));
+      timelineTooltip.text(Tools.formatTime(ratio*videoDuration));
       timelineTooltip.addClass("visible");
     }
-    // var begin = viewport.viewport.left * viewport.viewport.width * videoDuration;
-    // var length = viewport.viewport.width * videoDuration;
-    // console.log(ratio, formatTime(begin), formatTime(length), formatTime(begin + length*ratio));
   }
 
   var generateMouseTweaker = function(){
@@ -471,7 +461,7 @@ VideoTimeline.timeline = function(){
           case "currentTime": {
             videoDuration = obj.duration;
             if (videoTimes){
-              videoTimes.text(formatTime(obj.time));
+              videoTimes.text(Tools.formatTime(obj.time, true));
             }
             if (progressBars){
               progressBars.css("width", ((obj.time/obj.duration)*100) + "%");
