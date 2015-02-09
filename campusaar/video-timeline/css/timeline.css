@@ -480,11 +480,18 @@ box-sizing: content-box;
 }
 
 .vt-timecode-btn {
-  display: hidden;
+  /*display: none;*/
+  opacity: 0;
+  -webkit-transition: opacity .3s ease 0;
+  -moz-transition: opacity .3s ease 0;
+  -o-transition: opacity .3s ease 0;
+  -ms-transition: opacity .3s ease 0;
+  transition: opacity .3s ease 0;
 }
 
 .vt-video-time:hover .vt-timecode-btn {
-  display: visible;
+  /*display: block;*/
+  opacity: 1;
 }
 
 .vt-timeline .progress-bar {
