@@ -277,6 +277,7 @@ initTimelineVisibility();
             <h3 class="panel-title">Video</h3>
           </div>
           <div class="panel-body video-container" style="position:relative;">
+            <!-- <video id="video-frame" class="video" src="videos/P2puvid.ogv" controls="" autoplay crossorigin="anonymous"></video> -->
             <video id="video-frame" class="video" src="http://www.tamago.fr/videos/utls_270111l_bellivier_stand.mp4" controls="" autoplay crossorigin="anonymous"></video>
             <div id="timecode" style="position:absolute; top:0; left:0; z-index:1; padding:4px; color: white; font-size: 20px;">00:00.000</div>
             <div style="position:absolute; top:0; right:0; z-index:1; ">
@@ -395,11 +396,16 @@ initTimelineVisibility();
                     </div>
                   </div>
                   <div style="position: relative;">
-                    <div class="vt-tooltip">00:00</div>
+                    <div class="vt-tooltip vt-tooltip-img"><img /></div>
+                    <div class="vt-tooltip vt-tooltip-txt"><span></span></div>
                   </div>
                 </div>
-                <div class="vt-left-pane">
-                  <div class="vt-video-time">00:00.00</div>
+                <div class="vt-left-pane clearfix">
+                  <div class="vt-video-time">
+                    <span class="glyphicon glyphicon-step-backward pull-left vt-timecode-btn" data-action="addFrame" data-action-value="-1"></span>
+                    <span class="glyphicon glyphicon-step-forward pull-right vt-timecode-btn" data-action="addFrame" data-action-value="1"></span>
+                    <span class="vt-timecode" >00:00.00</span>
+                  </div>
                 </div>
               </div>
             </div>

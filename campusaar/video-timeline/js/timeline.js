@@ -22,6 +22,7 @@ VideoTimeline.Tools = function(){
   }
 
   return {
+    pad: pad,
     formatTime: formatTime,
   }
 }();
@@ -181,6 +182,7 @@ VideoTimeline.timeline = function(){
   var progressBars;
   var progressContainer;
   var timelineTooltip;
+  var currentTime;
   var Tools = VideoTimeline.Tools;
 
   var filterEvents = function(events, validIds){
@@ -350,7 +352,15 @@ VideoTimeline.timeline = function(){
       var leftRatio = (ratio-begin)/duration;
 
       timelineTooltip.css("left", (leftRatio * 100) + "%");
-      timelineTooltip.text(Tools.formatTime(ratio*videoDuration));
+      timelineTooltip.find("span").text(Tools.formatTime(ratio*videoDuration));
+
+      var thumbnailId = Math.round((ratio*videoDuration)/30) + 1;
+      if (isNaN(thumbnailId)){
+        timelineTooltip.find("img").attr("src", "");
+      } else {
+        timelineTooltip.find("img").attr("src", ("images/thumbnails/img" + Tools.pad(thumbnailId, 3) + ".jpg"));
+      }
+
       timelineTooltip.addClass("visible");
     }
   }
@@ -391,6 +401,13 @@ VideoTimeline.timeline = function(){
     videoTimes = root.find(".vt-video-time");
     progressBars = root.find(".progress-bar");
     progressContainer = root.find(".vt-timeline-progress");
+
+    videoTimes.find('[data-action="addFrame"]').click(function(e){
+        var dt = parseInt($(e.target).attr("data-action-value"), 10);
+        if (dispatcher){
+          dispatcher.dispatch({actionType: 'onClickTime', time: currentTime + dt*1/25});
+        }
+    });
 
     canvas = root.find("canvas")[0];
     timelineTooltip = root.find(".vt-timeline .vt-tooltip");
@@ -459,9 +476,10 @@ VideoTimeline.timeline = function(){
       dispatcher.register(function(obj){
         switch(obj.actionType){
           case "currentTime": {
+            currentTime = obj.time;
             videoDuration = obj.duration;
             if (videoTimes){
-              videoTimes.text(Tools.formatTime(obj.time, true));
+              videoTimes.find("span.vt-timecode").text(Tools.formatTime(obj.time, true));
             }
             if (progressBars){
               progressBars.css("width", ((obj.time/obj.duration)*100) + "%");
