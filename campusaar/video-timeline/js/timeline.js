@@ -658,6 +658,7 @@ VideoTimeline.timeline = function(){
   }
 
   var setTrackEventBeginEnd = function(trackId, eventId, begin, end){
+    console.log("set time to", begin, end);
     var el = trackView[trackId].events[eventId][0];
     el.style.left = (begin*100/videoDuration) + "%";
     el.style.width = ((end-begin)*100/videoDuration) + "%";

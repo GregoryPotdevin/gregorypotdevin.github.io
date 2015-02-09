@@ -483,8 +483,8 @@ box-sizing: content-box;
   display: hidden;
 }
 
-.vt-timecode-btn {
-  display: hidden;
+.vt-video-time:hover .vt-timecode-btn {
+  display: visible;
 }
 
 .vt-timeline .progress-bar {
@@ -509,11 +509,12 @@ box-sizing: content-box;
 
 .vt-tooltip {
   opacity: 0;
+  /*display: none;*/
   position: absolute;
   background: #fff;
-  pointer-events: none;
+  pointer-events: none !important;;
 
-  z-index: 2;
+  z-index: -1;
   /*text-shadow: none;*/
   color: #555;
   font-weight: 600;
@@ -525,7 +526,6 @@ box-sizing: content-box;
   text-align: center;
   border: 1px solid #CCC;
   box-shadow: 0 5px 6px -5px rgba(0,0,0,0.3);
-  pointer-events: none;
   -webkit-transition: opacity .3s ease 0;
   -moz-transition: opacity .3s ease 0;
   -o-transition: opacity .3s ease 0;
@@ -542,8 +542,13 @@ box-sizing: content-box;
   /*top: -34px;*/
   /*top: 16px;*/
   /*top: -15px;*/
-  bottom: 30px;
+  bottom: -30px;
+  height: 0px;
+}
+
+.vt-tooltip-txt.visible {
   height: 30px;
+  bottom: 30px;
 }
 
 .vt-tooltip-img {
@@ -553,6 +558,9 @@ box-sizing: content-box;
   margin-left: -60px;
 }
 
+
 .vt-tooltip.visible {
+  z-index: 2;
   opacity: 1;
+  /*display: visible;*/
 }
