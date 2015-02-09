@@ -213,7 +213,7 @@ var newDocument = function(trackId, model){
     'id': nextId, 
     'start': start, 
     'end': start+videoDuration/10, 
-    'title': "Segment " + nextId,
+    'title': "Séquence " + nextId,
     'filename': "video.seq." + nextId + ".mp4",
   };
   addDocument(seq, model);
@@ -290,7 +290,13 @@ function loadSequences(sequences) {
     switch(obj.actionType){
       case "onEventClick": onEventClick(obj); break;
       case "updateEventTimecodes": updateMetadataEventTimecodes(obj.eventId, obj.begin, obj.end); break;
-      case "onClickTime": video[0].currentTime = obj.time; break;
+      case "onClickTime": {
+        video[0].currentTime = obj.time; 
+        if (obj.autopause){
+          video[0].pause();
+        }
+        break;
+      }
       case "updateEventTitle": if (obj.eventId == currentDoc.id) $("#current-document-title").text(" - " + currentDoc.title); break;
       default: break;
     }

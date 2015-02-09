@@ -329,7 +329,6 @@ VideoTimeline.timeline = function(){
       x = -(w - parentW);
     }
     var leftRatio = x/parentW;
-    console.log("ok");
     setViewportRatio(-leftRatio, viewport.viewport.width);
     viewport.refreshHandlePosition();
   }
@@ -405,7 +404,7 @@ VideoTimeline.timeline = function(){
     videoTimes.find('[data-action="addFrame"]').click(function(e){
         var dt = parseInt($(e.target).attr("data-action-value"), 10);
         if (dispatcher){
-          dispatcher.dispatch({actionType: 'onClickTime', time: currentTime + dt*1/25});
+          dispatcher.dispatch({actionType: 'onClickTime', time: currentTime + dt*1/25, autopause: true});
         }
     });
 
@@ -453,8 +452,9 @@ VideoTimeline.timeline = function(){
     var scrollable = tracks[0];
     var onScroll = function(e, dx){
       // console.log(e, dx);
-      console.log(viewport);
+      // console.log(viewport);
       if (viewport && dx) {
+        console.log(dx);
         scrollViewport(outerElement, scrollable, -dx);
         e.preventDefault();
       }

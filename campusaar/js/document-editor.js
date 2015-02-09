@@ -285,12 +285,12 @@ var DocumentEditor = function(){
   var addTabSupport = function(el){
     var editables = el.find(".editable");
     editables.on('shown', function(e, editable) {
-      console.log('on show');
+      // console.log('on show');
       if(editable) { // if you're not using popovers, this check is unnecessary
         editable.input.$input.on('keydown', function(e) {
           if(e.which == 9) {                                              // when tab key is pressed
             e.preventDefault();
-            console.log('this', this);
+            // console.log('this', this);
             var next = gotoNextField($(this), e.shiftKey);
             var form = $(this).closest("td").find("form");
             form.submit();

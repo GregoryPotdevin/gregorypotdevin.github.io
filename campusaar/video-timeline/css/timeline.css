@@ -521,7 +521,7 @@ box-sizing: content-box;
   background: #fff;
   pointer-events: none !important;;
 
-  z-index: -1;
+  z-index: 2;
   /*text-shadow: none;*/
   color: #555;
   font-weight: 600;
@@ -549,11 +549,7 @@ box-sizing: content-box;
   /*top: -34px;*/
   /*top: 16px;*/
   /*top: -15px;*/
-  bottom: -30px;
-  height: 0px;
-}
-
-.vt-tooltip-txt.visible {
+  /*bottom: -30px;*/
   height: 30px;
   bottom: 30px;
 }
@@ -567,7 +563,7 @@ box-sizing: content-box;
 
 
 .vt-tooltip.visible {
-  z-index: 2;
+  /*z-index: 2;*/
   opacity: 1;
   /*display: visible;*/
 }
