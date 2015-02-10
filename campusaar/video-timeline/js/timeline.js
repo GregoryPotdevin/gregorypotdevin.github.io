@@ -271,6 +271,12 @@ VideoTimeline.timeline = function(){
       timeMarker[0].style.left = (ratio*100) + '%';
     }
 
+    var setTrackEventBeginEnd = function(trackId, eventId, begin, end){
+      var left = begin*100/videoDuration;
+      var width = (end-begin)*100/videoDuration;
+      tracks[trackId].events[eventId].css({left: left+"%", width: width+"%"});
+    }
+
     var filter = function(validIds){
       for(trackId in tracks){
         if(tracks.hasOwnProperty(trackId)){
@@ -288,6 +294,7 @@ VideoTimeline.timeline = function(){
       deleteEvent: deleteEvent,
       setOnEventClick: function(f) {onEventClick = f;},
       setClickable: function(b) {isClickable = b;},
+      setTrackEventBeginEnd: setTrackEventBeginEnd,
       filter: filter,
     };
     miniTracks.push(miniT);
@@ -654,6 +661,7 @@ VideoTimeline.timeline = function(){
   }
 
   var setTrackEventTitle = function(trackId, eventId, title){
+    console.log(trackView, trackId, eventId);
     trackView[trackId].events[eventId].find(".title").text(title);
   }
 
@@ -662,6 +670,7 @@ VideoTimeline.timeline = function(){
     var el = trackView[trackId].events[eventId][0];
     el.style.left = (begin*100/videoDuration) + "%";
     el.style.width = ((end-begin)*100/videoDuration) + "%";
+    miniTracks.forEach(function(mt){mt.setTrackEventBeginEnd(trackId, eventId, begin, end);});
   }
 
   var setTrackEventType = function(trackId, eventId, type){

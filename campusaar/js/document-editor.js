@@ -306,7 +306,6 @@ var DocumentEditor = function(){
   }
 
   var createDocumentEditor = function(seq, model){
-
     var fieldsByTab = {};
     model.tabs.forEach(function(tab){
       fieldsByTab[tab['id']] = [];
@@ -356,9 +355,7 @@ var DocumentEditor = function(){
 
 
     var updateTitle = function(field, seq){
-      videoDispatcher.dispatch({actionType: "updateEventTitle", trackId: 1, eventId: seq.id, title: seq.title});
-      VideoTimeline.timeline.setTrackEventTitle(1, seq.id, seq.title);
-      // TODO : update timeline title
+      videoDispatcher.dispatch({actionType: "updateEventTitle", trackId: seq.trackId, eventId: seq.id, title: seq.title});
     }
 
     var updateTimecode = function(field, seq){
@@ -371,8 +368,7 @@ var DocumentEditor = function(){
         $("#seq-" + seq.id + "-start").text(formatTime(seq.start));
         $("#seq-" + seq.id + "-end").text(formatTime(seq.end));
       }    
-      videoDispatcher.dispatch({actionType: "updateEventTimecodes", trackId: 1, eventId: seq.id, begin: seq.start, end: seq.end});
-      // TODO : update time...// VideoTimeline.timeline.
+      videoDispatcher.dispatch({actionType: "updateEventTimecodes", trackId: seq.trackId, eventId: seq.id, begin: seq.start, end: seq.end});
     }
 
     model.fields.forEach(function(field){
