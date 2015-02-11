@@ -1,0 +1,24 @@
+{
+  "id": 1234,
+  "title": "Titre de l'analyse",
+  "author": "Auteur de l'analyse",
+
+  "media": {
+    "instances": [
+      {
+        "url": "http://...-lo.mp4",
+        "type": "download|streaming",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "url": "http://...-hi.mp4",
+        "type": "download|streaming",
+        "width": 1280,
+        "height": 720
+      }
+    ],
+    "title": "Super media !",
+    "publisher": "Warner"
+  }
+}
