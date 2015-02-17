@@ -115,7 +115,7 @@ var DocumentEditor = function(){
       },
       buttonFactory: function(options){
         var button = document.createElement('button');
-        console.log(options.type);
+        // console.log(options.type);
         switch(options.type){
           case "default": button.className = 'btn btn-info'; break;
           case "success": button.className = 'btn btn-success'; break;
@@ -200,7 +200,8 @@ var DocumentEditor = function(){
             modal.unbind('hidden.bs.modal');
             modal.on('hidden.bs.modal', function (e) {
               if (darkroom){
-                darkroom.selfDestroy();
+                // darkroom.selfDestroy();
+                $("#img-modal figure").html("<img>");
                 darkroom = null;
               }
             });

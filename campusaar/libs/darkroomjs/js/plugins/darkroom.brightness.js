@@ -3,6 +3,7 @@
 
   Darkroom.plugins['brightness'] = Darkroom.Plugin.extend({
     brightness: 0,
+    filter: undefined,
 
     initialize: function InitDarkroomBrightnessPlugin() {
       var buttonGroup = this.darkroom.toolbar.createButtonGroup();
@@ -41,8 +42,9 @@
       var f = fabric.Image.filters;
       var darkroom = this.darkroom;
       var image = darkroom.image;
-      image.filters[0] = new fabric.Image.filters.Brightness({brightness: this.brightness});
-      image.filters[0]['brightness'] = this.brightness;
+      this.filter = new fabric.Image.filters.Brightness({brightness: this.brightness});
+      this.filter['brightness'] = this.brightness;
+      image.filters.push(this.filter);
     },
 
     applyBrightness: function brightness(value){
@@ -50,7 +52,7 @@
       var darkroom = this.darkroom;
       var canvas = darkroom.canvas;
       var image = darkroom.image;
-      image.filters[0]['brightness'] = this.brightness;
+      this.filter['brightness'] = this.brightness;
       image.applyFilters(canvas.renderAll.bind(canvas));
       // canvas.renderAll();
       darkroom.dispatchEvent('image:change');

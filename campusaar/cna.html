@@ -94,13 +94,23 @@
     <tr data-field-id="{{field.id}}">
       <td width="15%">{{field.label}}</td>
       <td width="85%">
-        {{#if field.editable}}
-        <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
-        class="edit edit-btn glyphicon pull-right {{type.icon}}"></span>
+        {{#if field.isImage}}
+          <img class="document-field" src="{{content seq field}}"/>
+          <div class="pull-right">
+            <span id="document-{{seq.id}}-{{field.id}}-img-btn" aria-hidden="true"
+            class="edit edit-btn glyphicon glyphicon-pencil" data-btn-type="edit"></span>
+            <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+            class="edit edit-btn glyphicon {{type.icon}}" data-btn-type="snapshot"></span>
+          </div>
+        {{else}}
+          {{#if field.editable}}
+          <span id="document-{{seq.id}}-{{field.id}}-btn" aria-hidden="true"
+          class="edit edit-btn glyphicon pull-right {{type.icon}}" data-btn-type="edit"></span>
+          {{/if}}
+          <p class="document-field" data-type="{{type.data_type}}" data-title="{{field.label}}">
+            {{content seq field}}
+          </p>
         {{/if}}
-        <p class="document-field" data-type="{{type.data_type}}" data-title="{{field.label}}">
-          {{content seq field}}
-        </p>
       </td>
     </tr>
   </script>
