@@ -144,7 +144,7 @@ var templates = function(){
 }();
 
 
-var videoDuration = 2486; // TODO : fixme
+var videoDuration = 370; // TODO : fixme
 var nextId = 1;
 var currentTab;
 
